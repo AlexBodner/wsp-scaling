@@ -1,0 +1,23 @@
+{
+  "edit_report": {
+    "has_block": false,
+    "statements": 0,
+    "applied": 0,
+    "entries_written": 0,
+    "errors": []
+  },
+  "nonzero_weights": 0,
+  "copy_check": {
+    "nonzero_values": 0
+  },
+  "score": {
+    "exact": {
+      "value": 0.0,
+      "low": 0.0,
+      "high": 0.0,
+      "reference": 0.014,
+      "passes": false
+    },
+    "per_position": 0.0
+  }
+}

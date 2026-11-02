@@ -1,0 +1,81 @@
+YOUR TASK: write, from scratch, the weights of a language model so that it does the task below. There is no training: no data, no loss, no gradients, no fine-tuning; you choose every number yourself. You have no tools: no code execution, no calculator, nothing to run. This is a single response and you will get no feedback. First describe your design briefly, then write the edits block.
+
+THE TASK: reverse a string of letters. The model reads a text of this form, here for the string a b c:
+  rev: a b c ->
+The string has 3 to 6 random lowercase letters, a to z, separated by spaces. The model then generates: at each step its top next token is appended to the text, for as many steps as the string has letters. The generated tokens must be the letters in reverse order, each with a leading space, here " c", " b", " a".
+
+HOW YOUR NETWORK IS SCORED: the share of random strings it reverses exactly.
+
+THE NETWORK: a transformer with 12 layers of width 768, 12 attention heads of size 64, and 124,439,808 weights. EVERY WEIGHT STARTS AT 0, normalization scales included; you set the weights you need.
+
+Tensors (rows x columns):
+  E: 50257 x 768 (one row per token, used for both input and output)
+  P: 1024 x 768 (one row per position)
+  F.scale, F.shift: 768
+  and for each layer i from 0 to 11:
+  Li.norm1.scale, Li.norm1.shift: 768
+  Li.qkv.W: 768 x 2304, Li.qkv.b: 2304
+  Li.out.W: 768 x 768, Li.out.b: 768
+  Li.norm2.scale, Li.norm2.shift: 768
+  Li.up.W: 768 x 3072, Li.up.b: 3072
+  Li.down.W: 3072 x 768, Li.down.b: 768
+
+The computation, for input tokens t_0 ... t_(n-1), with no start token added:
+  x_j = E[t_j] + P[j]
+  For each layer i in order:
+    y_j = LN(x_j; Li.norm1)
+    a_j = y_j @ Li.qkv.W + Li.qkv.b. Split a_j into q_j (entries 0-767), k_j (768-1535), v_j (1536-2303).
+    For each head h from 0 to 11, take entries 64h to 64h+63 of q, k and v, and compute
+      w_ji = softmax over i <= j of (q_j . k_i) / 8, then o_j = sum over i <= j of w_ji v_i
+    c_j = the 12 heads' o_j joined in order (768 entries)
+    x_j = x_j + c_j @ Li.out.W + Li.out.b
+    z_j = LN(x_j; Li.norm2)
+    x_j = x_j + gelu(z_j @ Li.up.W + Li.up.b) @ Li.down.W + Li.down.b
+  x_j = LN(x_j; F)
+  logits_j = x_j @ transpose(E), the scores for the token after position j.
+LN(u; n) = (u - mean(u)) / sqrt(var(u) + 0.00001) * n.scale + n.shift, element by element, with the mean and population variance taken over the 768 entries of u.
+gelu(u) = u * Phi(u), element by element, where Phi is the standard normal cumulative distribution.
+The model's top token is the one with the largest logit; a tie goes to the lowest token ID.
+
+HOW TO WRITE THE WEIGHTS (numbers only; nothing is run). Write a code block whose opening line is three backticks followed by the word edits, one statement per line ('#' starts a comment; a long list may continue over the next lines).
+
+```edits
+E[12, 0] = 2.5                          # one entry: row 12, column 0
+L0.qkv.W[0:6, 3] = [1, 0, -1, 0, 2, 0]  # explicit values along a range (as many values as entries)
+L0.norm1.scale[:] = 1                   # fill a range (a:b is half-open; ':' alone = the whole axis)
+P[0:2, 0:3] = [[1, -1, 0.5], [0, 2, 0]] # a 2-D list for a 2-D block (here 2 x 3)
+P[0:8:2, 5] = [1, 0, 0, 1]              # a:b:s takes every s-th index
+```
+Statements apply in order; a later statement overwrites an earlier one. Only the LAST edits block of your reply is read; a statement that cannot be read is skipped (the others still apply). Values: plain decimal numbers (|v| <= 1e6). The only operator is '='.
+
+THE TOKENS: one per line, token ID, a tab, then its exact text as a JSON string, in ID order. A token's text includes any leading space. Other token IDs exist, and your task does not need them.
+
+656	" q"
+797	" f"
+1423	" c"
+3884	" v"
+4100	" j"
+5703	" i"
+8109	" b"
+8357	" h"
+10749	"rev"
+14491	" t"
+18882	":"
+19028	" u"
+23631	" k"
+23710	" l"
+24929	" x"
+27063	" g"
+27569	" p"
+30069	" z"
+31122	" y"
+31425	" ->"
+33820	" e"
+36388	" d"
+36573	" a"
+38062	" r"
+41397	" o"
+44179	" n"
+44429	" s"
+48281	" w"
+48473	" m"

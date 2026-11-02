@@ -1,0 +1,26 @@
+{
+  "edit_report": {
+    "has_block": false,
+    "statements": 0,
+    "applied": 0,
+    "entries_written": 0,
+    "errors": []
+  },
+  "nonzero_weights": 0,
+  "copy_check": {
+    "nonzero_values": 0
+  },
+  "score": {
+    "bits_per_token": {
+      "value": 15.617037540549505,
+      "low": 15.617037499454703,
+      "high": 15.617037580486603,
+      "reference": 8.445053996405358,
+      "passes": false
+    },
+    "difference_interval": [
+      7.144743719238796,
+      7.198901966999218
+    ]
+  }
+}

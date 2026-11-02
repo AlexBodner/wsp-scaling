@@ -45,8 +45,44 @@ Shared: raw text with no chat template, always the top token, effort `xhigh`. On
 - Predict. 50 fixed prompts, half from the task and half unrelated. Score: matching the network's actual top token. Must beat always guessing the network's most common output. Hand-built fallback networks are frozen before any results.
 - Positive control. Passes if it clearly beats their best trained PPO score of 25.3.
 
+## Special handling
+| What | Choice | Why |
+|---|---|---|
+| Capitals test set | 179 of 193 UN members. Left out: South Africa, Bolivia, Israel, Eswatini, Benin, Netherlands, Ivory Coast, Tanzania, Sri Lanka, Malaysia, Nauru, Switzerland, Burundi, Indonesia | Disputed, multiple or moving capitals |
+| Names | ASCII only, such as `Asuncion` and `Bogota` | Keeps tokenization predictable |
+| TinyStories | The `TinyStoriesV2-GPT4` files | Chosen on memory of it being the cleaner version, not checked |
+| Token frequency counts | First 100 MB of the training split, add-one smoothing | The Mac has little free disk, and counts settle well before the full 2.2 GB |
+| Language test | First 1,000 validation stories, cut to 512 tokens | Keeps scoring on the Mac practical |
+| Language token list | About 16,500 tokens seen in that 100 MB, which is about 100k input tokens | The full table would double that |
+| Failed calls | One attempt per run, no retry | Matches "no retries". A timeout is reported, not rerun silently |
+
+## Dry run, no Astra calls
+| Check | Result |
+|---|---|
+| Parser on the post's Breakout reply | Reproduces their published network exactly, 92 statements |
+| Prompt equations against GPT-2 code, random weights | Match |
+| Their Breakout reply through our scorer, 1,000 episodes | 502.2 ± 7.8, against their 517.4 ± 7.4 |
+| All-zero network | 0% on capitals and reverse, 15.62 bits on language, fails all three |
+| Hand-built capitals network, typed through the parser | 63.7% visible (56.7 to 70.4), 62.6% hidden, passes |
+| Copy check on that network | Correlation -0.055, inside the random-position range (-0.064 to -0.047), no value within 0.001 |
+| Predict, perfect and empty answers | 100% passes, 0% fails, against a reference of 40% |
+| Offline seal check, codex-cli 0.153.4 | 11 of 11 pass |
+
+Trained GPT-2, for scale:
+
+| Task | Trained GPT-2 | Trivial reference | Beats it? |
+|---|---|---|---|
+| Capitals, visible | 1.1% | 2.8% | No |
+| Capitals, hidden | 0.0% | 2.8% | No |
+| Reverse | 0.8% | 1.4% | No |
+| Language | 3.53 bits | 8.45 bits | Yes |
+
+Trained GPT-2's top token after `The capital of {country} is` is ` the` for 169 of 179 countries. For France, ` Paris` comes 5th. The score is real: the task asks for the top token, and this model usually continues differently. So passing capitals or reverse does not mean matching a trained model's general ability, and beating trained GPT-2 on them is a low bar.
+
+The hand-built network shows typed weights can do the capitals task in this architecture. It used code to generate about 49k tokens of statements and our own design, so it says nothing about Astra.
+
 ## Open
-- Dry run with an all-zero and a hand-built network, no Astra calls.
+- Sealed live probe, then the seven runs.
 
 ## After a positive result
 - Repeat each working task 3 times.

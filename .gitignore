@@ -4,3 +4,6 @@ models/
 __pycache__/
 *.pyc
 .DS_Store
+.deps/
+*.safetensors
+*.npz

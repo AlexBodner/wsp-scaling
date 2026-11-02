@@ -1,0 +1,39 @@
+{
+  "edit_report": {
+    "has_block": true,
+    "statements": 3259,
+    "applied": 3259,
+    "entries_written": 4793,
+    "errors": []
+  },
+  "nonzero_weights": 4793,
+  "copy_check": {
+    "nonzero_values": 4793,
+    "correlation_with_real": -0.05452423511862575,
+    "correlation_random_positions_95pct": [
+      -0.06407715704864132,
+      -0.04696629942487209
+    ],
+    "share_within_0.001_of_real": 0.0
+  },
+  "score": {
+    "countries": 179,
+    "visible": {
+      "value": 0.6368715083798883,
+      "low": 0.5670391061452514,
+      "high": 0.7039106145251397,
+      "reference": 0.027932960893854747,
+      "passes": true
+    },
+    "hidden": {
+      "value": 0.6256983240223464,
+      "low": 0.5586592178770949,
+      "high": 0.6927374301675978,
+      "reference": 0.027932960893854747,
+      "passes": true
+    },
+    "visible_one_token_capitals": 0.7653061224489796,
+    "visible_multi_token_capitals": 0.5884615384615385,
+    "one_token_capitals": 49
+  }
+}

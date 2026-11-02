@@ -1,0 +1,16 @@
+{
+  "edit_report": {
+    "has_block": true,
+    "statements": 92,
+    "applied": 92,
+    "entries_written": 857,
+    "errors": []
+  },
+  "score": {
+    "mean": 601.75,
+    "standard_error": 43.33868303684851,
+    "episodes": 20,
+    "mean_length": 8404.7,
+    "passes": true
+  }
+}

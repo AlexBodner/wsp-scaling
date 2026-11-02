@@ -1,0 +1,5 @@
+# Versions used for the dry run. Astra calls also need vlm-jigsaw's src on PYTHONPATH and codex-cli 0.153.4.
+torch==2.12.1
+transformers==5.9.0
+numpy
+pytest
