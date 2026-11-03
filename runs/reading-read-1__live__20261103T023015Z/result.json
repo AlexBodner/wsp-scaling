@@ -1,0 +1,567 @@
+{
+  "seed": 1001,
+  "budget": 20000,
+  "turns": 6,
+  "values_read": 19998,
+  "answer": [
+    [
+      5,
+      1
+    ],
+    [
+      5,
+      7
+    ],
+    [
+      6,
+      7
+    ],
+    [
+      7,
+      6
+    ],
+    [
+      8,
+      2
+    ]
+  ],
+  "hits": 0,
+  "requests": [
+    {
+      "statement": "L4.qkv.W[0:768:384, 1536:2304:4]",
+      "values": 384
+    },
+    {
+      "statement": "L4.out.W[0:768:4, 0:768:384]",
+      "values": 384
+    },
+    {
+      "statement": "L5.qkv.W[0:768:384, 1536:2304:4]",
+      "values": 384
+    },
+    {
+      "statement": "L5.out.W[0:768:4, 0:768:384]",
+      "values": 384
+    },
+    {
+      "statement": "L6.qkv.W[0:768:384, 1536:2304:4]",
+      "values": 384
+    },
+    {
+      "statement": "L6.out.W[0:768:4, 0:768:384]",
+      "values": 384
+    },
+    {
+      "statement": "L7.qkv.W[0:768:384, 1536:2304:4]",
+      "values": 384
+    },
+    {
+      "statement": "L7.out.W[0:768:4, 0:768:384]",
+      "values": 384
+    },
+    {
+      "statement": "L8.qkv.W[0:768:384, 1536:2304:4]",
+      "values": 384
+    },
+    {
+      "statement": "L8.out.W[0:768:4, 0:768:384]",
+      "values": 384
+    },
+    {
+      "statement": "L9.qkv.W[0:768:384, 1536:2304:4]",
+      "values": 384
+    },
+    {
+      "statement": "L9.out.W[0:768:4, 0:768:384]",
+      "values": 384
+    },
+    {
+      "statement": "L4.qkv.W[128:513:384, 2176:2240]",
+      "values": 128
+    },
+    {
+      "statement": "L4.out.W[640:704, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[128:513:384, 1600:1664]",
+      "values": 128
+    },
+    {
+      "statement": "L5.out.W[64:128, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[128:513:384, 1664:1728]",
+      "values": 128
+    },
+    {
+      "statement": "L5.out.W[128:192, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[128:513:384, 1856:1920]",
+      "values": 128
+    },
+    {
+      "statement": "L5.out.W[320:384, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[128:513:384, 1984:2048]",
+      "values": 128
+    },
+    {
+      "statement": "L5.out.W[448:512, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 1536:1600]",
+      "values": 128
+    },
+    {
+      "statement": "L6.out.W[0:64, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 1664:1728]",
+      "values": 128
+    },
+    {
+      "statement": "L6.out.W[128:192, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 1728:1792]",
+      "values": 128
+    },
+    {
+      "statement": "L6.out.W[192:256, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 1792:1856]",
+      "values": 128
+    },
+    {
+      "statement": "L6.out.W[256:320, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 1984:2048]",
+      "values": 128
+    },
+    {
+      "statement": "L6.out.W[448:512, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[128:513:384, 1600:1664]",
+      "values": 128
+    },
+    {
+      "statement": "L7.out.W[64:128, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[128:513:384, 1856:1920]",
+      "values": 128
+    },
+    {
+      "statement": "L7.out.W[320:384, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[128:513:384, 1920:1984]",
+      "values": 128
+    },
+    {
+      "statement": "L7.out.W[384:448, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[128:513:384, 2112:2176]",
+      "values": 128
+    },
+    {
+      "statement": "L7.out.W[576:640, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[128:513:384, 1664:1728]",
+      "values": 128
+    },
+    {
+      "statement": "L8.out.W[128:192, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[128:513:384, 1984:2048]",
+      "values": 128
+    },
+    {
+      "statement": "L8.out.W[448:512, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[128:513:384, 2176:2240]",
+      "values": 128
+    },
+    {
+      "statement": "L8.out.W[640:704, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L9.qkv.W[128:513:384, 1536:1600]",
+      "values": 128
+    },
+    {
+      "statement": "L9.out.W[0:64, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L9.qkv.W[128:513:384, 2112:2176]",
+      "values": 128
+    },
+    {
+      "statement": "L9.out.W[576:640, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L9.qkv.W[128:513:384, 2176:2240]",
+      "values": 128
+    },
+    {
+      "statement": "L9.out.W[640:704, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L4.qkv.W[128:513:384, 640:704]",
+      "values": 128
+    },
+    {
+      "statement": "L4.qkv.W[128:513:384, 1408:1472]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[128:513:384, 64:128]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[128:513:384, 832:896]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[128:513:384, 448:512]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[128:513:384, 1216:1280]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 0:64]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 768:832]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 128:192]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 896:960]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 192:256]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 960:1024]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 448:512]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[128:513:384, 1216:1280]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[128:513:384, 64:128]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[128:513:384, 832:896]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[128:513:384, 320:384]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[128:513:384, 1088:1152]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[128:513:384, 384:448]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[128:513:384, 1152:1216]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[128:513:384, 128:192]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[128:513:384, 896:960]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[128:513:384, 448:512]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[128:513:384, 1216:1280]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[128:513:384, 640:704]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[128:513:384, 1408:1472]",
+      "values": 128
+    },
+    {
+      "statement": "L9.qkv.W[128:513:384, 0:64]",
+      "values": 128
+    },
+    {
+      "statement": "L9.qkv.W[128:513:384, 768:832]",
+      "values": 128
+    },
+    {
+      "statement": "L9.qkv.W[128:513:384, 576:640]",
+      "values": 128
+    },
+    {
+      "statement": "L9.qkv.W[128:513:384, 1344:1408]",
+      "values": 128
+    },
+    {
+      "statement": "L3.qkv.W[0:768:384, 1536:2304:4]",
+      "values": 384
+    },
+    {
+      "statement": "L3.out.W[0:768:4, 0:768:384]",
+      "values": 384
+    },
+    {
+      "statement": "L10.qkv.W[0:768:384, 1536:2304:4]",
+      "values": 384
+    },
+    {
+      "statement": "L10.out.W[0:768:4, 0:768:384]",
+      "values": 384
+    },
+    {
+      "statement": "L5.qkv.W[256:641:384, 64:128]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[256:641:384, 832:896]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[256:641:384, 448:512]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[256:641:384, 1216:1280]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[256:641:384, 448:512]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[256:641:384, 1216:1280]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[256:641:384, 384:448]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[256:641:384, 1152:1216]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[256:641:384, 128:192]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[256:641:384, 896:960]",
+      "values": 128
+    },
+    {
+      "statement": "L9.qkv.W[256:641:384, 576:640]",
+      "values": 128
+    },
+    {
+      "statement": "L9.qkv.W[256:641:384, 1344:1408]",
+      "values": 128
+    },
+    {
+      "statement": "L10.qkv.W[128:513:384, 1728:1792]",
+      "values": 128
+    },
+    {
+      "statement": "L10.out.W[192:256, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L10.qkv.W[128:513:384, 192:256]",
+      "values": 128
+    },
+    {
+      "statement": "L10.qkv.W[128:513:384, 960:1024]",
+      "values": 128
+    },
+    {
+      "statement": "L10.qkv.W[128:513:384, 2112:2176]",
+      "values": 128
+    },
+    {
+      "statement": "L10.out.W[576:640, 128:513:384]",
+      "values": 128
+    },
+    {
+      "statement": "L10.qkv.W[128:513:384, 576:640]",
+      "values": 128
+    },
+    {
+      "statement": "L10.qkv.W[128:513:384, 1344:1408]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[256:641:384, 1600:1664]",
+      "values": 128
+    },
+    {
+      "statement": "L5.out.W[64:128, 256:641:384]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[256:641:384, 1984:2048]",
+      "values": 128
+    },
+    {
+      "statement": "L5.out.W[448:512, 256:641:384]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[256:641:384, 1984:2048]",
+      "values": 128
+    },
+    {
+      "statement": "L6.out.W[448:512, 256:641:384]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[256:641:384, 1920:1984]",
+      "values": 128
+    },
+    {
+      "statement": "L7.out.W[384:448, 256:641:384]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[256:641:384, 1664:1728]",
+      "values": 128
+    },
+    {
+      "statement": "L8.out.W[128:192, 256:641:384]",
+      "values": 128
+    },
+    {
+      "statement": "L9.qkv.W[256:641:384, 2112:2176]",
+      "values": 128
+    },
+    {
+      "statement": "L9.out.W[576:640, 256:641:384]",
+      "values": 128
+    },
+    {
+      "statement": "L10.qkv.W[256:641:384, 1728:1792]",
+      "values": 128
+    },
+    {
+      "statement": "L10.out.W[192:256, 256:641:384]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.b[64:128]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.b[448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.b[448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.b[384:448]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.b[128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.b[576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.b[192:256]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.b[576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L5.norm1.scale[128:768:128]",
+      "values": 5
+    },
+    {
+      "statement": "L6.norm1.scale[128:768:128]",
+      "values": 5
+    },
+    {
+      "statement": "L7.norm1.scale[128:768:128]",
+      "values": 5
+    },
+    {
+      "statement": "L8.norm1.scale[128:768:128]",
+      "values": 5
+    },
+    {
+      "statement": "L9.norm1.scale[128:768:128]",
+      "values": 5
+    },
+    {
+      "statement": "L10.norm1.scale[128:768:128]",
+      "values": 5
+    }
+  ]
+}

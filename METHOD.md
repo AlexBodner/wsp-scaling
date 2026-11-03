@@ -152,8 +152,21 @@ What a pass or fail would mean:
 - A pass shows Astra can locate one specific kind of head by hand from raw weights, not that it understands an LLM in general.
 - A fail with a working hinted read shows it could do the arithmetic but did not find what to compute. A fail on both shows no hand reading at this budget, where a short script succeeds.
 
+Reading test results, sealed Astra calls at `xhigh`:
+
+| Arm | Hits of 5 | Budget used | Turns | List price |
+|---|---|---|---|---|
+| Blind | 1 | 0 | 1 | $0.05 |
+| Read 1, seed 1001 | 0 | 19,998 of 20,000 | 6 | $5.70 |
+
+- **The pass rule can no longer be met:** it needs 6 of 10, and a second read can add at most 5.
+- **0 of 5 is weak evidence by itself:** chance alone gives it about 60 to 70% of the time.
+- **Why it missed:** it screened heads by aligning value and output weights, then checked only candidates from that screen with query and key weights. That screen is the wrong statistic here: with every row it finds 0 of 5 (`checks/read1_analysis.py`). The query-key statistic with every row, in layers 4 to 11, finds 4 of 5 on this disguise.
+- **Its arithmetic held where checked:** recomputing its first sample in code ranks 6.3 and 9.0 highest, the two it called larger but noisier. Later turns were not checked.
+- **Its picks:** the closest, 7.6, ranks 18th of 144, and three of the five have scores near zero.
+
 ## Open
-- Review of the reading test before any Astra call.
+- Whether to run the hinted read next, in place of the second read.
 - What to run next on writing. A size sweep needs a design where size matters.
 - Constraint from Alex: use bigger, more relevant ready-made models, and do not train networks ourselves. Astra sets or reads the weights.
 - Size axis, proposed for later: the same budget on every model, so the visible share falls as models grow.
