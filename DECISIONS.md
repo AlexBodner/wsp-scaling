@@ -1,6 +1,6 @@
 # Decisions: what Alex said and what we chose
 
-Current design: [METHOD.md](METHOD.md). Evidence: [CONTEXT.md](CONTEXT.md). Quotes are Alex's words as typed, in order.
+A working log of how the design changed, kept for transparency and not needed to check any result. Current design: [METHOD.md](METHOD.md). Evidence: [CONTEXT.md](CONTEXT.md). Quotes are Alex's words as typed, in order.
 
 ## Where it started
 > "how does this scale with size, if there is some intrinsic scaling laws in LLMs selecting the weights of other LLMs. Do you think that we can do a small study about it consuming few compute and tokens?"
@@ -28,12 +28,12 @@ Current design: [METHOD.md](METHOD.md). Evidence: [CONTEXT.md](CONTEXT.md). Quot
 | 14 | On the Gemma failure: "is important" | Report reading and writing separately, with a later reading study | It is their only test of reading at 268M or more without running the model |
 | 15 | "Can Astra (or LMs) really understand the weights of another LLM and write them in an optimal way? (or maybe that is too much and we shoukd even narrow it)" | Narrowed: can it write GPT-2 weights for a task, and predict what they do? | "Optimal" cannot be tested, and "understand" needed a concrete test |
 | 16 | "im scared that GPT2 weights might even be in training data, but its a good starting point" | Shuffle token IDs, do not name the model, compare typed values with real GPT-2 | Copying can be ruled out, general knowledge from papers cannot |
-| 17 | "the problem with the capital of france is that it is the most common frace here, so we can try it with several" | Four phrasings, two hidden, with well-known and obscure capitals scored separately | A single phrasing lets a network read one position with no attention |
+| 17 | "the problem with the capital of france is that it is the most common frace here, so we can try it with several" | Four phrasings, two hidden, with one-token and multi-token capitals scored separately | A single phrasing lets a network read one position with no attention |
 | 18 | "the gpt 2 can probably be tried now locally, for astra we can call it through codex. Log all the calls" | Score GPT-2 on the Mac, call Astra through sealed Codex, save every call in full | |
 | 19 | "we dont want to train networks ourselves, but let the model call to astra set the weights or understand the weights" | Reading test on ready-made GPT-2 small | Written networks turned out to be small circuits in an empty container, so a family sweep would be flat |
 | 20 | "we can let the own model decide how to read them", then "Viewer only" | A read-only viewer with a value budget, no computation | Whole-model reading does not fit in context, and fixed slices would choose for it |
 | 21 | "Yes, small only" | GPT-2 small only for now | A size sweep waits for a positive result and a new decision |
-| 22 | "Yes, hinted read" | Hinted read after the first read scored 0 of 5 | Separates not knowing what to compute from being unable to compute it |
+| 22 | "Yes, hinted read" | Hinted read after the first read scored 0 of 5 | Tests computing the statistic when told. It cannot split the hint's three parts |
 | 23 | "so run it" | Second unhinted read as well | So the headline does not rest on one run |
 | 24 | "Yes, public repo" | Public repo, leaving out third-party text | The post links to the code and logs, and GPL MinAtar source, the post's answer and Codex's catalog are not ours to republish |
 
@@ -44,6 +44,6 @@ Current design: [METHOD.md](METHOD.md). Evidence: [CONTEXT.md](CONTEXT.md). Quot
 - **Dropped N^0.36.** That guess came from two runs on different tasks, one of which used activations.
 
 ## Open questions
-1. **Qwen timing.** The narrowed design runs Qwen only if GPT-2 shows signal. Alex wanted that comparison and has not objected to the gate, so this is our assumption and he can still veto it.
+1. **Qwen timing.** The narrowed design runs Qwen only if GPT-2 shows signal. This gate is an assumption that Alex can still veto.
 2. **Failures.** Successes get repeated 3 times. Failures are reported as "failed in one attempt", and repeated only if the budget allows.
 3. **Scope of Predict.** It reads sparse written networks, so it says nothing about dense trained weights. That stays for the later reading study.

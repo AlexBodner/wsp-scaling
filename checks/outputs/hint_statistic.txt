@@ -1,0 +1,6 @@
+10k values   from layer 0: 0.100 sd 0.100
+10k values   from layer 4: 0.600 sd 0.190
+20k values   from layer 0: 0.090 sd 0.099
+20k values   from layer 4: 0.660 sd 0.128
+all rows     from layer 0: 0.000 sd 0.000
+all rows     from layer 4: 0.800 sd 0.000

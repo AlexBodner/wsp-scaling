@@ -1,13 +1,13 @@
-# Writing LLM weights: method
+# Reading and writing GPT-2's weights: method
 
-Question: with no tools, can Astra write GPT-2 weights that do a specified task, and can it predict what those weights will do?
+Question: with no tools, can Astra write GPT-2 weights that do a specified task, predict what those weights will do, and read a real GPT-2's weights? Writing comes first. Reading starts at "Reading test".
 
 "Optimal" is not tested, because nobody knows the optimal weights. Scores are compared with a simple baseline and with trained GPT-2.
 
 ## Decided
 - Operation: write from all-zero weights, not edit a trained model.
 - Model: GPT-2 small (124M weights).
-- Writer: `gpt-6-astra` through sealed `codex exec`, one reply per run, one fresh call per run.
+- Writer: `gpt-6-astra` through sealed `codex exec`, one reply per run, one fresh call per run. The reading test differs, and its section says how.
 - No Python, calculator, forward passes, training data, feedback or retries.
 - Prompt describes the task only, with no strategy hints. Frozen before the first run. Every run is reported.
 - Format: typed statements. Explicit values and ranges allowed. No `*=`, `+=` or `-=`.
@@ -18,7 +18,7 @@ Question: with no tools, can Astra write GPT-2 weights that do a specified task,
    - Capitals: can it program a lookup? Must beat chance.
    - Reverse a string: can it program attention? Must beat chance.
    - Next-token prediction on TinyStories: can it make a language model? Must beat token frequency counts.
-3. Predict (3 runs): a fresh call gets a written network, or a small hand-built one if a write produced nothing useful, plus fixed prompts. It predicts the top next token for each, and we compare against running the network.
+3. Predict (3 runs, not run live, dry checks only): a fresh call gets a written network, or a small hand-built one if a write produced nothing useful, plus fixed prompts. It predicts the top next token for each, and we compare against running the network.
 
 Prompts get only the tokens each task needs, in ID order with no frequencies.
 
@@ -116,7 +116,7 @@ Known issues from the critic reviews:
 - One run per task. The intervals cover test-set sampling only, not variation between replies.
 
 ## Reading test, GPT-2 small only
-Question: name the 5 heads, of 144, with the highest copying score, by reading the weights.
+Question: name the 5 heads, of 144, with the highest copying score, by reading the weights. A head scores high when, on seeing a token again, it attends to the token after the earlier copy. These are induction heads, described in [A Mathematical Framework for Transformer Circuits](https://transformer-circuits.pub/2021/framework/) (Anthropic, 2021). Our top five, 5.5, 6.9, 5.1, 7.10 and 7.2 in GPT-2's numbering, are the ones commonly listed for GPT-2 small, so a reader may know of them from papers. The disguise hides which head is which, and layer order stays.
 
 - **Model:** GPT-2 small, disguised: heads reordered within each layer and re-expressed in random internal coordinates, and the key bias replaced by noise. Behaviour is unchanged, within 1e-8 on logits in the tests.
 - **Reader:** Astra through a viewer that only looks up values, rounded to 3 significant digits. 20,000 values, at most 6 turns, no Python, no forward passes. Each turn is a fresh sealed call replaying the transcript, so private reasoning is not kept.
@@ -169,10 +169,10 @@ Astra failed the pass rule, at 0 of 10, and the hinted read worked. So it could 
 - **What the score measures:** attention to the token after the earlier copy, not whether a head writes that token. So a head counts here by where it looks. Value-output alignment is the usual proxy for what a head writes, from general knowledge of the induction-head literature. We did not measure what the picked heads write.
 - **Why both reads missed:** both also read some query and key weights (5,888 and 9,344 of their values, far more thinly than the hinted read's 19,968), but built their shortlists from value-output alignment, which finds 0 of 5 with every row on both disguises. The query-key statistic with every row, in layers 4 to 11, finds 4 of 5 on both. Across all 12 layers it finds 0 of 5, so the layer rule matters as much as the statistic.
 - **Its unhinted picks:** the closest across both reads ranks 18th of 144. On read 2 the best is 57th and scores 0.011, against 0.46 for the 10th-best head.
-- **The hinted picks:** 5.10, 7.9, 5.6 and 6.7 are hits, ranking 3, 5, 9 and 2 of 144. The miss, 8.2, ranks 13. Guessing gives at least 4 of 5 about 3e-4 of the time within layers 4 to 11.
+- **The hinted picks:** 5.10, 7.9, 5.6 and 6.7 are hits, ranking 3, 5, 9 and 2 of 144. The miss, 8.2, ranks 13. These labels are on disguise 1003. In GPT-2's numbering they are 5.1, 7.2, 5.0, 6.9 and the miss 8.1, so the hits include 3 of the top five. The scores drop from 0.83 to 0.51 after fifth, so we also rescore on those five, after the fact: 0 of 10 alone, 3 of 5 hinted, and a mean of 2.6 for the script (`checks/top_five.py`). On these five, knowing the layers gets 17%, and guessing gets 0 of 10 about 58 to 70% of the time. The blind call, shown no weights, named layers 5, 5, 6, 7, 7, exactly where they sit, so Astra may know those layers from papers. Its one blind hit is luck, because the scramble hides which head is which. The other five in the top 10 are probably not induction heads, from memory of the IOI work and not checked here. Guessing gives at least 4 of 5 about 3e-4 of the time within layers 4 to 11.
 - **Its picks follow from its numbers:** the same statistic on the same rows, in code, gives the same five heads (`checks/hinted_arithmetic.py`).
 - **Its typed arithmetic:** across its 96 stated dot products on row 137, correlation with code is 0.998 and the median error is 0.003, which is near the rounding floor of the two decimals it typed. 86 of 96 match code to two decimals, 99% have the right sign, and the largest error is 0.103. Its three-row means for the top five match code to 0.01.
-- **Reported token use:** the 48 dot products of layers 4 to 7 are 3,072 products, in one uninterrupted request reporting 13,352 reasoning tokens, or 4.3 per product. A first version of this section reported 1.7 per product for layers 8 to 11. That was wrong: see the next list.
+- **Reported token use:** the 48 dot products of layers 4 to 7 are 3,072 products, in one uninterrupted request reporting 13,352 reasoning tokens, or 4.3 per product.
 
 Limits:
 - **The hint gives three things:** the statistic, the fact that it predicts copying, and the rule to skip layers 0 to 3. We wrote it after looking at GPT-2 small, and this run cannot separate them.
@@ -183,11 +183,12 @@ Limits:
 
 ## Open
 - What to run next on writing. A size sweep needs a design where size matters.
-- Constraint from Alex: use bigger, more relevant ready-made models, and do not train networks ourselves. Astra sets or reads the weights.
+- Constraint: use bigger, more relevant ready-made models, and do not train networks ourselves. Astra sets or reads the weights.
 - Size axis, proposed for later: the same budget on every model, so the visible share falls as models grow.
-- Disk: 3.1 GB free on 3 Nov 2026, which GPT-2 large would not fit.
 
 ## After a positive result
+Not done: no repeats, Qwen or size sweep has run.
+
 - Repeat each working task 3 times.
 - Qwen3.5-0.8B (the post's model) on the same tasks.
 - Size sweep across the GPT-2 family, then modern models.

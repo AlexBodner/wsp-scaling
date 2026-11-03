@@ -21,6 +21,8 @@ They claim frontier LLMs can natively read and write neural network weights. "As
 
 MinAtar is a set of miniature Atari games on a 10x10 grid (Young & Tian, 2019). It is not part of our study.
 
+Experiment 3 calls its targets copying heads (induction heads) and measures them by running each network on a random string repeated twice, the same kind of truth as our reading test.
+
 ## The objection
 [Adam Karvonen](https://x.com/adam_karvonen/status/2117337487458938949): "It looks like Astra didn't natively read Qwen's weights?" He says it used code for standard interpretability, found a looping direction and removed it from the weights.
 
@@ -73,7 +75,7 @@ Qwen3.8-27B and Qwen3.5-0.8B load as the same class, `Qwen3_5ForCausalLM`.
 **A one-value token code.** A token can be set with one nonzero value, so width 768 gives 768 distinct tokens for 768 typed values. Normalization and the tied input and output table make this harder in practice. Bigger models may therefore be harder because of depth, not the token table. This is a hypothesis.
 
 ## Related work seen so far
-From the two posts Alex linked and a GitHub name search on 3 Nov 2026, so this is not a full review.
+From two X posts and a GitHub name search on 3 Nov 2026, so this is not a full review.
 
 | Source | Writer | Setting | Varies | Shows |
 |---|---|---|---|---|

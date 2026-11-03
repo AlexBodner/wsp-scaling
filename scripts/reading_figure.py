@@ -13,24 +13,27 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.patches import Circle, Rectangle
+from matplotlib.lines import Line2D
+from matplotlib.patches import FancyArrowPatch, Rectangle
 
 from wsp.disguise import HEADS, LAYERS, disguise
 from wsp.network import TokenShuffle, real_network
 from wsp.reading import HINTED_SEED, head_scores, positive_heads, query_key_dot, stated_dot_products
 
 ROOT = Path(__file__).parent.parent
-ARMS = {"On its own": ("read-1", "read-2"), "Given the formula and where to look": ("hinted",)}
-HINTED_ARM = "Given the formula and where to look"
-LAYERS_TOLD_TO_SKIP = 4
-BLUE, GREY, INK, MUTED = "#2a78d6", "#e6e5e0", "#0b0b0b", "#52514e"
+ARMS = {"Alone, 2 runs": ("read-1", "read-2"), "With a formula and layer hint, 1 run": ("hinted",)}
+SHOWN_LAYERS = range(4, 10)
+INDUCTION_HEADS = 5
+BLUE, RED, GREY, INK, MUTED = "#2a78d6", "#c8352b", "#e6e5e0", "#0b0b0b", "#52514e"
 GAP = 0.06
 FIGURE_INCHES, DPI = (10.8, 6.75), 200
-LABEL_POINTS, TITLE_POINTS, RESULT_POINTS, STAT_POINTS = 20, 23, 24, 42
-RING_WIDTH = 2.4
-TITLE = "Can GPT-6 Astra find heads that follow repeats, without running GPT-2?"
-SUBTITLE = "Each square is a head. Rows are layers 0 to 11, heads sorted by score."
-ARITHMETIC_TITLE = "GPT-6 Astra's typed results against code, no tool calls"
+LABEL_POINTS, TITLE_POINTS, RESULT_POINTS, STAT_POINTS = 20, 23, 26, 44
+MARK_WIDTH = 4
+TITLE = "Can GPT-6 Astra find induction heads in scrambled GPT-2 weights?"
+EXAMPLE_INTRO = "An induction head looks back at what came next last time:"
+EXAMPLE_WORDS = ("Harry", "Potter", "went", "home,", "and", "Harry")
+NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
+ARITHMETIC_TITLE = "GPT-6 Astra did this math on GPT-2's weights, with no tool calls"
 # The row and the turns where the hinted read typed a dot product for every head in layers 4 to 11.
 HINTED_TABLE_ROW, HINTED_TABLE_TURNS, HINTED_TABLE_VALUES = 137, (1, 2), 96
 AXIS_LIMITS = (-0.75, 1.35)
@@ -53,42 +56,78 @@ def _picks_in_original_order(result: dict, shuffle: TokenShuffle) -> list[tuple[
     return [(layer, int(original_head[layer][head])) for layer, head in result["answer"]]
 
 
-def _draw_ring(axis, x: float, y: float, radius: float) -> None:
-    axis.add_patch(Circle((x, y), radius, facecolor="white", edgecolor=INK, linewidth=RING_WIDTH, zorder=3))
+def _draw_cross(axis, x: float, y: float, half: float, width: float = MARK_WIDTH) -> None:
+    for sign in (1, -1):
+        axis.plot([x - half, x + half], [y - sign * half, y + sign * half], color=RED, linewidth=width, solid_capstyle="round", zorder=3)
 
 
-def _draw_grid(axis, scores: np.ndarray, positives: set, picks: list[tuple[int, int]]) -> None:
+def _draw_check(axis, x: float, y: float, half: float, down: int = 1) -> None:
+    """Draws a white check mark, with `down` set to -1 on axes whose y grows upward."""
+    xs, ys = [x - half, x - half * 0.2, x + half], [y, y + down * half * 0.75, y - down * half * 0.8]
+    axis.plot(xs, ys, color="white", linewidth=MARK_WIDTH - 1, solid_capstyle="round", solid_joinstyle="round", zorder=3)
+
+
+def _draw_grid(axis, scores: np.ndarray, induction_heads: set, picks: list[tuple[int, int]]) -> None:
     position_in_layer = np.argsort(np.argsort(-scores, axis=1), axis=1)
-    for layer in range(LAYERS):
+    if any(layer not in SHOWN_LAYERS for layer, _ in picks) or any(layer not in SHOWN_LAYERS for layer, _ in induction_heads):
+        raise ValueError("a pick or an induction head falls outside the layers shown")
+    for layer in SHOWN_LAYERS:
+        axis.text(-0.35, layer + 0.5, str(layer), fontsize=LABEL_POINTS, ha="right", va="center", color=MUTED)
         for head in range(HEADS):
-            colour = BLUE if (layer, head) in positives else GREY
+            colour = BLUE if (layer, head) in induction_heads else GREY
             left = position_in_layer[layer, head]
             axis.add_patch(Rectangle((left + GAP / 2, layer + GAP / 2), 1 - GAP, 1 - GAP, facecolor=colour, linewidth=0))
     for (layer, head), count in Counter(picks).items():
-        left = position_in_layer[layer, head]
-        if count == 1:
-            _draw_ring(axis, left + 0.5, layer + 0.5, 0.3)
+        left, middle = position_in_layer[layer, head], layer + 0.5
+        if (layer, head) in induction_heads:
+            _draw_check(axis, left + 0.5, middle, 0.27)
+        elif count == 1:
+            _draw_cross(axis, left + 0.5, middle, 0.22)
         else:
-            _draw_ring(axis, left + 0.27, layer + 0.5, 0.19)
-            _draw_ring(axis, left + 0.73, layer + 0.5, 0.19)
-    axis.set(xlim=(0, HEADS), ylim=(LAYERS, 0), aspect="equal")
+            _draw_cross(axis, left + 0.42, middle + 0.04, 0.2)
+            axis.text(left + 0.86, middle - 0.2, str(count), fontsize=LABEL_POINTS - 6, fontweight="bold", ha="center", va="center", color=RED, zorder=4)
+    axis.set(xlim=(0, HEADS), ylim=(SHOWN_LAYERS[-1] + 1, SHOWN_LAYERS[0]), aspect="equal")
     axis.axis("off")
+
+
+def _draw_example(figure, height: float) -> None:
+    """Draws a repeated word with an arrow from its second use back to the word that followed its first."""
+    renderer = figure.canvas.get_renderer()
+    figure.text(0.5, height + 0.075, EXAMPLE_INTRO, fontsize=LABEL_POINTS, ha="center", va="center", color=MUTED)
+    placed, left = [], 0.0
+    for index, word in enumerate(EXAMPLE_WORDS):
+        colour = BLUE if index == 1 else INK
+        weight = "bold" if index in (0, 1, 5) else "normal"
+        text = figure.text(left, height, word, fontsize=RESULT_POINTS - 2, va="center", color=colour, fontweight=weight)
+        box = text.get_window_extent(renderer).transformed(figure.transFigure.inverted())
+        placed.append((text, box.width))
+        left += box.width + 0.012
+    shift = 0.5 - (left - 0.012) / 2
+    centres = []
+    for text, width in placed:
+        x = text.get_position()[0] + shift
+        text.set_x(x)
+        centres.append(x + width / 2)
+    figure.add_artist(FancyArrowPatch(
+        (centres[5], height - 0.028), (centres[1], height - 0.028), transform=figure.transFigure,
+        connectionstyle="arc3,rad=-0.22", arrowstyle="-|>", mutation_scale=20, linewidth=2, color=BLUE,
+    ))
 
 
 def _draw_legend(figure) -> None:
-    height = FIGURE_INCHES[1] * 0.09
-    axis = figure.add_axes([0, 0, 1, 0.09])
-    axis.set(xlim=(0, FIGURE_INCHES[0]), ylim=(0, height))
+    height = FIGURE_INCHES[1] * 0.075
+    axis = figure.add_axes([0, 0.075, 1, 0.075])
+    axis.set(xlim=(0, FIGURE_INCHES[0]), ylim=(0, height), aspect="equal")
     axis.axis("off")
-    middle, size = height / 2, 0.3
-    for left, colour, text in ((0.55, GREY, "Head"), (1.85, BLUE, "Top 10 by score")):
+    middle, size = height / 2, 0.28
+    for left, colour, text in ((0.75, GREY, "Other head"), (2.75, BLUE, "Induction head")):
         axis.add_patch(Rectangle((left, middle - size / 2), size, size, facecolor=colour, linewidth=0))
         axis.text(left + size + 0.12, middle, text, fontsize=LABEL_POINTS, va="center", color=INK)
-    _draw_ring(axis, 5.7, middle, 0.13)
-    axis.text(5.93, middle, "Astra's pick", fontsize=LABEL_POINTS, va="center", color=INK)
-    _draw_ring(axis, 7.95, middle, 0.1)
-    _draw_ring(axis, 8.2, middle, 0.1)
-    axis.text(8.4, middle, "Picked twice", fontsize=LABEL_POINTS, va="center", color=INK)
+    axis.add_patch(Rectangle((5.55, middle - size / 2), size, size, facecolor=BLUE, linewidth=0))
+    _draw_check(axis, 5.55 + size / 2, middle, 0.09, down=-1)
+    axis.text(5.95, middle, "Astra right", fontsize=LABEL_POINTS, va="center", color=INK)
+    _draw_cross(axis, 7.9, middle, 0.09)
+    axis.text(8.12, middle, "Astra wrong", fontsize=LABEL_POINTS, va="center", color=INK)
 
 
 def _heads_figure(shuffle: TokenShuffle) -> None:
@@ -96,10 +135,13 @@ def _heads_figure(shuffle: TokenShuffle) -> None:
     real.set_attn_implementation("eager")
     scores = head_scores(real)
     positives = positive_heads(scores)
+    # The scores drop from 0.83 to 0.51 after fifth, and only those five are induction heads.
+    order = np.argsort(-scores.ravel())[:INDUCTION_HEADS]
+    induction_heads = {(int(i) // HEADS, int(i) % HEADS) for i in order}
 
     figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
-    figure.text(0.5, 0.95, TITLE, fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
-    figure.text(0.5, 0.895, SUBTITLE, fontsize=LABEL_POINTS, ha="center", va="center", color=MUTED)
+    figure.text(0.5, 0.955, TITLE, fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
+    _draw_example(figure, 0.8)
     panels = {}
     for index, (title, arms) in enumerate(ARMS.items()):
         results = [_run_result(arm) for arm in arms]
@@ -107,21 +149,28 @@ def _heads_figure(shuffle: TokenShuffle) -> None:
         hits = sum(pick in positives for pick in picks)
         if hits != sum(result["hits"] for result in results):
             raise ValueError(f"{title}: {hits} hits on the shared grid, stored {[result['hits'] for result in results]}")
-        panels[title] = {"runs": list(arms), "picks": picks, "hits": hits, "distinct_picks": len(set(picks))}
-        axis = figure.add_axes([0.05 + index * 0.49, 0.1, 0.42, 0.62])
-        _draw_grid(axis, scores, positives, picks)
+        induction_hits = sum(pick in induction_heads for pick in picks)
+        panels[title] = {
+            "runs": list(arms), "picks": picks, "hits_top_10": hits, "hits_induction": induction_hits, "distinct_picks": len(set(picks)),
+        }
+        axis = figure.add_axes([0.065 + index * 0.485, 0.195, 0.42, 0.42])
+        _draw_grid(axis, scores, induction_heads, picks)
         centre = HEADS / 2
-        axis.text(centre, -1.75, title, fontsize=LABEL_POINTS, ha="center", color=INK)
-        axis.text(centre, -0.45, f"{hits} of {len(picks)} picks right", fontsize=RESULT_POINTS, fontweight="bold", ha="center", color=INK)
-        if title == HINTED_ARM:
-            axis.text(centre, LAYERS_TOLD_TO_SKIP / 2, "told to skip layers 0 to 3", fontsize=LABEL_POINTS, ha="center", va="center", color=MUTED)
+        top = SHOWN_LAYERS[0]
+        axis.text(centre, top - 1.5, title, fontsize=LABEL_POINTS, ha="center", color=INK)
+        axis.text(centre, top - 0.35, f"{induction_hits} of {len(picks)} picks right", fontsize=RESULT_POINTS, fontweight="bold", ha="center", color=INK)
+        axis.text(-0.35, top - 0.35, "Layer", fontsize=LABEL_POINTS - 3, ha="center", color=MUTED)
+        bottom = SHOWN_LAYERS[-1] + 1.55
+        axis.annotate("", xy=(0, bottom), xytext=(0.95, bottom), arrowprops={"arrowstyle": "-|>", "color": MUTED, "linewidth": 1.5, "mutation_scale": 14, "shrinkA": 0, "shrinkB": 0}, annotation_clip=False)
+        axis.text(1.1, bottom, "higher score", fontsize=LABEL_POINTS - 3, va="center", color=MUTED)
     _draw_legend(figure)
+    figure.text(0.5, 0.045, NOTE, fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
 
-    output = ROOT / "figures" / "reading_heads_v4.png"
+    output = ROOT / "figures" / "reading_heads_v8.png"
     figure.savefig(output, dpi=DPI)
     data = {"positives": sorted(positives), "scores": scores.tolist(), "panels": panels}
     output.with_suffix(".json").write_text(json.dumps(data, indent=1))
-    print(output, {title: {key: panel[key] for key in ("hits", "distinct_picks")} for title, panel in panels.items()})
+    print(output, {title: {key: panel[key] for key in ("hits_top_10", "hits_induction")} for title, panel in panels.items()})
 
 
 def _arithmetic_figure(shuffle: TokenShuffle) -> None:
@@ -135,27 +184,39 @@ def _arithmetic_figure(shuffle: TokenShuffle) -> None:
     typed = np.array([stated[key] for key in keys])
     in_code = np.array([query_key_dot(disguised, *key, HINTED_TABLE_ROW) for key in keys])
     correlation = np.corrcoef(typed, in_code)[0, 1]
-    matches = int((np.round(in_code, 2) == np.round(typed, 2)).sum())
+    matched = np.round(in_code, 2) == np.round(typed, 2)
+    matches = int(matched.sum())
     largest_error = np.abs(typed - in_code).max()
 
     figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
     axis = figure.add_axes([0.1, 0.14, 0.44, 0.72])
     axis.plot(AXIS_LIMITS, AXIS_LIMITS, color=GREY, linewidth=2.5, zorder=1)
-    axis.scatter(in_code, typed, s=90, color=BLUE, edgecolor="white", linewidth=1.2, zorder=2)
+    axis.text(1.03, 0.82, "exact match", rotation=45, rotation_mode="anchor", fontsize=LABEL_POINTS - 3, ha="center", color=MUTED)
+    axis.scatter(in_code[matched], typed[matched], s=70, color=BLUE, edgecolor="white", linewidth=0.8, zorder=2)
+    axis.scatter(in_code[~matched], typed[~matched], s=80, color=RED, edgecolor="white", linewidth=0.8, zorder=3)
     axis.set(xlim=AXIS_LIMITS, ylim=AXIS_LIMITS, xticks=AXIS_TICKS, yticks=AXIS_TICKS, aspect="equal")
-    axis.set_xlabel("Computed in code", fontsize=LABEL_POINTS, color=INK)
-    axis.set_ylabel("Typed by Astra", fontsize=LABEL_POINTS, color=INK)
+    axis.set_xlabel("Answer from code", fontsize=LABEL_POINTS, color=INK)
+    axis.set_ylabel("Astra's answer", fontsize=LABEL_POINTS, color=INK)
     axis.tick_params(labelsize=LABEL_POINTS, colors=INK, length=0)
     axis.spines[["top", "right"]].set_visible(False)
     axis.spines[["left", "bottom"]].set_color(GREY)
     figure.text(0.5, 0.94, ARITHMETIC_TITLE, fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
-    stats = ((0.68, f"{matches} of {len(keys)}", "match code to the two\ndecimals it typed"), (0.39, f"{correlation:.3f}", "correlation with code"))
-    for height, value, text in stats:
-        figure.text(0.62, height, value, fontsize=STAT_POINTS, fontweight="bold", color=INK)
+    stats = (
+        (0.66, BLUE, f"{matches} of {len(keys)}", STAT_POINTS, "match code to the two\ndecimals it gave"),
+        (0.38, RED, f"{len(keys) - matches} miss", STAT_POINTS - 12, f"by at most {largest_error:.3f}"),
+    )
+    for height, colour, value, size, text in stats:
+        figure.add_artist(Line2D([0.595], [height + 0.03], transform=figure.transFigure, marker="o", markersize=11, color=colour, linewidth=0))
+        figure.text(0.62, height, value, fontsize=size, fontweight="bold", color=INK)
         figure.text(0.62, height - 0.015, text, fontsize=LABEL_POINTS, color=INK, va="top", linespacing=1.25)
-    figure.text(0.62, 0.2, f"Each dot is one head, a sum\nof 64 products. Largest\nerror {largest_error:.3f}.", fontsize=LABEL_POINTS, color=MUTED, linespacing=1.25, va="center")
+    figure.text(0.62, 0.2, "Each dot is one head:\na sum of 64 products.", fontsize=LABEL_POINTS, color=MUTED, va="center", linespacing=1.25)
+    biggest = int(np.argmax(in_code))
+    axis.annotate(
+        f"Astra {typed[biggest]:.2f}\ncode {in_code[biggest]:.2f}", (in_code[biggest], typed[biggest]), xytext=(0.42, 1.2),
+        fontsize=LABEL_POINTS - 2, color=INK, va="center", ha="center", arrowprops={"arrowstyle": "-", "color": MUTED, "linewidth": 1.2, "shrinkB": 6},
+    )
 
-    output = ROOT / "figures" / "arithmetic_v3.png"
+    output = ROOT / "figures" / "arithmetic_v6.png"
     figure.savefig(output, dpi=DPI)
     pairs = [{"layer": key[0], "head": key[1], "typed": float(value), "in_code": float(code)} for key, value, code in zip(keys, typed, in_code)]
     summary = {"row": HINTED_TABLE_ROW, "correlation": correlation, "matches_two_decimals": matches, "largest_error": largest_error}

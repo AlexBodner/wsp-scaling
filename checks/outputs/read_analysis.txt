@@ -1,0 +1,17 @@
+true top 10 in this disguise [(5, 2), (5, 5), (5, 11), (6, 6), (7, 0), (7, 2), (9, 4), (9, 11), (10, 0), (10, 6)]
+read named 5.1: score 0.0000, rank 122 of 144, original head 2
+read named 5.7: score 0.0109, rank 57 of 144, original head 10
+read named 6.7: score 0.0000, rank 131 of 144, original head 8
+read named 7.6: score 0.2028, rank 18 of 144, original head 1
+read named 8.2: score 0.0000, rank 120 of 144, original head 7
+blind ranks [82, 122, 90, 4, 24] hits on read-1 positives 1
+10th score 0.4633238044404408 median 0.005327866983139789
+value-output trace, all rows, top 5: [(11, 9), (11, 7), (10, 1), (11, 2), (11, 11)] hits 0
+its first sample, recomputed in code, top 5: [(6, 3), (9, 0), (8, 6), (6, 4), (6, 0)] hits 0
+recomputed first sample for the heads it called strongest: {'5.7': 0.243, '6.7': 0.125, '7.6': 0.244, '8.2': 0.193, '9.9': 0.258, '6.3': 0.799, '9.0': 0.429}
+rank of those in its first sample: {'5.7': 11, '6.7': 28, '7.6': 10, '8.2': 18, '9.9': 7, '6.3': 1, '9.0': 2}
+query-key statistic, top 5: [(5, 11), (7, 2), (4, 8), (5, 5), (6, 6)] hits 4
+reading-blind__live__20261103T022900Z input 6149 cached 3968 output 563 list price $0.05
+reading-hinted__live__20261103T144245Z input 399222 cached 86528 output 71810 list price $6.80
+reading-read-1__live__20261103T023015Z input 360298 cached 15872 output 44708 list price $5.70
+reading-read-2__live__20261103T144636Z input 372631 cached 97536 output 53038 list price $5.50

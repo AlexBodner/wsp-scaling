@@ -12,5 +12,13 @@ runs/reading-solver/seed*/
 post/
 figures/*_preview.*
 figures/*_v2.*
+figures/reading_heads_v3.*
+figures/reading_heads_v4.*
+figures/reading_heads_v5.*
+figures/reading_heads_v6.*
+figures/reading_heads_v7.*
+figures/arithmetic_v3.*
+figures/arithmetic_v4.*
+figures/arithmetic_v5.*
 runs/*/calls/catalog/
 runs/control__dry-published*/reply.md

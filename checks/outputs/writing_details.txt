@@ -1,0 +1,12 @@
+capitals, 'In {country}, the capital city is': 0.989
+capitals, 'What is the capital of {country}? The answer is': 0.084
+reverse, length 1: 1.000
+reverse, length 2: 1.000
+reverse, length 3: 1.000
+reverse, length 4: 1.000
+reverse, length 5: 1.000
+reverse, length 6: 1.000
+reverse, length 7: 0.000
+reverse, length 8: 0.000
+reverse, length 9: 0.000
+reverse, length 10: 0.000

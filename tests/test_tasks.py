@@ -1,5 +1,7 @@
+from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
 import torch
 
 from wsp.network import TokenShuffle
@@ -45,6 +47,8 @@ def test_test_sets_are_fixed():
 
 
 def test_predict_uses_half_task_and_half_unrelated_texts():
+    if not (Path(__file__).parent.parent / "data" / "tinystories" / "valid.txt").exists():
+        pytest.skip("TinyStories not downloaded")
     for experiment in ("capitals", "reverse", "language"):
         assert len(predict_texts(experiment)) == 50
 

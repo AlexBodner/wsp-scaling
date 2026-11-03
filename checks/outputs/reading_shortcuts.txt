@@ -1,0 +1,13 @@
+chance 0.06944444444444445 best layer density 0.25 density [0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.08, 0.17, 0.0, 0.17, 0.17, 0.0]
+true top 10 [(5, 0), (5, 1), (5, 5), (6, 9), (7, 2), (7, 10), (9, 6), (9, 9), (10, 1), (10, 7)]
+Q[r] . K[r], all rows      0.800 sd 0.000
+norm value bias            0.280 sd 0.204
+norm query bias            0.250 sd 0.140
+norm key bias              0.210 sd 0.118
+norm Q * norm K            0.190 sd 0.161
+query bias . key bias      0.170 sd 0.131
+norm K                     0.120 sd 0.117
+norm V * norm O            0.120 sd 0.117
+norm Q                     0.110 sd 0.134
+norm V                     0.090 sd 0.099
+norm O                     0.070 sd 0.095
