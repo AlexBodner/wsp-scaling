@@ -115,8 +115,40 @@ Known issues from the critic reviews:
 - A reply cut off before its closing fence would score as an all-zero network.
 - One run per task. The intervals cover test-set sampling only, not variation between replies.
 
+## Reading test, GPT-2 small only (built, not run)
+Question: name the 5 heads, of 144, with the highest copying score, by reading the weights.
+
+- **Model:** GPT-2 small, disguised: heads reordered within each layer and re-expressed in random internal coordinates, and the key bias replaced by noise. Behaviour is unchanged, within 1e-8 on logits in the tests.
+- **Reader:** Astra through a viewer that only looks up values, rounded to 3 significant digits. 20,000 values, at most 6 turns, no Python, no forward passes. Each turn is a fresh sealed call replaying the transcript, so private reasoning is not kept.
+- **Truth:** measured by running real GPT-2 on 50 random tokens repeated twice, 96 sequences. A head counts if it is in the top 10.
+- **Pass rule:** at least 6 of 10 hits over two reads on different disguises. At the memory ceiling of 25%, that happens by luck about 2% of the time.
+- **Arms:** read twice, blind once. If it fails, one hinted read naming the statistic, then stop. A pass does not start a size sweep without a new decision.
+- **Disclosed choices:** top 10 and skipping the first third of layers in the solver were chosen after looking at GPT-2 small, and they are frozen now.
+
+Free checks so far:
+
+| Reader, naming 5 heads | Precision |
+|---|---|
+| Chance | 7% |
+| Best possible from memory of which layers | 25% |
+| Query bias . key bias, the shortcut, before removing it | 80% |
+| The same statistic after replacing the key bias with noise | 17% |
+| Best other simple norm | 28% |
+| Scripted reader through the viewer, 20,000 values, 30 disguises | 67% ± 15% |
+| Same statistic on all rows, with no budget | 80% |
+
+20,000 values is about 93k input tokens.
+
+What a pass or fail would mean:
+- A pass shows Astra can locate one specific kind of head by hand from raw weights, not that it understands an LLM in general.
+- A fail with a working hinted read shows it could do the arithmetic but did not find what to compute. A fail on both shows no hand reading at this budget, where a short script succeeds.
+
 ## Open
-- What to run next. A size sweep needs a design where size matters.
+- Review of the reading test before any Astra call.
+- What to run next on writing. A size sweep needs a design where size matters.
+- Constraint from Alex: use bigger, more relevant ready-made models, and do not train networks ourselves. Astra sets or reads the weights.
+- Size axis, proposed for later: the same budget on every model, so the visible share falls as models grow.
+- Disk: 3.1 GB free on 3 Nov 2026, which GPT-2 large would not fit.
 
 ## After a positive result
 - Repeat each working task 3 times.

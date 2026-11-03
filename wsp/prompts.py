@@ -16,9 +16,9 @@ from wsp.tasks import (
 _OPENING = """YOUR TASK: write, from scratch, the weights of a language model so that it does the task below. There is no training: no data, no loss, no gradients, no fine-tuning; you choose every number yourself. You have no tools: no code execution, no calculator, nothing to run. This is a single response and you will get no feedback. First describe your design briefly, then write the edits block.
 """
 
-NETWORK_SPEC = """THE NETWORK: a transformer with 12 layers of width 768, 12 attention heads of size 64, and 124,439,808 weights. EVERY WEIGHT STARTS AT 0, normalization scales included; you set the weights you need.
+NETWORK_OPENING = """THE NETWORK: a transformer with 12 layers of width 768, 12 attention heads of size 64, and 124,439,808 weights."""
 
-Tensors (rows x columns):
+NETWORK_STRUCTURE = """Tensors (rows x columns):
   E: 50257 x 768 (one row per token, used for both input and output)
   P: 1024 x 768 (one row per position)
   F.scale, F.shift: 768
@@ -47,6 +47,11 @@ LN(u; n) = (u - mean(u)) / sqrt(var(u) + 0.00001) * n.scale + n.shift, element b
 gelu(u) = u * Phi(u), element by element, where Phi is the standard normal cumulative distribution.
 The model's top token is the one with the largest logit; a tie goes to the lowest token ID.
 """
+
+NETWORK_SPEC = (
+    f"{NETWORK_OPENING} EVERY WEIGHT STARTS AT 0, normalization scales included; you set the weights you need.\n\n"
+    f"{NETWORK_STRUCTURE}"
+)
 
 _SYNTAX = """HOW TO WRITE THE WEIGHTS (numbers only; nothing is run). Write a code block whose opening line is three backticks followed by the word edits, one statement per line ('#' starts a comment; a long list may continue over the next lines).
 
