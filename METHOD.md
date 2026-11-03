@@ -43,7 +43,7 @@ Shared: raw text with no chat template, always the top token, effort `xhigh`. On
 - Reverse. `rev: a b c ->`. 1,000 random strings of 3 to 6 letters, fixed seed. Score: whole string exact, generating as many tokens as the input has letters. Must beat echoing the input or a constant answer.
 - Next-token prediction. Held-out TinyStories validation text. Score: bits per token. Must beat token frequency counts from the training split. Beating the uniform floor of 15.6 bits but not the counts is reported as partial.
 - Predict. 50 fixed prompts, half from the task and half unrelated. Score: matching the network's actual top token. Must beat always guessing the network's most common output. Hand-built fallback networks are frozen before any results.
-- Positive control. Passes if it clearly beats their best trained PPO score of 25.3.
+- Positive control. Scored over 100 episodes. Passes if it clearly beats their best trained PPO score of 25.3. More episodes only if we need a close comparison with their 517.4, which used 1,000.
 
 ## Special handling
 | What | Choice | Why |
@@ -81,8 +81,11 @@ Trained GPT-2's top token after `The capital of {country} is` is ` the` for 169 
 
 The hand-built network shows typed weights can do the capitals task in this architecture. It used code to generate about 49k tokens of statements and our own design, so it says nothing about Astra.
 
+## Results
+Positive control, one sealed Astra call at `xhigh`, their Breakout prompt word for word: **535.1 ± 24.4 over 100 episodes, which passes** against 25.3. Their run scored 517.4 ± 7.4 over 1,000. 139 of 139 statements applied, 2,921 nonzero weights of 20,486, 7,845 input and 24,556 output tokens, 14 minutes, seal intact. This says the setup works. It is not evidence about LLM weights.
+
 ## Open
-- Sealed live probe, then the seven runs.
+- The six GPT-2 runs: three writes, then three Predict.
 
 ## After a positive result
 - Repeat each working task 3 times.

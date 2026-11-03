@@ -7,3 +7,4 @@ __pycache__/
 .deps/
 *.safetensors
 *.npz
+.alexs-rig/

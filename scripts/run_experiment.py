@@ -22,7 +22,7 @@ from wsp.tasks import frequency_bits, language_stories, score_capitals, score_la
 
 ROOT = Path(__file__).parent.parent
 EXPERIMENTS = ("control", "capitals", "reverse", "language")
-CONTROL_EPISODES = 1000
+CONTROL_EPISODES = 100
 CONTROL_SEED = 0
 
 
