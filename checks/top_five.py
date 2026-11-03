@@ -14,6 +14,7 @@ from wsp.network import TokenShuffle, real_network
 from wsp.reading import head_scores
 
 INDUCTION_HEADS = 5
+HEADS_TO_NAME = 5
 ASTRA_RUNS = ("blind", "read-1", "read-2", "hinted")
 
 
@@ -37,6 +38,7 @@ by_layer = np.bincount([layer for layer, _ in top_five], minlength=scores.shape[
 print("best share from knowing only the layers:", by_layer.max() / HEADS)
 for heads in (HEADS * 12, HEADS * 8):
     print(f"chance of 0 of 10 on these 5, {heads} heads: {(comb(heads - INDUCTION_HEADS, 5) / comb(heads, 5)) ** 2:.2f}")
+print(f"expected picks right of 5 when guessing over all heads: {HEADS_TO_NAME * INDUCTION_HEADS / (HEADS * 12):.2f}")
 hits = []
 for path in sorted(glob("runs/reading-solver/seed*/result.json")):
     hits.append(sum(pick in top_five for pick in original_picks(json.load(open(path)), shuffle)))

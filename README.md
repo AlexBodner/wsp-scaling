@@ -3,16 +3,16 @@
 By [Alex Bodner](https://twitter.com/AlexBodner_). A small follow-up to [Sparks of Weight-Space Programming](https://rikiyat.github.io/blog/weight-space-programming/), which reports that LLMs natively read and write network weights. They found every induction head in a 7M-weight model from its weights, using Python. We ask `gpt-6-astra` the same kind of question about a real LLM, GPT-2 small (124M weights), with no tools and without running the model. One model and few runs, and no size sweep has run.
 
 ## Reading
-Alone, it did no better than guessing. Given a formula and where to look, it got 3 of 5, like a short script.
+Given a formula and layer hint we wrote after seeing GPT-2, it answered 96 sums of 64 products on the weights with no tool calls in our logs, and with more rows found 3 of 5 induction heads, like a short script. Alone, it did no better than guessing.
 
-![Where Astra's picks landed among GPT-2's attention heads](figures/reading_heads_v8.png)
+![Three steps: Astra with no weights, reading alone, and with a formula](figures/reading_story_v1.png)
 
-GPT-2 small has 144 attention heads, the parts that choose which earlier tokens to focus on. Induction heads follow repeats: on seeing "Harry" again, they look at the token after the last "Harry", such as "Potter". [Anthropic described them in 2021](https://transformer-circuits.pub/2021/framework/) by inspecting and running models. Astra names 5 heads from a scrambled copy's weights, and we get the truth by running GPT-2 on repeated random tokens. The top five score 0.83 to 0.93, the next five 0.46 to 0.51, and those five are the [induction heads usually cited](https://dhruvpatel1706.github.io/writing/induction-heads.html) for GPT-2 small.
+GPT-2 small has 144 attention heads, the parts that choose which earlier tokens to focus on. Induction heads follow repeats: on seeing "Harry" again, they look at the token after the last "Harry", such as "Potter". [Anthropic described them in 2021](https://transformer-circuits.pub/2021/framework/) by inspecting and running models. Astra names 5 heads from a scrambled copy's weights, and we get the truth by running GPT-2 on repeated random tokens. The top five score 0.83 to 0.92, the next five 0.46 to 0.51, and those five are the [induction heads usually cited](https://dhruvpatel1706.github.io/writing/induction-heads.html) for GPT-2 small.
 
 - **Alone, two reads:** 0 of 10. Our [frozen test](METHOD.md) counted the top 10, needed 6 of 10 and failed. Guessing also gets 0 of 10 about 32 to 48% of the time on that test, and 58 to 70% on the five induction heads, so the zero is weak evidence by itself. To check: [read 1](runs/reading-read-1__live__20261103T023015Z/audit.txt) and [read 2](runs/reading-read-2__live__20261103T144636Z/audit.txt).
-- **No weights at all, one call:** it called its answer guesses, yet named layers 5, 5, 6, 7, 7, exactly where these five heads sit, perhaps from papers. Scrambling keeps layers and hides which head is which, and knowing the layers gets under 1 of 5.
-- **With a hint, one read:** 3 of 5 induction heads, scored after the fact, against a mean of 2.6 for a script with the same formula, layer rule and budget. On the frozen top 10 test, that is 4 of 5 against 3.4. The hint gives a formula, the sum of `Q[r] . K[r]` over rows, which measures how well a head's query weights match its key weights, says this tends to be larger for these heads, and says to skip layers 0 to 3. We chose all of it after looking at GPT-2. On all rows without the layer rule, the formula finds 0 of 5, and on 20,000 values it reaches about 9%, so we cannot tell which part mattered.
-- **Its arithmetic:** it wrote out 96 sums of 64 products in its replies, and 86 match code to two decimals. No tool calls appear in our logs, but its reasoning is encrypted, so we cannot say how it got them.
+- **No weights at all, one call:** it called its answer guesses, yet named layers 5, 5, 6, 7, 7, exactly where these five heads sit. That is likely recall: the prompt gives GPT-2's exact shape and weight count. Scrambling keeps layers and hides which head is which, and knowing the layers gets under 1 of 5.
+- **With a hint, one read:** 3 of 5 induction heads, scored after the fact, against a mean of 2.6 for a script with the same formula, layer rule and budget. On the frozen top 10 test, that is 4 of 5 against 3.4. The hint gives a formula, the sum of `Q[r] . K[r]` over rows, which measures how well a head's query weights match its key weights, says this tends to be larger for these heads, and says to skip layers 0 to 3. We chose all of it after looking at GPT-2. On all rows without the layer rule, the formula finds 0 of 5, and on 20,000 values it reaches about 9%, so we cannot tell which part mattered. The read and hinted prompts also use `L5`, a layer holding these heads, in a syntax example, which we noticed only after the runs.
+- **Its arithmetic:** its replies give 96 sums of 64 products, and 86 match code to two decimals. Those sums alone point to 2 of the 5 heads, and the later rows it read bring that to 3. No tool calls appear in our logs, but its reasoning is encrypted, so we cannot say how it got them.
 
 To check the hinted read yourself:
 - [The prompt](prompts/reading_hinted.txt), with the hint on line 42.
@@ -33,6 +33,13 @@ Deleting layers does not change the capitals score. Our language run was stopped
 - `checks/`: the scripts behind the reading, writing, architecture and tokenizer numbers, with saved reading and some writing results in `checks/outputs/`.
 - `wsp/`, `scripts/`, `tests/`: the pipeline. `prompts/` holds the frozen prompts.
 - `runs/`: every Astra run. The script's 30 seeds keep only `summary.json`.
+
+## Check it without downloading anything
+This recounts the main numbers from saved files, with no GPT-2 and no model calls:
+
+```bash
+python3 checks/from_saved_logs.py
+```
 
 ## Running it
 Needs Python 3.10 or newer. GPT-2 downloads itself on first use, about 550 MB. Only the language task, Predict and the control need `data/`: [TinyStories](https://huggingface.co/datasets/roneneldan/TinyStories) `TinyStoriesV2-GPT4-valid.txt` as `data/tinystories/valid.txt` and the first 100 MB of `TinyStoriesV2-GPT4-train.txt` as `data/tinystories/train_first100mb.txt`, and the post's [Breakout files](https://github.com/RikiyaT/lm_understand-logs) in `data/control/`, with MinAtar 1.0.15 in `.deps/`.
