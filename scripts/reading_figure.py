@@ -28,8 +28,8 @@ GAP = 0.06
 FIGURE_INCHES, DPI = (10.8, 6.75), 200
 LABEL_POINTS, TITLE_POINTS, RESULT_POINTS, STAT_POINTS = 20, 23, 24, 42
 RING_WIDTH = 2.4
-TITLE = "Can GPT-6 Astra find the heads in GPT-2 that look back at repeated text?"
-SUBTITLE = "No tool calls in our logs. Rows are layers, heads sorted by that score."
+TITLE = "Can GPT-6 Astra find heads that follow repeats, without running GPT-2?"
+SUBTITLE = "Each square is a head. Rows are layers 0 to 11, heads sorted by score."
 ARITHMETIC_TITLE = "GPT-6 Astra's typed results against code, no tool calls"
 # The row and the turns where the hinted read typed a dot product for every head in layers 4 to 11.
 HINTED_TABLE_ROW, HINTED_TABLE_TURNS, HINTED_TABLE_VALUES = 137, (1, 2), 96
@@ -81,7 +81,7 @@ def _draw_legend(figure) -> None:
     axis.set(xlim=(0, FIGURE_INCHES[0]), ylim=(0, height))
     axis.axis("off")
     middle, size = height / 2, 0.3
-    for left, colour, text in ((0.55, GREY, "Head"), (1.85, BLUE, "Head that looks back")):
+    for left, colour, text in ((0.55, GREY, "Head"), (1.85, BLUE, "Top 10 by score")):
         axis.add_patch(Rectangle((left, middle - size / 2), size, size, facecolor=colour, linewidth=0))
         axis.text(left + size + 0.12, middle, text, fontsize=LABEL_POINTS, va="center", color=INK)
     _draw_ring(axis, 5.7, middle, 0.13)
@@ -114,10 +114,10 @@ def _heads_figure(shuffle: TokenShuffle) -> None:
         axis.text(centre, -1.75, title, fontsize=LABEL_POINTS, ha="center", color=INK)
         axis.text(centre, -0.45, f"{hits} of {len(picks)} picks right", fontsize=RESULT_POINTS, fontweight="bold", ha="center", color=INK)
         if title == HINTED_ARM:
-            axis.text(centre, LAYERS_TOLD_TO_SKIP / 2, "told to skip these layers", fontsize=LABEL_POINTS, ha="center", va="center", color=MUTED)
+            axis.text(centre, LAYERS_TOLD_TO_SKIP / 2, "told to skip layers 0 to 3", fontsize=LABEL_POINTS, ha="center", va="center", color=MUTED)
     _draw_legend(figure)
 
-    output = ROOT / "figures" / "reading_heads_v3.png"
+    output = ROOT / "figures" / "reading_heads_v4.png"
     figure.savefig(output, dpi=DPI)
     data = {"positives": sorted(positives), "scores": scores.tolist(), "panels": panels}
     output.with_suffix(".json").write_text(json.dumps(data, indent=1))
