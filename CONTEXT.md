@@ -21,6 +21,8 @@ They claim frontier LLMs can natively read and write neural network weights. "As
 
 MinAtar is a set of miniature Atari games on a 10x10 grid (Young & Tian, 2019). It is not part of our study.
 
+Experiment 3 calls its targets copying heads (induction heads) and measures them by running each network on a random string repeated twice, the same kind of truth as our reading test.
+
 ## The objection
 [Adam Karvonen](https://x.com/adam_karvonen/status/2117337487458938949): "It looks like Astra didn't natively read Qwen's weights?" He says it used code for standard interpretability, found a looping direction and removed it from the weights.
 
