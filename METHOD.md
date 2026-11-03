@@ -135,9 +135,18 @@ Free checks so far:
 | The same statistic after replacing the key bias with noise | 17% |
 | Best other simple norm | 28% |
 | Scripted reader through the viewer, 20,000 values, 30 disguises | 67% ± 15% |
-| Same statistic on all rows, with no budget | 80% |
+| Same statistic on all rows, with no budget, layers 4 to 11 | 80% |
+| Same statistic on all rows, all 12 layers | 0% |
 
 20,000 values is about 93k input tokens.
+
+The scripted reader's 67% depends on skipping layers 0 to 3, a rule chosen after looking at GPT-2 small. Without it the statistic scores 0%, because those layers dominate it. So 67% is what the arithmetic achieves given that prior, and the weights alone do not supply it. Within layers 4 to 11, chance is about 10%, since all 10 true heads sit there. The read arm does not get this rule. The hinted arm does.
+
+Harness rules:
+- Prompts over 600 KB make the next turn the last, because macOS caps arguments at about 1 MB. Over 900 KB the run stops before calling.
+- The reader is told when a turn is its last. No answer block by then scores zero.
+- A call that fails writes `ABORTED.md`, and no `result.json`, so it cannot be mistaken for a scored run.
+- Rerun policy, set before any call: a run that crashed before an answer may be rerun once on the same seed, and this is reported. A scored run is never rerun, however bad.
 
 What a pass or fail would mean:
 - A pass shows Astra can locate one specific kind of head by hand from raw weights, not that it understands an LLM in general.

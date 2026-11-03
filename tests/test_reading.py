@@ -122,3 +122,53 @@ def test_scores_measured_on_the_real_model_match_the_disguised_model(shuffle, di
     real.set_attn_implementation("eager")
     measured = head_scores(model_from(disguised))
     np.testing.assert_allclose(disguised_scores(head_scores(real), disguised), measured, atol=1e-8)
+
+
+def test_the_reader_is_told_about_its_last_turn(disguised, tmp_path):
+    prompts = []
+
+    def reader(prompt, item):
+        prompts.append(prompt)
+        return "```read\nL0.qkv.b[0:1]\n```"
+
+    run_reading("START", disguised, set(), 5, 100, reader, tmp_path)
+    assert len(prompts) == 6
+    assert "LAST TURN" in prompts[5]
+    assert "LAST TURN" not in prompts[4]
+
+
+def test_a_growing_prompt_ends_early_with_a_warning_instead_of_crashing(disguised, tmp_path):
+    prompts = []
+
+    def reader(prompt, item):
+        prompts.append(prompt)
+        return "x" * 400_000 + "\n```read\nL0.qkv.b[0:1]\n```"
+
+    result = run_reading("START", disguised, set(), 5, 100, reader, tmp_path)
+    assert result.answer is None
+    assert len(prompts) == 3
+    assert "LAST TURN" not in prompts[1]
+    assert "LAST TURN" in prompts[2]
+    assert (tmp_path / "result.json").exists()
+
+
+def test_a_failed_call_leaves_a_marker_and_no_score(disguised, tmp_path):
+    def reader(prompt, item):
+        raise RuntimeError("seal broken")
+
+    with pytest.raises(RuntimeError):
+        run_reading("START", disguised, set(), 5, 100, reader, tmp_path)
+    assert "seal broken" in (tmp_path / "ABORTED.md").read_text()
+    assert not (tmp_path / "result.json").exists()
+
+
+def test_saved_prompts_match_the_builders_and_the_frozen_hashes():
+    import hashlib
+    import json
+    from pathlib import Path
+
+    folder = Path(__file__).parent.parent / "prompts"
+    manifest = json.loads((folder / "READING_MANIFEST.json").read_text())
+    for name, build in {"read": read_prompt, "hinted": hinted_prompt, "blind": blind_prompt}.items():
+        assert (folder / f"reading_{name}.txt").read_text() == build()
+        assert hashlib.sha256(build().encode()).hexdigest() == manifest[name]

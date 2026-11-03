@@ -39,7 +39,7 @@ The model's top token is the one with the largest logit; a tie goes to the lowes
 
 You have no code execution, no calculator and no way to run the model. All arithmetic is your own.
 
-A HINT: for one head, write Q for its 64-column part of qkv.W at the query offset and K for the part at the key offset. Summing the products of Q and K over the same input rows, Q[r] . K[r], for a sample of rows r, tends to be larger for heads that attend to the token after an earlier copy of the current token.
+A HINT: for one head, write Q for its 64-column part of qkv.W at the query offset and K for the part at the key offset. Summing the products of Q and K over the same input rows, Q[r] . K[r], for a sample of rows r, tends to be larger for heads that attend to the token after an earlier copy of the current token. This holds from layer 4 onward. In layers 0 to 3 the sum is large for other reasons, so compare only heads in layers 4 to 11.
 
 HOW TO READ THE WEIGHTS: you may read any part of any tensor, with a budget of 20,000 values for the whole task and at most 6 turns. To read, end your reply with a code block whose opening line is three backticks followed by the word read, with one request per line:
 

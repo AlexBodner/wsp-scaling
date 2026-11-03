@@ -23,6 +23,10 @@ PASS_OUT_OF = 10
 READ_SEEDS = (1001, 1002)
 BLIND_SEED = 1001
 HINTED_SEED = 1003
+# Codex takes the prompt as one argument, and macOS caps arguments and environment at 1,048,576 bytes.
+PROMPT_BYTES_FINAL_TURN = 600_000
+PROMPT_BYTES_REFUSED = 900_000
+_LAST_TURN_NOTICE = "THIS IS YOUR LAST TURN: end this reply with an answer block, or you score zero."
 _TRUTH_SEEDS = (0, 1, 2)
 _TRUTH_BATCH = 32
 _REPEAT_LENGTH = 50
@@ -59,7 +63,7 @@ _ANSWER = f"""HOW TO ANSWER: when you are done, end your reply with a code block
 Name {HEADS_TO_NAME} heads. Your first reply with an answer block ends the task.
 """
 
-_HINT = """A HINT: for one head, write Q for its 64-column part of qkv.W at the query offset and K for the part at the key offset. Summing the products of Q and K over the same input rows, Q[r] . K[r], for a sample of rows r, tends to be larger for heads that attend to the token after an earlier copy of the current token.
+_HINT = """A HINT: for one head, write Q for its 64-column part of qkv.W at the query offset and K for the part at the key offset. Summing the products of Q and K over the same input rows, Q[r] . K[r], for a sample of rows r, tends to be larger for heads that attend to the token after an earlier copy of the current token. This holds from layer 4 onward. In layers 0 to 3 the sum is large for other reasons, so compare only heads in layers 4 to 11.
 """
 
 
@@ -149,18 +153,32 @@ def run_reading(
     answer = None
     turns = 0
     turn_limit = MAX_TURNS if budget else 1
-    with (run_dir / "transcript.jsonl").open("a", encoding="utf-8") as log:
-        while turns < turn_limit and answer is None:
-            turns += 1
-            full_prompt = prompt + transcript
-            reply = call(full_prompt, f"turn-{turns}")
-            answer = parse_answer(reply, HEADS_TO_NAME)
-            served = None if answer is not None or not budget else viewer.serve(reply)
-            log.write(json.dumps({"turn": turns, "reply": reply, "viewer": served}) + "\n")
-            log.flush()
-            if served is not None:
+    try:
+        with (run_dir / "transcript.jsonl").open("a", encoding="utf-8") as log:
+            while turns < turn_limit and answer is None:
+                turns += 1
+                full_prompt = prompt + transcript
+                prompt_bytes = len(full_prompt.encode())
+                if prompt_bytes > PROMPT_BYTES_REFUSED:
+                    raise ValueError(f"prompt is {prompt_bytes} bytes, over the {PROMPT_BYTES_REFUSED} limit")
+                reply = call(full_prompt, f"turn-{turns}")
+                answer = parse_answer(reply, HEADS_TO_NAME)
+                served = None if answer is not None or not budget else viewer.serve(reply)
+                log.write(json.dumps({"turn": turns, "prompt_bytes": prompt_bytes, "reply": reply, "viewer": served}) + "\n")
+                log.flush()
+                if served is None:
+                    continue
+                transcript += f"\n\nYOUR REPLY IN TURN {turns}:\n{reply}\n\nVIEWER RESPONSE:\n{served}\n"
+                if len((prompt + transcript).encode()) > PROMPT_BYTES_FINAL_TURN:
+                    turn_limit = min(turn_limit, turns + 1)
                 left = turn_limit - turns
-                transcript += f"\n\nYOUR REPLY IN TURN {turns}:\n{reply}\n\nVIEWER RESPONSE:\n{served}\n\nTurns remaining: {left}."
+                transcript += f"\nTurns remaining: {left}."
+                if left == 1:
+                    transcript += f" {_LAST_TURN_NOTICE}"
+    except Exception as error:
+        # No result.json is written, so a crashed run cannot be mistaken for a scored one.
+        (run_dir / "ABORTED.md").write_text(f"Stopped at turn {turns}: {type(error).__name__}: {error}\nNo score.\n")
+        raise
     result = ReadingResult(
         seed=seed,
         budget=budget,
