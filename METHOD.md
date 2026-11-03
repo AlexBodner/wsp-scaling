@@ -163,19 +163,21 @@ Reading test results, sealed Astra calls at `xhigh`:
 
 All 18 read and hinted calls were sealed, with no tool items. Hits were recomputed from the saved answers and match (`checks/read_audit.py`).
 
-Astra failed the pass rule, at 0 of 10, and the hinted read worked. By the reading set above, it could do the arithmetic but did not find what to compute.
+Astra failed the pass rule, at 0 of 10, and the hinted read worked. So it could do the arithmetic once pointed there. We cannot tell which part of the hint mattered, so "did not find what to compute" goes further than these runs.
 
 - **0 of 10 is not strong evidence by itself:** guessing gives it 48% of the time over all heads and 32% within layers 4 to 11.
-- **Why both reads missed:** they relied on value-output alignment, which finds 0 of 5 with every row on both disguises. The query-key statistic with every row, in layers 4 to 11, finds 4 of 5 on both. Read 2 did sample query and key weights across all 12 layers on its first turn, then moved to value and output.
+- **What the score measures:** attention to the token after the earlier copy, not whether a head writes that token. So a head counts here by where it looks. Value-output alignment is the usual proxy for what a head writes, from general knowledge of the induction-head literature. We did not measure what the picked heads write.
+- **Why both reads missed:** both also read some query and key weights (5,888 and 9,344 of their values, far more thinly than the hinted read's 19,968), but built their shortlists from value-output alignment, which finds 0 of 5 with every row on both disguises. The query-key statistic with every row, in layers 4 to 11, finds 4 of 5 on both. Across all 12 layers it finds 0 of 5, so the layer rule matters as much as the statistic.
 - **Its unhinted picks:** the closest across both reads ranks 18th of 144. On read 2 the best is 57th and scores 0.011, against 0.46 for the 10th-best head.
 - **The hinted picks:** 5.10, 7.9, 5.6 and 6.7 are hits, ranking 3, 5, 9 and 2 of 144. The miss, 8.2, ranks 13. Guessing gives at least 4 of 5 about 3e-4 of the time within layers 4 to 11.
 - **Its picks follow from its numbers:** the same statistic on the same rows, in code, gives the same five heads (`checks/hinted_arithmetic.py`).
-- **Its hand arithmetic:** across its 96 stated dot products on row 137, correlation with code is 0.998 and the median error is 0.003. 99% have the right sign, and the largest error is 0.103. Its three-row means for the top five match code to 0.01.
-- **Reported token use:** the 48 dot products of layers 8 to 11 are 3,072 products, in a turn reporting 5,231 reasoning tokens, or 1.7 per product. Correlation there is 0.9997 and the largest error is 0.008. Layers 4 to 7 report 4.3 per product.
+- **Its typed arithmetic:** across its 96 stated dot products on row 137, correlation with code is 0.998 and the median error is 0.003, which is near the rounding floor of the two decimals it typed. 86 of 96 match code to two decimals, 99% have the right sign, and the largest error is 0.103. Its three-row means for the top five match code to 0.01.
+- **Reported token use:** the 48 dot products of layers 4 to 7 are 3,072 products, in one uninterrupted request reporting 13,352 reasoning tokens, or 4.3 per product. A first version of this section reported 1.7 per product for layers 8 to 11. That was wrong: see the next list.
 
 Limits:
-- **The hint gives two things:** the statistic and the rule to skip layers 0 to 3. We wrote it after looking at GPT-2 small, and this run cannot separate them.
-- **Reasoning is hidden:** we see token counts and final tables, not the working. No tool items appear, but we cannot observe the provider's side. That turn also took 18.1 minutes for 6,143 output tokens, far slower than the others, and we do not know why. Read 2 was running at the same time, and it had a similar slow turn.
+- **The hint gives three things:** the statistic, the fact that it predicts copying, and the rule to skip layers 0 to 3. We wrote it after looking at GPT-2 small, and this run cannot separate them.
+- **Reasoning is hidden:** we see token counts and final tables, not the working, and "by hand" goes beyond what we can observe. No tool items appear in our logs, but we cannot observe the provider's side. Astra itself labels its tables approximate.
+- **Two calls were interrupted:** hinted turn 3 and read 2 turn 4 share a gap of about 69 minutes from 15:00, so the cause is probably on our machine, likely the Mac sleeping, though we did not confirm that. Their rollouts span 81.9 and 74.0 minutes, while `latency_s` shows 18.1 and 10.2, and those turns report far more cached input (66,688 and 77,696, against 3,968 on most others). We infer that usage covers only the request after the gap, so those two token counts are too low. The prices above are lower bounds, and the replies and seals are unaffected.
 - **The hinted read is one run, on one model, on one kind of head.** The scripted reader's 67% ± 15% gives the comparison for 4 of 5. It says nothing about understanding an LLM in general.
 - **Deviation from plan:** read 2 was optional once the pass rule became unreachable, and both ran at once rather than in order. Neither result was seen before the other was started.
 

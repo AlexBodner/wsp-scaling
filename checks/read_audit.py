@@ -12,6 +12,7 @@ from wsp.disguise import HEAD_SIZE, HEADS, LAYERS, WIDTH, disguise
 from wsp.network import TokenShuffle, real_network
 from wsp.reading import disguised_scores, head_scores, positive_heads
 
+# List prices for gpt-6-astra, from CONTEXT.md.
 INPUT_PER_MILLION, CACHED_PER_MILLION, OUTPUT_PER_MILLION = 10, 1, 50
 
 run_dir = Path(sys.argv[1])

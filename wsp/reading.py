@@ -1,6 +1,7 @@
 """The reading test: name a disguised GPT-2's copying heads, reading its weights through a viewer."""
 
 import json
+import re
 from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -9,7 +10,7 @@ import numpy as np
 import torch
 from transformers import GPT2LMHeadModel
 
-from wsp.disguise import HEADS, LAYERS, DisguisedModel, disguise
+from wsp.disguise import HEAD_SIZE, HEADS, LAYERS, WIDTH, DisguisedModel, disguise
 from wsp.network import TokenShuffle
 from wsp.prompts import NETWORK_OPENING, NETWORK_STRUCTURE
 from wsp.viewer import WeightViewer, parse_answer
@@ -112,6 +113,26 @@ def positive_heads(scores: np.ndarray) -> set[tuple[int, int]]:
     """Returns the heads with the truly highest scores."""
     order = np.argsort(-scores.ravel())[:POSITIVE_HEADS]
     return {(int(i) // HEADS, int(i) % HEADS) for i in order}
+
+
+def query_key_dot(disguised: DisguisedModel, layer: int, head: int, row: int) -> float:
+    """Returns Q[row] . K[row] for one head, the statistic the hint names."""
+    weight = disguised.tensors[f"L{layer}.qkv.W"]
+    start = head * HEAD_SIZE
+    return float(weight[row, start : start + HEAD_SIZE] @ weight[row, WIDTH + start : WIDTH + start + HEAD_SIZE])
+
+
+def stated_dot_products(replies: list[str]) -> dict[tuple[int, int], float]:
+    """Returns the dot products a reader typed as tables with one row per layer and one value per head."""
+    stated = {}
+    for reply in replies:
+        for match in re.finditer(r"^\| (\d+) \| ([^|]+) \|$", reply, re.M):
+            values = match.group(2).split(",")
+            if len(values) != HEADS:
+                raise ValueError(f"layer {match.group(1)} has {len(values)} values, expected {HEADS}")
+            for head, text in enumerate(values):
+                stated[int(match.group(1)), head] = float(text.strip().replace("\u2212", "-"))
+    return stated
 
 
 @dataclass

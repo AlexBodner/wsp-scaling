@@ -12,7 +12,7 @@ import numpy as np
 
 from wsp.disguise import HEAD_SIZE, HEADS, WIDTH, disguise
 from wsp.network import TokenShuffle
-from wsp.reading import HINTED_SEED
+from wsp.reading import HINTED_SEED, query_key_dot, stated_dot_products
 
 ROW = 137
 FIRST_LAYER, LAST_LAYER = 4, 11
@@ -23,20 +23,10 @@ disguised = disguise(HINTED_SEED, TokenShuffle())
 
 
 def dot(layer, head, row):
-    weight = disguised.tensors[f"L{layer}.qkv.W"]
-    start = head * HEAD_SIZE
-    return float(weight[row, start : start + HEAD_SIZE] @ weight[row, WIDTH + start : WIDTH + start + HEAD_SIZE])
+    return query_key_dot(disguised, layer, head, row)
 
 
-def number(text):
-    return float(text.strip().replace("−", "-"))
-
-
-stated = {}
-for turn in turns[1:3]:
-    for match in re.finditer(r"^\| (\d+) \| ([^|]+) \|$", turn["reply"], re.M):
-        for head, text in enumerate(match.group(2).split(",")):
-            stated[int(match.group(1)), head] = number(text)
+stated = stated_dot_products([turn["reply"] for turn in turns[1:3]])
 if len(stated) != (LAST_LAYER - FIRST_LAYER + 1) * HEADS:
     raise ValueError(f"expected every head in layers {FIRST_LAYER} to {LAST_LAYER}, parsed {len(stated)}")
 
