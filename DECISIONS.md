@@ -35,6 +35,7 @@ Current design: [METHOD.md](METHOD.md). Evidence: [CONTEXT.md](CONTEXT.md). Quot
 | 21 | "Yes, small only" | GPT-2 small only for now | A size sweep waits for a positive result and a new decision |
 | 22 | "Yes, hinted read" | Hinted read after the first read scored 0 of 5 | Separates not knowing what to compute from being unable to compute it |
 | 23 | "so run it" | Second unhinted read as well | So the headline does not rest on one run |
+| 24 | "Yes, public repo" | Public repo, leaving out third-party text | The post links to the code and logs, and GPL MinAtar source, the post's answer and Codex's catalog are not ours to republish |
 
 ## Things we corrected along the way
 - **Beating chance was too easy.** On capitals, one right answer out of 190 would have passed. Each task must now beat the best trivial strategy.

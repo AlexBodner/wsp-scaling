@@ -9,3 +9,8 @@ __pycache__/
 *.npz
 .alexs-rig/
 runs/reading-solver/seed*/
+post/
+figures/*_preview.*
+figures/*_v2.*
+runs/*/calls/catalog/
+runs/control__dry-published*/reply.md
