@@ -84,8 +84,39 @@ The hand-built network shows typed weights can do the capitals task in this arch
 ## Results
 Positive control, one sealed Astra call at `xhigh`, their Breakout prompt word for word: **535.1 ± 24.4 over 100 episodes, which passes** against 25.3. Their run scored 517.4 ± 7.4 over 1,000. 139 of 139 statements applied, 2,921 nonzero weights of 20,486, 7,845 input and 24,556 output tokens, 14 minutes, seal intact. This says the setup works. It is not evidence about LLM weights.
 
+GPT-2 writes, one sealed Astra call each at `xhigh`:
+
+| Task | Result | Reference | Trained GPT-2 | Output tokens | Nonzero weights |
+|---|---|---|---|---|---|
+| Capitals, visible | 98.0% (96.1 to 99.4) | 2.8% | 1.1% | 36,529 | 104,020 |
+| Capitals, hidden | 53.6% (51.7 to 55.9) | 2.8% | 0.0% | | |
+| Reverse | 100% | 1.4% | 0.8% | 5,642 | 2,326 |
+| Language | Aborted by hand before any reply, no result | | | | |
+
+Neither network looks copied. The capitals correlation of -0.078 sits outside the random range, which we attribute without testing to its fills of plus and minus 10,000.
+
+**These results do not show that Astra understands LLM weights.** Both networks are small circuits inside an otherwise empty GPT-2 (`checks/container_test.py`):
+
+| Reply | 12 layers (124M weights) | 2 layers (54M) | 1 layer (46M) |
+|---|---|---|---|
+| Capitals, visible | 98.04% | 98.04% | 98.04% |
+| Reverse | 100% | 100% | Cannot run, it writes to layer 1 |
+
+- Capitals uses 0.08% of the weights and never reads the country's position or the question. `The president of France is` gives ` Paris`, and `The population of Japan is` gives ` Tokyo`.
+- Hidden phrasings split: `In {country}, the capital city is` scores 98.9% and `What is the capital of {country}? The answer is` scores 8.4%. A critic attributes the failure to the second `is` raising the gate's threshold, which we have not tested.
+- Reverse scores 100% at lengths 1 to 6 and 0% from length 7, and it ignores the `rev:` command.
+- What this shows: one-shot compilation of a small program into a real architecture, with no tools. Tracr compiles programs into transformer weights without any LLM understanding.
+- A GPT-2 family size sweep would very likely be flat, because extra layers can stay empty, so it would not measure anything about size.
+
+Known issues from the critic reviews:
+- The prompt states exact GELU, while the model uses a close approximation, at most 0.0005 apart. Rescoring both replies with exact GELU changes neither score.
+- Predict would leak the writer's comments, and on sparse networks it is close to uninformative.
+- On language, about 14.0 bits is free, because the token list alone gives a uniform over listed tokens. 30 of 193,029 test tokens are not listed.
+- A reply cut off before its closing fence would score as an all-zero network.
+- One run per task. The intervals cover test-set sampling only, not variation between replies.
+
 ## Open
-- The six GPT-2 runs: three writes, then three Predict.
+- What to run next. A size sweep needs a design where size matters.
 
 ## After a positive result
 - Repeat each working task 3 times.

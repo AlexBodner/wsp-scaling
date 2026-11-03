@@ -1,0 +1,1 @@
+Stopped by hand about 2 minutes into the call, before any reply, because Alex asked for the method to be checked before anything else runs. There is no reply and no score. A later language run is a fresh call.
