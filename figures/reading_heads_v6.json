@@ -259,7 +259,8 @@
      3
     ]
    ],
-   "hits": 0,
+   "hits_top_10": 0,
+   "hits_induction": 0,
    "distinct_picks": 8
   },
   "Given the formula and where to look": {
@@ -288,7 +289,8 @@
      9
     ]
    ],
-   "hits": 4,
+   "hits_top_10": 4,
+   "hits_induction": 3,
    "distinct_picks": 5
   }
  }

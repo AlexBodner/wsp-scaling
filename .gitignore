@@ -14,5 +14,6 @@ figures/*_preview.*
 figures/*_v2.*
 figures/reading_heads_v3.*
 figures/reading_heads_v4.*
+figures/reading_heads_v5.*
 runs/*/calls/catalog/
 runs/control__dry-published*/reply.md
