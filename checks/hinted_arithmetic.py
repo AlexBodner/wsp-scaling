@@ -76,7 +76,7 @@ print("per turn: output tokens, of which reasoning, visible reply characters")
 for call, turn in zip(calls, turns):
     print(call["call_id"], call["usage"]["output_tokens"], call["usage"]["reasoning_output_tokens"], len(turn["reply"]))
     print("  event types", sorted({event.get("item", {}).get("type", event["type"]) for event in call["response"]["events"]}))
-for first, last, call in ((4, 7, calls[1]), (8, 11, calls[2])):
+for first, last, call in ((4, 7, calls[1]),):
     chosen = [i for i, key in enumerate(keys) if first <= key[0] <= last]
     products = len(chosen) * HEAD_SIZE
     print(f"layers {first}-{last}: {products} products, {call['usage']['reasoning_output_tokens']} reasoning tokens, {call['usage']['reasoning_output_tokens'] / products:.1f} per product, correlation {np.corrcoef(hand[chosen], true[chosen])[0, 1]:.4f}, median error {np.median(errors[chosen]):.3f}, max {errors[chosen].max():.3f}")

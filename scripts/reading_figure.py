@@ -29,7 +29,7 @@ FIGURE_INCHES, DPI = (10.8, 6.75), 200
 LABEL_POINTS, TITLE_POINTS, RESULT_POINTS, STAT_POINTS = 20, 23, 24, 42
 RING_WIDTH = 2.4
 TITLE = "Can GPT-6 Astra find heads that follow repeats, without running GPT-2?"
-SUBTITLE = "Each square is a head. Rows are layers 0 to 11, heads sorted by score."
+SUBTITLE = "Induction heads. Each square is a head, rows are layers, sorted by score."
 ARITHMETIC_TITLE = "GPT-6 Astra's typed results against code, no tool calls"
 # The row and the turns where the hinted read typed a dot product for every head in layers 4 to 11.
 HINTED_TABLE_ROW, HINTED_TABLE_TURNS, HINTED_TABLE_VALUES = 137, (1, 2), 96
@@ -117,7 +117,7 @@ def _heads_figure(shuffle: TokenShuffle) -> None:
             axis.text(centre, LAYERS_TOLD_TO_SKIP / 2, "told to skip layers 0 to 3", fontsize=LABEL_POINTS, ha="center", va="center", color=MUTED)
     _draw_legend(figure)
 
-    output = ROOT / "figures" / "reading_heads_v4.png"
+    output = ROOT / "figures" / "reading_heads_v5.png"
     figure.savefig(output, dpi=DPI)
     data = {"positives": sorted(positives), "scores": scores.tolist(), "panels": panels}
     output.with_suffix(".json").write_text(json.dumps(data, indent=1))

@@ -73,7 +73,7 @@ Qwen3.8-27B and Qwen3.5-0.8B load as the same class, `Qwen3_5ForCausalLM`.
 **A one-value token code.** A token can be set with one nonzero value, so width 768 gives 768 distinct tokens for 768 typed values. Normalization and the tied input and output table make this harder in practice. Bigger models may therefore be harder because of depth, not the token table. This is a hypothesis.
 
 ## Related work seen so far
-From the two posts Alex linked and a GitHub name search on 3 Nov 2026, so this is not a full review.
+From two X posts and a GitHub name search on 3 Nov 2026, so this is not a full review.
 
 | Source | Writer | Setting | Varies | Shows |
 |---|---|---|---|---|
