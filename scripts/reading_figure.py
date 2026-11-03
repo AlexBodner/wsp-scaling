@@ -38,7 +38,7 @@ STORY_STEPS = (("With no weights at all", ("blind",)), ("Reading scrambled weigh
 STORY_NO_WEIGHTS_RESULT = "It names their layers"
 STORY_NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
 STORY_POINTS = 16
-ARITHMETIC_TITLE = "GPT-6 Astra did this math on GPT-2's weights, with no tool calls"
+ARITHMETIC_TITLE = "GPT-6 Astra's math on GPT-2's weights, no tool calls in our logs"
 # The row and the turns where the hinted read typed a dot product for every head in layers 4 to 11.
 HINTED_TABLE_ROW, HINTED_TABLE_TURNS, HINTED_TABLE_VALUES = 137, (1, 2), 96
 AXIS_LIMITS = (-0.75, 1.35)
@@ -221,7 +221,7 @@ def _arithmetic_figure(shuffle: TokenShuffle) -> None:
         fontsize=LABEL_POINTS - 2, color=INK, va="center", ha="center", arrowprops={"arrowstyle": "-", "color": MUTED, "linewidth": 1.2, "shrinkB": 6},
     )
 
-    output = ROOT / "figures" / "arithmetic_v6.png"
+    output = ROOT / "figures" / "arithmetic_v7.png"
     figure.savefig(output, dpi=DPI)
     pairs = [{"layer": key[0], "head": key[1], "typed": float(value), "in_code": float(code)} for key, value, code in zip(keys, typed, in_code)]
     summary = {"row": HINTED_TABLE_ROW, "correlation": correlation, "matches_two_decimals": matches, "largest_error": largest_error}

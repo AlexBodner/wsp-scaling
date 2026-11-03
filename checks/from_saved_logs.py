@@ -22,7 +22,7 @@ for title, panel in heads["panels"].items():
 print("layers named with no weights:", sorted(layer for layer, _ in run_result("blind")["answer"]))
 print("layers of the five:", sorted(layer for layer, _ in top_five))
 
-arithmetic = json.load(open("figures/arithmetic_v6.json"))
+arithmetic = json.load(open("figures/arithmetic_v7.json"))
 pairs = arithmetic["pairs"]
 matched = sum(round(p["typed"], 2) == round(p["in_code"], 2) for p in pairs)
 print(f"sums matching code to two decimals: {matched} of {len(pairs)}")
