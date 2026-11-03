@@ -1,6 +1,9 @@
 top 10 with scores: [('5.5', 0.925), ('6.9', 0.916), ('5.1', 0.91), ('7.10', 0.909), ('7.2', 0.834), ('10.1', 0.507), ('9.6', 0.504), ('9.9', 0.489), ('5.0', 0.467), ('10.7', 0.463)]
+blind [(5, 11), (5, 2), (6, 3), (7, 10), (7, 7)] in the top 10: 1 in the top 5: 1
 read-1 [(5, 2), (5, 10), (6, 8), (7, 1), (8, 7)] in the top 10: 0 in the top 5: 0
 read-2 [(5, 2), (6, 7), (5, 10), (6, 3), (9, 3)] in the top 10: 0 in the top 5: 0
 hinted [(5, 1), (7, 2), (5, 0), (8, 1), (6, 9)] in the top 10: 4 in the top 5: 3
 best share from knowing only the layers: 0.16666666666666666
+chance of 0 of 10 on these 5, 144 heads: 0.70
+chance of 0 of 10 on these 5, 96 heads: 0.58
 script, 30 seeds, in the top 5: mean 2.6333333333333333 sd 0.66 counts [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4]

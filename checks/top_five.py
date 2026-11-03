@@ -5,6 +5,7 @@ Run scripts/reading_solver.py first, because its per-seed picks are not kept in 
 """
 import json
 from glob import glob
+from math import comb
 
 import numpy as np
 
@@ -13,7 +14,7 @@ from wsp.network import TokenShuffle, real_network
 from wsp.reading import head_scores
 
 INDUCTION_HEADS = 5
-ASTRA_RUNS = ("read-1", "read-2", "hinted")
+ASTRA_RUNS = ("blind", "read-1", "read-2", "hinted")
 
 
 def original_picks(result: dict, shuffle: TokenShuffle) -> list[tuple[int, int]]:
@@ -34,6 +35,8 @@ for arm in ASTRA_RUNS:
     print(arm, picks, "in the top 10:", result["hits"], "in the top 5:", sum(pick in top_five for pick in picks))
 by_layer = np.bincount([layer for layer, _ in top_five], minlength=scores.shape[0])
 print("best share from knowing only the layers:", by_layer.max() / HEADS)
+for heads in (HEADS * 12, HEADS * 8):
+    print(f"chance of 0 of 10 on these 5, {heads} heads: {(comb(heads - INDUCTION_HEADS, 5) / comb(heads, 5)) ** 2:.2f}")
 hits = []
 for path in sorted(glob("runs/reading-solver/seed*/result.json")):
     hits.append(sum(pick in top_five for pick in original_picks(json.load(open(path)), shuffle)))

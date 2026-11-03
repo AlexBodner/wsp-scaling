@@ -9,8 +9,9 @@ Alone, it did no better than guessing. Given a formula and where to look, it got
 
 GPT-2 small has 144 attention heads, the parts that choose which earlier tokens to focus on. Induction heads follow repeats: on seeing "Harry" again, they look at the token after the last "Harry", such as "Potter". [Anthropic described them in 2021](https://transformer-circuits.pub/2021/framework/) by inspecting and running models. Astra names 5 heads from a scrambled copy's weights, and we get the truth by running GPT-2 on repeated random tokens. The top five score 0.83 to 0.93, the next five 0.46 to 0.51, and those five are the [induction heads usually cited](https://dhruvpatel1706.github.io/writing/induction-heads.html) for GPT-2 small.
 
-- **Alone, two reads:** 0 of 10. Our [frozen test](METHOD.md) counted the top 10, needed 6 of 10 and failed. Guessing also gets 0 of 10 on it about 32 to 48% of the time, so this is weak evidence by itself. To check: [read 1](runs/reading-read-1__live__20261103T023015Z/audit.txt) and [read 2](runs/reading-read-2__live__20261103T144636Z/audit.txt).
-- **With a hint, one read:** 3 of 5 induction heads, against a mean of 2.6 for a script with the same formula, layer rule and budget. On the frozen top 10 test, that is 4 of 5 against 3.4. The hint gives a formula, its meaning and layers to skip, which we chose after looking at GPT-2. Without the layer rule the formula finds 0 of 5, so we cannot tell which part mattered.
+- **Alone, two reads:** 0 of 10. Our [frozen test](METHOD.md) counted the top 10, needed 6 of 10 and failed. Guessing also gets 0 of 10 about 32 to 48% of the time on that test, and 58 to 70% on the five induction heads, so the zero is weak evidence by itself. To check: [read 1](runs/reading-read-1__live__20261103T023015Z/audit.txt) and [read 2](runs/reading-read-2__live__20261103T144636Z/audit.txt).
+- **No weights at all, one call:** it called its answer guesses, yet named layers 5, 5, 6, 7, 7, exactly where these five heads sit, perhaps from papers. Scrambling keeps layers and hides which head is which, and knowing the layers gets under 1 of 5.
+- **With a hint, one read:** 3 of 5 induction heads, scored after the fact, against a mean of 2.6 for a script with the same formula, layer rule and budget. On the frozen top 10 test, that is 4 of 5 against 3.4. The hint gives a formula, its meaning and layers to skip, which we chose after looking at GPT-2. Without the layer rule the formula finds 0 of 5, so we cannot tell which part mattered.
 - **Typed arithmetic:** 86 of its 96 typed results match code to two decimals. No tool calls appear in our logs, but its reasoning is encrypted, so we cannot say how it got them.
 
 To check the hinted read yourself:
@@ -50,7 +51,7 @@ Score Astra's capitals reply, which gives 98.0% on the visible phrasings and 53.
 PYTHONPATH=. python3 scripts/run_experiment.py capitals --reply-file runs/capitals__live__20261103T002438Z/reply.md --label check
 ```
 
-Audit a read, check its arithmetic and redraw the figures:
+Audit a read, check its arithmetic, redraw the figures and rescore on the five induction heads, which needs the script's runs first:
 
 ```bash
 PYTHONPATH=. python3 checks/read_audit.py runs/reading-hinted__live__20261103T144245Z
@@ -62,6 +63,14 @@ PYTHONPATH=. python3 checks/hinted_arithmetic.py runs/reading-hinted__live__2026
 
 ```bash
 PYTHONPATH=. python3 scripts/reading_figure.py
+```
+
+```bash
+PYTHONPATH=. python3 scripts/reading_solver.py
+```
+
+```bash
+PYTHONPATH=. python3 checks/top_five.py
 ```
 
 New Astra calls use `--live`, codex-cli 0.153.4 and a private helper, vlm-jigsaw, that seals each call and is not published. Saved runs and all scoring work without it, and each call's `seal` records what its scan found.
