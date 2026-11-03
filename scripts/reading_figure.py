@@ -33,7 +33,7 @@ TITLE = "Can GPT-6 Astra find induction heads in scrambled GPT-2 weights?"
 EXAMPLE_INTRO = "An induction head looks back at what came next last time:"
 EXAMPLE_WORDS = ("Harry", "Potter", "went", "home,", "and", "Harry")
 NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
-ARITHMETIC_TITLE = "GPT-6 Astra typed this math on GPT-2's weights with no tool calls"
+ARITHMETIC_TITLE = "GPT-6 Astra did this math on GPT-2's weights, with no tool calls"
 # The row and the turns where the hinted read typed a dot product for every head in layers 4 to 11.
 HINTED_TABLE_ROW, HINTED_TABLE_TURNS, HINTED_TABLE_VALUES = 137, (1, 2), 96
 AXIS_LIMITS = (-0.75, 1.35)
@@ -195,14 +195,14 @@ def _arithmetic_figure(shuffle: TokenShuffle) -> None:
     axis.scatter(in_code[matched], typed[matched], s=70, color=BLUE, edgecolor="white", linewidth=0.8, zorder=2)
     axis.scatter(in_code[~matched], typed[~matched], s=80, color=RED, edgecolor="white", linewidth=0.8, zorder=3)
     axis.set(xlim=AXIS_LIMITS, ylim=AXIS_LIMITS, xticks=AXIS_TICKS, yticks=AXIS_TICKS, aspect="equal")
-    axis.set_xlabel("Computed in code", fontsize=LABEL_POINTS, color=INK)
-    axis.set_ylabel("Typed by Astra", fontsize=LABEL_POINTS, color=INK)
+    axis.set_xlabel("Answer from code", fontsize=LABEL_POINTS, color=INK)
+    axis.set_ylabel("Astra's answer", fontsize=LABEL_POINTS, color=INK)
     axis.tick_params(labelsize=LABEL_POINTS, colors=INK, length=0)
     axis.spines[["top", "right"]].set_visible(False)
     axis.spines[["left", "bottom"]].set_color(GREY)
     figure.text(0.5, 0.94, ARITHMETIC_TITLE, fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
     stats = (
-        (0.66, BLUE, f"{matches} of {len(keys)}", STAT_POINTS, "match code to the two\ndecimals it typed"),
+        (0.66, BLUE, f"{matches} of {len(keys)}", STAT_POINTS, "match code to the two\ndecimals it gave"),
         (0.38, RED, f"{len(keys) - matches} miss", STAT_POINTS - 12, f"by at most {largest_error:.3f}"),
     )
     for height, colour, value, size, text in stats:
@@ -212,11 +212,11 @@ def _arithmetic_figure(shuffle: TokenShuffle) -> None:
     figure.text(0.62, 0.2, "Each dot is one head:\na sum of 64 products.", fontsize=LABEL_POINTS, color=MUTED, va="center", linespacing=1.25)
     biggest = int(np.argmax(in_code))
     axis.annotate(
-        f"typed {typed[biggest]:.2f}\ncode {in_code[biggest]:.2f}", (in_code[biggest], typed[biggest]), xytext=(0.42, 1.2),
+        f"Astra {typed[biggest]:.2f}\ncode {in_code[biggest]:.2f}", (in_code[biggest], typed[biggest]), xytext=(0.42, 1.2),
         fontsize=LABEL_POINTS - 2, color=INK, va="center", ha="center", arrowprops={"arrowstyle": "-", "color": MUTED, "linewidth": 1.2, "shrinkB": 6},
     )
 
-    output = ROOT / "figures" / "arithmetic_v5.png"
+    output = ROOT / "figures" / "arithmetic_v6.png"
     figure.savefig(output, dpi=DPI)
     pairs = [{"layer": key[0], "head": key[1], "typed": float(value), "in_code": float(code)} for key, value, code in zip(keys, typed, in_code)]
     summary = {"row": HINTED_TABLE_ROW, "correlation": correlation, "matches_two_decimals": matches, "largest_error": largest_error}

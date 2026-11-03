@@ -19,5 +19,6 @@ figures/reading_heads_v6.*
 figures/reading_heads_v7.*
 figures/arithmetic_v3.*
 figures/arithmetic_v4.*
+figures/arithmetic_v5.*
 runs/*/calls/catalog/
 runs/control__dry-published*/reply.md
