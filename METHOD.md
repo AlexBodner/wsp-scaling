@@ -115,7 +115,7 @@ Known issues from the critic reviews:
 - A reply cut off before its closing fence would score as an all-zero network.
 - One run per task. The intervals cover test-set sampling only, not variation between replies.
 
-## Reading test, GPT-2 small only (built, not run)
+## Reading test, GPT-2 small only
 Question: name the 5 heads, of 144, with the highest copying score, by reading the weights.
 
 - **Model:** GPT-2 small, disguised: heads reordered within each layer and re-expressed in random internal coordinates, and the key bias replaced by noise. Behaviour is unchanged, within 1e-8 on logits in the tests.
@@ -158,15 +158,28 @@ Reading test results, sealed Astra calls at `xhigh`:
 |---|---|---|---|---|
 | Blind | 1 | 0 | 1 | $0.05 |
 | Read 1, seed 1001 | 0 | 19,998 of 20,000 | 6 | $5.70 |
+| Read 2, seed 1002 | 0 | 20,000 of 20,000 | 6 | $5.50 |
+| Hinted, seed 1003 | **4** | 19,968 of 20,000 | 6 | $6.80 |
 
-- **The pass rule can no longer be met:** it needs 6 of 10, and a second read can add at most 5.
-- **0 of 5 is weak evidence by itself:** chance alone gives it about 60 to 70% of the time.
-- **Why it missed:** it screened heads by aligning value and output weights, then checked only candidates from that screen with query and key weights. That screen is the wrong statistic here: with every row it finds 0 of 5 (`checks/read1_analysis.py`). The query-key statistic with every row, in layers 4 to 11, finds 4 of 5 on this disguise.
-- **Its arithmetic held where checked:** recomputing its first sample in code ranks 6.3 and 9.0 highest, the two it called larger but noisier. Later turns were not checked.
-- **Its picks:** the closest, 7.6, ranks 18th of 144, and three of the five have scores near zero.
+All 18 read and hinted calls were sealed, with no tool items. Hits were recomputed from the saved answers and match (`checks/read_audit.py`).
+
+Astra failed the pass rule, at 0 of 10, and the hinted read worked. By the reading set above, it could do the arithmetic but did not find what to compute.
+
+- **0 of 10 is not strong evidence by itself:** guessing gives it 48% of the time over all heads and 32% within layers 4 to 11.
+- **Why both reads missed:** they relied on value-output alignment, which finds 0 of 5 with every row on both disguises. The query-key statistic with every row, in layers 4 to 11, finds 4 of 5 on both. Read 2 did sample query and key weights across all 12 layers on its first turn, then moved to value and output.
+- **Its unhinted picks:** the closest across both reads ranks 18th of 144. On read 2 the best is 57th and scores 0.011, against 0.46 for the 10th-best head.
+- **The hinted picks:** 5.10, 7.9, 5.6 and 6.7 are hits, ranking 3, 5, 9 and 2 of 144. The miss, 8.2, ranks 13. Guessing gives at least 4 of 5 about 3e-4 of the time within layers 4 to 11.
+- **Its picks follow from its numbers:** the same statistic on the same rows, in code, gives the same five heads (`checks/hinted_arithmetic.py`).
+- **Its hand arithmetic:** across its 96 stated dot products on row 137, correlation with code is 0.998 and the median error is 0.003. 99% have the right sign, and the largest error is 0.103. Its three-row means for the top five match code to 0.01.
+- **Reported token use:** the 48 dot products of layers 8 to 11 are 3,072 products, in a turn reporting 5,231 reasoning tokens, or 1.7 per product. Correlation there is 0.9997 and the largest error is 0.008. Layers 4 to 7 report 4.3 per product.
+
+Limits:
+- **The hint gives two things:** the statistic and the rule to skip layers 0 to 3. We wrote it after looking at GPT-2 small, and this run cannot separate them.
+- **Reasoning is hidden:** we see token counts and final tables, not the working. No tool items appear, but we cannot observe the provider's side. That turn also took 18.1 minutes for 6,143 output tokens, far slower than the others, and we do not know why. Read 2 was running at the same time, and it had a similar slow turn.
+- **The hinted read is one run, on one model, on one kind of head.** The scripted reader's 67% ± 15% gives the comparison for 4 of 5. It says nothing about understanding an LLM in general.
+- **Deviation from plan:** read 2 was optional once the pass rule became unreachable, and both ran at once rather than in order. Neither result was seen before the other was started.
 
 ## Open
-- Whether to run the hinted read next, in place of the second read.
 - What to run next on writing. A size sweep needs a design where size matters.
 - Constraint from Alex: use bigger, more relevant ready-made models, and do not train networks ourselves. Astra sets or reads the weights.
 - Size axis, proposed for later: the same budget on every model, so the visible share falls as models grow.

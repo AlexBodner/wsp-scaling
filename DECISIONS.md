@@ -30,6 +30,11 @@ Current design: [METHOD.md](METHOD.md). Evidence: [CONTEXT.md](CONTEXT.md). Quot
 | 16 | "im scared that GPT2 weights might even be in training data, but its a good starting point" | Shuffle token IDs, do not name the model, compare typed values with real GPT-2 | Copying can be ruled out, general knowledge from papers cannot |
 | 17 | "the problem with the capital of france is that it is the most common frace here, so we can try it with several" | Four phrasings, two hidden, with well-known and obscure capitals scored separately | A single phrasing lets a network read one position with no attention |
 | 18 | "the gpt 2 can probably be tried now locally, for astra we can call it through codex. Log all the calls" | Score GPT-2 on the Mac, call Astra through sealed Codex, save every call in full | |
+| 19 | "we dont want to train networks ourselves, but let the model call to astra set the weights or understand the weights" | Reading test on ready-made GPT-2 small | Written networks turned out to be small circuits in an empty container, so a family sweep would be flat |
+| 20 | "we can let the own model decide how to read them", then "Viewer only" | A read-only viewer with a value budget, no computation | Whole-model reading does not fit in context, and fixed slices would choose for it |
+| 21 | "Yes, small only" | GPT-2 small only for now | A size sweep waits for a positive result and a new decision |
+| 22 | "Yes, hinted read" | Hinted read after the first read scored 0 of 5 | Separates not knowing what to compute from being unable to compute it |
+| 23 | "so run it" | Second unhinted read as well | So the headline does not rest on one run |
 
 ## Things we corrected along the way
 - **Beating chance was too easy.** On capitals, one right answer out of 190 would have passed. Each task must now beat the best trivial strategy.

@@ -1,8 +1,10 @@
 # Writing LLM weights
 
-Can a frontier LLM, with no tools, write GPT-2 weights that do a specified task, and predict what those weights will do? This tests a stronger version of the claim in [Sparks of Weight-Space Programming](https://rikiyat.github.io/blog/weight-space-programming/).
+Can a frontier LLM, with no tools, write GPT-2 weights that do a specified task, and read the weights of a real one? This tests a stronger version of the claim in [Sparks of Weight-Space Programming](https://rikiyat.github.io/blog/weight-space-programming/).
 
-The method is settled and the pipeline passes its dry run. No Astra call has been made yet, so there are no results on Astra.
+Results so far, on `gpt-6-astra` with no tools, one run per arm:
+- **Writing:** into an empty GPT-2, it wrote networks that reverse strings (100%) and name capitals (98.0% on the phrasing it was shown, 53.6% on hidden ones). These are small circuits, and deleting layers does not change their scores.
+- **Reading:** on a disguised real GPT-2, it found 0 of 10 copying heads from 20,000 values over two reads. Told which statistic to compute and which layers to compare, it found 4 of 5, and its hand arithmetic matched code at a correlation of 0.998.
 
 - [METHOD.md](METHOD.md): the current design.
 - [DECISIONS.md](DECISIONS.md): what Alex asked for and what was decided.
