@@ -1,0 +1,187 @@
+{
+  "mean_precision_at_5": 0.6733333333333333,
+  "std": 0.15040685563571302,
+  "runs": 30,
+  "outcomes": [
+    {
+      "seed": 2000,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2001,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2002,
+      "hits": 5,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2003,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2004,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2005,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2006,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2007,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2008,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2009,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2010,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2011,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2012,
+      "hits": 1,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2013,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2014,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2015,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2016,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2017,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2018,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2019,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2020,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2021,
+      "hits": 2,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2022,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2023,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2024,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2025,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2026,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2027,
+      "hits": 4,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2028,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    },
+    {
+      "seed": 2029,
+      "hits": 3,
+      "values_read": 19968,
+      "turns": 2
+    }
+  ]
+}

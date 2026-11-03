@@ -1,0 +1,18 @@
+{
+  "capitals": {
+    "sha256": "c9914be8267b2b6319452211556b82254d78f7f46db93dc7e3c9ca50db4d5f7f",
+    "characters": 12756
+  },
+  "reverse": {
+    "sha256": "e76bfd03a76b9818eb89cb57672881015eedbf65198957d2511b2c2b316d9135",
+    "characters": 4058
+  },
+  "language": {
+    "sha256": "ff6023bb721d7ca705c2f9a13c3ab81f507b5f8a3c5318eab40593541da1bab5",
+    "characters": 250211
+  },
+  "control": {
+    "sha256": "766ee251d59a7893ed86d5eaea99ddb847529ab2092afc69f90f55fb0a22e876",
+    "characters": 9973
+  }
+}

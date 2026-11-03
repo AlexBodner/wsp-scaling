@@ -1,0 +1,1207 @@
+{
+  "seed": 1003,
+  "budget": 20000,
+  "turns": 6,
+  "values_read": 19968,
+  "answer": [
+    [
+      5,
+      10
+    ],
+    [
+      7,
+      9
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      8,
+      2
+    ],
+    [
+      6,
+      7
+    ]
+  ],
+  "hits": 4,
+  "requests": [
+    {
+      "statement": "L4.qkv.W[137, 0:64]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 768:832]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 64:128]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 832:896]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 896:960]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 192:256]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 960:1024]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 256:320]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 1024:1088]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 384:448]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 1152:1216]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 640:704]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 1408:1472]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[137, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 0:64]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 768:832]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 64:128]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 832:896]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 896:960]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 192:256]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 960:1024]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 256:320]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 1024:1088]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 384:448]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 1152:1216]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 640:704]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 1408:1472]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[137, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 0:64]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 768:832]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 64:128]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 832:896]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 896:960]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 192:256]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 960:1024]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 256:320]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 1024:1088]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 384:448]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 1152:1216]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 640:704]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 1408:1472]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[137, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 0:64]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 768:832]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 64:128]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 832:896]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 896:960]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 192:256]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 960:1024]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 256:320]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 1024:1088]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 384:448]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 1152:1216]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 640:704]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 1408:1472]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[137, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 0:64]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 768:832]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 64:128]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 832:896]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 896:960]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 192:256]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 960:1024]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 256:320]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 1024:1088]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 384:448]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 1152:1216]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 640:704]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 1408:1472]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[137, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 0:64]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 768:832]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 64:128]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 832:896]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 896:960]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 192:256]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 960:1024]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 256:320]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 1024:1088]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 384:448]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 1152:1216]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 640:704]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 1408:1472]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[137, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 0:64]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 768:832]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 64:128]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 832:896]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 896:960]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 192:256]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 960:1024]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 256:320]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 1024:1088]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 384:448]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 1152:1216]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 640:704]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 1408:1472]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[137, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 0:64]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 768:832]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 64:128]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 832:896]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 896:960]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 192:256]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 960:1024]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 256:320]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 1024:1088]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 384:448]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 1152:1216]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 640:704]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 1408:1472]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[137, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[491, 192:256]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[491, 960:1024]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[491, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[491, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[491, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[491, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[491, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[491, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[491, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[491, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 64:128]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 832:896]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 896:960]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 256:320]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 1024:1088]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 384:448]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 1152:1216]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 640:704]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[491, 1408:1472]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[491, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[491, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[491, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[491, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[491, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[491, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[491, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[491, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[491, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[491, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[491, 128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[491, 896:960]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[491, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[491, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[491, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[491, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[491, 0:64]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[491, 768:832]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[491, 256:320]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[491, 1024:1088]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[491, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[491, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[491, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L10.qkv.W[491, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[491, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L11.qkv.W[491, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[719, 192:256]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[719, 960:1024]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[719, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[719, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[719, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[719, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[719, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[719, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[719, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[719, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[719, 64:128]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[719, 832:896]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[719, 256:320]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[719, 1024:1088]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[719, 384:448]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[719, 1152:1216]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[719, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[719, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[719, 640:704]",
+      "values": 64
+    },
+    {
+      "statement": "L5.qkv.W[719, 1408:1472]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[719, 448:512]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[719, 1216:1280]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[719, 704:768]",
+      "values": 64
+    },
+    {
+      "statement": "L6.qkv.W[719, 1472:1536]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[719, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[719, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[719, 512:576]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[719, 1280:1344]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[719, 576:640]",
+      "values": 64
+    },
+    {
+      "statement": "L7.qkv.W[719, 1344:1408]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[719, 128:192]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[719, 896:960]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[719, 320:384]",
+      "values": 64
+    },
+    {
+      "statement": "L8.qkv.W[719, 1088:1152]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[719, 0:64]",
+      "values": 64
+    },
+    {
+      "statement": "L9.qkv.W[719, 768:832]",
+      "values": 64
+    },
+    {
+      "statement": "L4.qkv.W[263:608:344, 320:384]",
+      "values": 128
+    },
+    {
+      "statement": "L4.qkv.W[263:608:344, 1088:1152]",
+      "values": 128
+    },
+    {
+      "statement": "L4.qkv.W[263:608:344, 512:576]",
+      "values": 128
+    },
+    {
+      "statement": "L4.qkv.W[263:608:344, 1280:1344]",
+      "values": 128
+    },
+    {
+      "statement": "L4.qkv.W[263:608:344, 576:640]",
+      "values": 128
+    },
+    {
+      "statement": "L4.qkv.W[263:608:344, 1344:1408]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[263:608:344, 384:448]",
+      "values": 128
+    },
+    {
+      "statement": "L5.qkv.W[263:608:344, 1152:1216]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[263:608:344, 448:512]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[263:608:344, 1216:1280]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[263:608:344, 704:768]",
+      "values": 128
+    },
+    {
+      "statement": "L6.qkv.W[263:608:344, 1472:1536]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[263:608:344, 320:384]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[263:608:344, 1088:1152]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[263:608:344, 576:640]",
+      "values": 128
+    },
+    {
+      "statement": "L7.qkv.W[263:608:344, 1344:1408]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[263:608:344, 128:192]",
+      "values": 128
+    },
+    {
+      "statement": "L8.qkv.W[263:608:344, 896:960]",
+      "values": 128
+    }
+  ]
+}

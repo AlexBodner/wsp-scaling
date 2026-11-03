@@ -1,0 +1,20 @@
+calls 6, input 399222 (86528 cached), output 71810, list price $6.80
+latency minutes [1.2, 8.0, 18.1, 6.1, 4.6, 9.1] stops {'stop'}
+000001 {'tool_items': [], 'problems': [], 'sealed': True}
+000002 {'tool_items': [], 'problems': [], 'sealed': True}
+000003 {'tool_items': [], 'problems': [], 'sealed': True}
+000004 {'tool_items': [], 'problems': [], 'sealed': True}
+000005 {'tool_items': [], 'problems': [], 'sealed': True}
+000006 {'tool_items': [], 'problems': [], 'sealed': True}
+true top 10 [(5, 4), (5, 6), (5, 10), (6, 7), (7, 5), (7, 9), (9, 3), (9, 10), (10, 1), (10, 11)]
+hits recomputed 4 stored 4
+named 5.10: score 0.9096, rank 3 of 144
+named 7.9: score 0.8338, rank 5 of 144
+named 5.6: score 0.4673, rank 9 of 144
+named 8.2: score 0.3553, rank 13 of 144
+named 6.7: score 0.9161, rank 2 of 144
+10th score 0.4633 median 0.0053
+value-output, all rows layers 4-11, top 5: [(11, 10), (11, 1), (10, 3), (11, 5), (11, 11)] hits 0
+  rank of its picks on this statistic: [65, 66, 54, 76, 60]
+query-key, all rows layers 4-11, top 5: [(5, 10), (7, 9), (4, 5), (5, 6), (6, 7)] hits 4
+  rank of its picks on this statistic: [1, 2, 4, 8, 5]

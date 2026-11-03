@@ -1,0 +1,6 @@
+{"item": "turn-1", "input_tokens": 6440, "output_tokens": 2537, "stop_reason": "stop"}
+{"item": "turn-2", "input_tokens": 36316, "output_tokens": 14986, "stop_reason": "stop"}
+{"item": "turn-3", "input_tokens": 76718, "output_tokens": 6143, "stop_reason": "stop"}
+{"item": "turn-4", "input_tokens": 81949, "output_tokens": 9032, "stop_reason": "stop"}
+{"item": "turn-5", "input_tokens": 93386, "output_tokens": 8877, "stop_reason": "stop"}
+{"item": "turn-6", "input_tokens": 104413, "output_tokens": 30235, "stop_reason": "stop"}

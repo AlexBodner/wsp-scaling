@@ -1,0 +1,29 @@
+{
+  "edit_report": {
+    "has_block": true,
+    "statements": 102,
+    "applied": 102,
+    "entries_written": 2330,
+    "errors": []
+  },
+  "nonzero_weights": 2326,
+  "copy_check": {
+    "nonzero_values": 2326,
+    "correlation_with_real": 0.0010341551222756086,
+    "correlation_random_positions_95pct": [
+      -0.018325574258281224,
+      0.016709028513461496
+    ],
+    "share_within_0.001_of_real": 0.0
+  },
+  "score": {
+    "exact": {
+      "value": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "reference": 0.014,
+      "passes": true
+    },
+    "per_position": 1.0
+  }
+}

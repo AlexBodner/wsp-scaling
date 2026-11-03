@@ -1,0 +1,20 @@
+{
+  "network_edit_report": {
+    "has_block": true,
+    "statements": 3259,
+    "applied": 3259,
+    "entries_written": 4793,
+    "errors": []
+  },
+  "score": {
+    "match": {
+      "value": 1.0,
+      "low": 1.0,
+      "high": 1.0,
+      "reference": 0.4,
+      "passes": true
+    },
+    "answered": 50,
+    "distinct_outputs": 21
+  }
+}

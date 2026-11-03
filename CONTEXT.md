@@ -72,5 +72,27 @@ Qwen3.8-27B and Qwen3.5-0.8B load as the same class, `Qwen3_5ForCausalLM`.
 
 **A one-value token code.** A token can be set with one nonzero value, so width 768 gives 768 distinct tokens for 768 typed values. Normalization and the tied input and output table make this harder in practice. Bigger models may therefore be harder because of depth, not the token table. This is a hypothesis.
 
+## Related work seen so far
+From the two posts Alex linked and a GitHub name search on 3 Nov 2026, so this is not a full review.
+
+| Source | Writer | Setting | Varies | Shows |
+|---|---|---|---|---|
+| [Singh report](https://csinva.io/weight-space-programming-autoresearch/analyze/toy_examples/report.html) | Claude as a coding agent | Python, many attempts with score feedback, may change the architecture | Task, then shrinks the network | All 10 algorithmic tasks at 100% within 3 attempts. Its language results have an evaluation flaw, which the report says itself |
+| [Krentsel chart](https://x.com/alexkrentsel/status/2117376683724660898) | GPT and Claude generations | Not stated in the post | Writer generation | A sharp jump in the latest models, about 18x to 22x PPO-500M. The task is not stated, and we read it as probably Breakout |
+| [nihilistau/weight-space-claude](https://github.com/nihilistau/weight-space-claude) | Claude Opus 5.5 | Their prompts, no tools | Writer | Breakout 307, against Astra's 517 |
+
+A wider search on 3 Nov 2026 (web, GitHub, Hugging Face, Hacker News) also found no size sweep. It could not cover X search, replies under the original post, Reddit or Bluesky. A [Hacker News comment](https://news.ycombinator.com/item?id=50342350) names relative model sizes as interesting future work.
+
+Also found:
+- [Lucas Beyer](https://x.com/giffmana/status/2117346161866514524) says the Qwen prompt hints heavily at looping, which matches what we read in the logs.
+- [Sean Goedecke](https://seangoedecke.com/llms-are-not-superhuman-at-reading-and-writing-neural-network-weights/) argues a good human researcher could do these tasks, and shows the game-reading signal as a heatmap in three lines of Python.
+- [ML-Intern-lab](https://huggingface.co/ML-Intern-lab/Qwen3.5-0.8B-weight-space-programming) re-evaluated the released Qwen edit: MATH-500 51.0% against the post's 48.1%, with answers cut at the limit 31.6% against 33.1%. This checks their numbers, not how the edit was found.
+- [yikerman/llm-rw-weight-extended-test](https://github.com/yikerman/llm-rw-weight-extended-test) repeats Experiments 1 and 2 across several LLMs, so it tests reading only.
+
+None of these holds a real architecture fixed and varies its size. Three points bear on our design:
+- The Singh report says most programs replace LayerNorm with the identity. Ours has to keep it.
+- That agent moved from writing mechanisms to fitting them once it could read data. Our no-tools rule and hidden test sets close this off.
+- Its first word-reversal program was already correct, on a small custom network with Python. Reverse on GPT-2 with no tools tests whether that survives.
+
 ## Budget
 A $100 Codex plan over two weeks. List prices for `gpt-6-astra` are $10 per million input tokens and $50 per million output. Our cost figures use list prices, and how they map to plan usage is unknown.
