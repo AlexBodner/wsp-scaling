@@ -5,7 +5,7 @@ By [Alex Bodner](https://twitter.com/AlexBodner_). A small follow-up to [Sparks 
 ## Reading
 Alone, it did no better than guessing. Given a formula and where to look, it got 3 of 5, like a short script.
 
-![Where Astra's picks landed among GPT-2's attention heads](figures/reading_heads_v6.png)
+![Where Astra's picks landed among GPT-2's attention heads](figures/reading_heads_v8.png)
 
 GPT-2 small has 144 attention heads, the parts that choose which earlier tokens to focus on. Induction heads follow repeats: on seeing "Harry" again, they look at the token after the last "Harry", such as "Potter". [Anthropic described them in 2021](https://transformer-circuits.pub/2021/framework/) by inspecting and running models. Astra names 5 heads from a scrambled copy's weights, and we get the truth by running GPT-2 on repeated random tokens. The top five score 0.83 to 0.93, the next five 0.46 to 0.51, and those five are the [induction heads usually cited](https://dhruvpatel1706.github.io/writing/induction-heads.html) for GPT-2 small.
 

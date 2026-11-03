@@ -212,7 +212,7 @@
   ]
  ],
  "panels": {
-  "On its own": {
+  "Alone, 2 runs": {
    "runs": [
     "read-1",
     "read-2"
@@ -263,7 +263,7 @@
    "hits_induction": 0,
    "distinct_picks": 8
   },
-  "Given the formula and where to look": {
+  "With a formula and layer hint, 1 run": {
    "runs": [
     "hinted"
    ],
