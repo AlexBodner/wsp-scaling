@@ -1,0 +1,7 @@
+Alone, 2 runs: 0 of 10 on the five, 0 on the top 10
+With a formula and layer hint, 1 run: 3 of 5 on the five, 4 on the top 10
+layers named with no weights: [5, 5, 6, 7, 7]
+layers of the five: [5, 5, 6, 7, 7]
+sums matching code to two decimals: 86 of 96
+largest miss: 0.103
+script mean on the top 10, of 5: 3.3666666666666667
