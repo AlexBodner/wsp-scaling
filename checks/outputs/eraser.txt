@@ -1,0 +1,46 @@
+slices rebuild the model's attention and output in float64, worst error 1.82e-12
+eigenvalues of OV sum to trace(VO), worst miss 3.41e-13
+next-token effect on repeats reproduces signed_ladder.txt: 10.7 -1.24 (was -1.24), 11.10 -0.72 (was -0.72)
+sample: repeats 32 sequences, 24 positions in the second copy; stories 128 sequences, 63 positions
+
+Top 10 of 144 by negative trace(VO) share, with share, trace(VO) over norm, and on repeats / stories: direct effect on the attended token, mean largest attention, share of positions on itself
+  5.11: share 1.000, trace -6.225, effect -0.015/-0.010, attention 0.68/0.62, on itself 0.00/0.02
+  1.11: share 1.000, trace -5.771, effect -0.078/-0.045, attention 0.76/0.65, on itself 1.00/0.89
+  6.5: share 1.000, trace -3.716, effect -0.007/-0.023, attention 0.49/0.61, on itself 0.00/0.00
+  6.6: share 1.000, trace -5.536, effect -0.023/-0.039, attention 0.34/0.68, on itself 0.05/0.00
+  3.10: share 1.000, trace -5.713, effect -0.005/-0.012, attention 0.33/0.59, on itself 0.03/0.00
+  9.5: share 1.000, trace -3.171, effect -0.034/-0.020, attention 0.63/0.71, on itself 0.01/0.00
+  4.7: share 1.000, trace -6.913, effect -0.007/-0.039, attention 0.36/0.49, on itself 0.90/0.91
+  8.10: share 1.000, trace -3.434, effect -0.047/0.036, attention 0.52/0.54, on itself 0.00/0.00
+  2.11: share 1.000, trace -3.258, effect 0.007/-0.026, attention 0.52/0.57, on itself 0.00/0.00
+  4.4: share 0.996, trace -2.619, effect -0.009/-0.021, attention 0.67/0.61, on itself 0.00/0.00
+named heads: 10.7 rank 67, share 0.229, effect -1.011/-0.298, 11.10 rank 141, share -0.000, effect -0.568/-0.168
+second reading, lowest trace(VO) over norm: 4.7 -6.913, 5.11 -6.225, 1.11 -5.771, 3.10 -5.713, 6.6 -5.536, 6.5 -3.716, 8.10 -3.434, 2.11 -3.258, 9.5 -3.171, 5.9 -3.063; named heads rank 10.7 61, 11.10 135
+
+Most negative direct effects on the attended token
+  repeats: 10.7 -1.011 (share rank 67), 11.10 -0.568 (share rank 141), 1.11 -0.078 (share rank 2), 8.10 -0.047 (share rank 8), 9.5 -0.034 (share rank 6), 0.9 -0.026 (share rank 47), 6.6 -0.023 (share rank 4), 3.4 -0.018 (share rank 17), 5.11 -0.015 (share rank 1), 7.3 -0.015 (share rank 41)
+  stories: 10.7 -0.298 (share rank 67), 11.10 -0.168 (share rank 141), 1.5 -0.085 (share rank 23), 11.4 -0.057 (share rank 83), 1.11 -0.045 (share rank 2), 8.0 -0.043 (share rank 12), 1.4 -0.043 (share rank 20), 4.7 -0.039 (share rank 7), 6.6 -0.039 (share rank 4), 1.10 -0.033 (share rank 24)
+
+Spearman between negative share and direct effect on all 144 heads, with 2000 within-layer shuffles
+  repeats: -0.477, shuffles mean -0.167, 2.5th to 97.5th percentile -0.299 to -0.027, chance of this magnitude or more 0.0000; second reading -0.465
+  stories: -0.292, shuffles mean -0.088, 2.5th to 97.5th percentile -0.225 to 0.057, chance of this magnitude or more 0.0015; second reading -0.287
+
+Matched same-layer positive heads, top head to match, share and effect on repeats / stories
+  5.11 to 5.2 share -0.000, effect 0.002/0.016
+  1.11 to 1.6 share 0.002, effect 0.056/0.009
+  6.5 to 6.0 share -0.000, effect 0.016/0.022
+  6.6 to 6.4 share -0.000, effect 0.012/0.001
+  3.10 to 3.3 share 0.054, effect 0.011/-0.003
+  9.5 to 9.0 share -0.000, effect 0.231/0.059
+  4.7 to 4.3 share -0.000, effect 0.022/0.035
+  8.10 to 8.4 share -0.000, effect 0.002/0.011
+  2.11 to 2.1 share 0.010, effect 0.027/0.027
+  4.4 to 4.11 share 0.001, effect 0.015/0.002
+
+Mean direct effect on the attended token, top 10, matched (10 heads), and within-layer shuffles of the top 10
+  repeats: top -0.022, matched 0.039, all heads 0.083, shuffles mean 0.055, chance of this low or lower 0.0000
+  stories: top -0.020, matched 0.018, all heads 0.016, shuffles mean 0.011, chance of this low or lower 0.0000
+  chance both named heads are in the top 10 under the shuffle: 0.0000
+
+prediction: 10.7 and 11.10 in the top 10: False; Spearman magnitude at least 0.3 on repeats and stories: False; Spearman negative on both, the mechanism's sign: True; top 10 mean below 0 on both: True; matched mean not below 0 on both: True
+peak resident memory 2.61 GB

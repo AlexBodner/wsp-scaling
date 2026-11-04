@@ -1,0 +1,53 @@
+
+gpt2: 12 layers, 12 heads, 144 heads in all, forward passes in torch.float64
+  slices rebuild the model's attention and output, worst error 5.46e-12
+  top heads on the previous token: 4.11 0.987, 3.7 0.549, 2.2 0.495, 3.2 0.410, 2.9 0.380, 5.6 0.364, 2.5 0.363, 6.8 0.354, 3.8 0.352, 3.6 0.346
+  top 5 match the card's list from other_models.txt: True
+  sum as writer for later heads (132 heads ranked): 1 of 5 in its top 5 [4.11], 1 of 5 in its top 10, top previous-token head 4.11 ranks 1
+    its top 10, with value and rank on the previous token: 4.11 6.37 (prev 0.987, rank 1), 6.0 3.65 (prev 0.204, rank 20), 5.6 3.28 (prev 0.364, rank 6), 7.0 3.18 (prev 0.302, rank 12), 6.8 2.86 (prev 0.354, rank 8), 5.10 2.85 (prev 0.072, rank 60), 8.7 2.74 (prev 0.186, rank 22), 4.6 2.74 (prev 0.180, rank 24), 3.5 2.73 (prev 0.058, rank 78), 4.3 2.62 (prev 0.212, rank 18)
+  best as writer for a later head (132 heads ranked): 1 of 5 in its top 5 [4.11], 3 of 5 in its top 10, top previous-token head 4.11 ranks 1
+    its top 10, with value and rank on the previous token: 4.11 0.54 (prev 0.987, rank 1), 5.6 0.32 (prev 0.364, rank 6), 6.8 0.22 (prev 0.354, rank 8), 6.0 0.21 (prev 0.204, rank 20), 3.3 0.18 (prev 0.240, rank 14), 3.7 0.17 (prev 0.549, rank 2), 5.2 0.17 (prev 0.121, rank 33), 2.2 0.16 (prev 0.495, rank 3), 8.7 0.16 (prev 0.186, rank 22), 5.3 0.16 (prev 0.145, rank 29)
+  roles swapped, sum as reader of earlier heads (132 heads ranked): 0 of 5 in its top 5 [], 0 of 5 in its top 10, top previous-token head 4.11 ranks 130
+    its top 10, with value and rank on the previous token: 10.1 2.18 (prev 0.053, rank 83), 9.6 2.07 (prev 0.039, rank 122), 11.9 1.98 (prev 0.052, rank 86), 7.1 1.93 (prev 0.038, rank 124), 9.9 1.90 (prev 0.035, rank 128), 10.10 1.84 (prev 0.046, rank 107), 9.4 1.79 (prev 0.036, rank 127), 10.6 1.75 (prev 0.049, rank 94), 11.5 1.75 (prev 0.049, rank 98), 10.7 1.66 (prev 0.032, rank 132)
+  direction swapped, sum as writer for earlier heads (132 heads ranked): 0 of 5 in its top 5 [], 0 of 5 in its top 10, top previous-token head 4.11 ranks 24
+    its top 10, with value and rank on the previous token: 9.3 1.21 (prev 0.153, rank 27), 2.7 0.83 (prev 0.110, rank 42), 5.2 0.78 (prev 0.121, rank 33), 6.8 0.77 (prev 0.354, rank 8), 8.8 0.70 (prev 0.060, rank 77), 8.5 0.64 (prev 0.113, rank 39), 7.4 0.64 (prev 0.047, rank 104), 10.11 0.61 (prev 0.084, rank 49), 7.1 0.61 (prev 0.038, rank 124), 11.3 0.58 (prev 0.093, rank 46)
+  mean sum as writer for later heads, by layer: 0 0.57, 1 0.21, 2 0.18, 3 0.54, 4 1.03, 5 0.91, 6 0.93, 7 0.80, 8 0.46, 9 0.21, 10 0.05
+  within-layer shuffle, 2000 draws: mean 0.089 of 5 in the top 5, chance of 1 or more 0.0890, chance the top head ranks in the top 10 0.2455, median rank 35
+
+gpt2-medium: 24 layers, 16 heads, 384 heads in all, forward passes in torch.float32
+  slices rebuild the model's attention and output, worst error 9.77e-04
+  top heads on the previous token: 5.11 0.988, 4.13 0.955, 6.7 0.948, 8.1 0.649, 13.5 0.544, 3.13 0.535, 7.13 0.505, 3.8 0.384, 18.3 0.354, 3.15 0.351
+  top 5 match the card's list from other_models.txt: True
+  sum as writer for later heads (368 heads ranked): 2 of 5 in its top 5 [5.11, 6.7], 4 of 5 in its top 10, top previous-token head 5.11 ranks 4
+    its top 10, with value and rank on the previous token: 6.7 10.68 (prev 0.948, rank 3), 7.6 10.47 (prev 0.227, rank 35), 8.12 9.48 (prev 0.125, rank 59), 5.11 9.47 (prev 0.988, rank 1), 5.15 9.16 (prev 0.184, rank 40), 4.13 8.90 (prev 0.955, rank 2), 13.5 8.85 (prev 0.544, rank 5), 12.8 8.59 (prev 0.257, rank 30), 8.7 8.29 (prev 0.286, rank 24), 11.14 8.19 (prev 0.044, rank 263)
+  best as writer for a later head (368 heads ranked): 4 of 5 in its top 5 [4.13, 5.11, 6.7, 8.1], 4 of 5 in its top 10, top previous-token head 5.11 ranks 1
+    its top 10, with value and rank on the previous token: 5.11 0.45 (prev 0.988, rank 1), 4.13 0.42 (prev 0.955, rank 2), 6.7 0.39 (prev 0.948, rank 3), 11.6 0.32 (prev 0.334, rank 11), 8.1 0.28 (prev 0.649, rank 4), 9.9 0.25 (prev 0.021, rank 381), 8.12 0.24 (prev 0.125, rank 59), 7.6 0.24 (prev 0.227, rank 35), 8.6 0.24 (prev 0.319, rank 14), 5.15 0.22 (prev 0.184, rank 40)
+  roles swapped, sum as reader of earlier heads (368 heads ranked): 0 of 5 in its top 5 [], 0 of 5 in its top 10, top previous-token head 5.11 ranks 367
+    its top 10, with value and rank on the previous token: 14.9 3.76 (prev 0.030, rank 353), 18.8 2.91 (prev 0.044, rank 262), 16.13 2.84 (prev 0.053, rank 197), 17.2 2.66 (prev 0.059, rank 160), 9.3 2.59 (prev 0.031, rank 342), 21.13 2.54 (prev 0.043, rank 274), 10.1 2.52 (prev 0.031, rank 345), 18.0 2.43 (prev 0.046, rank 246), 19.8 2.43 (prev 0.043, rank 271), 15.12 2.39 (prev 0.048, rank 234)
+  direction swapped, sum as writer for earlier heads (368 heads ranked): 0 of 5 in its top 5 [], 1 of 5 in its top 10, top previous-token head 5.11 ranks 82
+    its top 10, with value and rank on the previous token: 17.11 3.36 (prev 0.113, rank 68), 18.3 3.22 (prev 0.354, rank 9), 9.15 2.52 (prev 0.156, rank 47), 10.7 2.45 (prev 0.072, rank 123), 15.13 2.42 (prev 0.159, rank 46), 8.1 2.32 (prev 0.649, rank 4), 13.7 2.21 (prev 0.056, rank 180), 16.7 2.15 (prev 0.140, rank 52), 7.6 2.08 (prev 0.227, rank 35), 11.12 1.95 (prev 0.093, rank 85)
+  mean sum as writer for later heads, by layer: 0 0.07, 1 0.08, 2 -0.45, 3 -0.36, 4 0.41, 5 0.94, 6 1.55, 7 1.44, 8 1.51, 9 1.88, 10 1.82, 11 1.43, 12 1.38, 13 1.38, 14 1.36, 15 0.70, 16 0.71, 17 0.30, 18 0.38, 19 0.21, 20 0.07, 21 0.10, 22 0.01
+  within-layer shuffle, 2000 draws: mean 0.251 of 5 in the top 5, chance of 2 or more 0.0205, chance the top head ranks in the top 10 0.1260, median rank 164
+
+distilbert/distilgpt2: 6 layers, 12 heads, 72 heads in all, forward passes in torch.float64
+  slices rebuild the model's attention and output, worst error 9.09e-13
+  top heads on the previous token: 2.11 0.930, 1.2 0.393, 1.9 0.386, 3.0 0.359, 2.3 0.343, 1.5 0.332, 1.3 0.315, 1.8 0.260, 2.5 0.222, 2.7 0.215
+  top 5 match the card's list from other_models.txt: True
+  sum as writer for later heads (60 heads ranked): 3 of 5 in its top 5 [2.3, 2.11, 3.0], 4 of 5 in its top 10, top previous-token head 2.11 ranks 1
+    its top 10, with value and rank on the previous token: 2.11 2.93 (prev 0.930, rank 1), 3.0 1.54 (prev 0.359, rank 4), 2.3 1.43 (prev 0.343, rank 5), 2.6 1.31 (prev 0.138, rank 16), 4.3 1.23 (prev 0.180, rank 15), 1.2 1.04 (prev 0.393, rank 2), 3.5 1.04 (prev 0.062, rank 35), 2.9 1.00 (prev 0.077, rank 26), 3.1 0.97 (prev 0.036, rank 61), 3.8 0.89 (prev 0.084, rank 21)
+  best as writer for a later head (60 heads ranked): 4 of 5 in its top 5 [1.2, 2.3, 2.11, 3.0], 4 of 5 in its top 10, top previous-token head 2.11 ranks 1
+    its top 10, with value and rank on the previous token: 2.11 0.42 (prev 0.930, rank 1), 2.3 0.17 (prev 0.343, rank 5), 1.2 0.16 (prev 0.393, rank 2), 4.3 0.15 (prev 0.180, rank 15), 3.0 0.14 (prev 0.359, rank 4), 2.6 0.14 (prev 0.138, rank 16), 0.1 0.12 (prev 0.000, rank 71), 2.9 0.11 (prev 0.077, rank 26), 3.1 0.10 (prev 0.036, rank 61), 3.5 0.10 (prev 0.062, rank 35)
+  roles swapped, sum as reader of earlier heads (60 heads ranked): 0 of 5 in its top 5 [], 0 of 5 in its top 10, top previous-token head 2.11 ranks 60
+    its top 10, with value and rank on the previous token: 5.9 1.45 (prev 0.048, rank 51), 5.5 1.25 (prev 0.048, rank 50), 4.6 1.21 (prev 0.040, rank 60), 4.9 1.18 (prev 0.034, rank 63), 5.6 1.08 (prev 0.042, rank 55), 4.4 1.05 (prev 0.035, rank 62), 5.7 1.03 (prev 0.048, rank 52), 3.1 1.03 (prev 0.036, rank 61), 3.10 1.01 (prev 0.025, rank 68), 5.1 0.93 (prev 0.045, rank 54)
+  direction swapped, sum as writer for earlier heads (60 heads ranked): 0 of 5 in its top 5 [], 0 of 5 in its top 10, top previous-token head 2.11 ranks 23
+    its top 10, with value and rank on the previous token: 5.3 0.55 (prev 0.083, rank 22), 3.2 0.48 (prev 0.023, rank 69), 4.2 0.43 (prev 0.056, rank 40), 4.9 0.42 (prev 0.034, rank 63), 3.10 0.40 (prev 0.025, rank 68), 4.3 0.39 (prev 0.180, rank 15), 5.6 0.31 (prev 0.042, rank 55), 3.1 0.27 (prev 0.036, rank 61), 4.6 0.26 (prev 0.040, rank 60), 5.9 0.26 (prev 0.048, rank 51)
+  mean sum as writer for later heads, by layer: 0 0.25, 1 0.16, 2 0.56, 3 0.49, 4 0.15
+  within-layer shuffle, 2000 draws: mean 0.586 of 5 in the top 5, chance of 3 or more 0.0045, chance the top head ranks in the top 10 0.3300, median rank 15
+
+model | sum hits | best hits | roles swapped hits | direction swapped hits | top head rank by sum | by best
+gpt2 | 1 | 1 | 0 | 0 | 1 | 1
+gpt2-medium | 2 | 4 | 0 | 0 | 4 | 1
+distilbert/distilgpt2 | 3 | 4 | 0 | 0 | 1 | 1
+
+prediction: at least 2 of 5 on gpt2 and medium: False; top head within the top 10 on all three: True
+peak resident memory 3.62 GB
