@@ -70,7 +70,7 @@ You may use any computation on these weights, with any method you like: multiply
 1. A forward pass: do not run the network or any of its layers (normalization, attention with its softmax, the MLP with its gelu) on any input, whether real, random or constructed, in code, in your head or on paper. Treating the weight matrices as linear-algebra objects (products, eigenvalues, singular vectors, applying one weight matrix to directions taken from other weights) is fine; simulating what the network does to an input is not.
 2. Search: do not look anything up (there is no internet access in any case).
 
-HOW YOU COMPUTE: you read the weights by running Python code. To run code, end your reply with a code block whose opening line is three backticks followed by the word python. We run it and reply with its printed output. Available: numpy, scipy, scikit-learn, PyTorch (CPU), pandas, sympy, networkx. Before your code runs, numpy is imported as np and W is a dict of the weight arrays by name: W['L5.qkv.W'] is 768 x 2304, W['L5.up.W'] is 768 x 3072, and so on, and they apply as in the computation above. There is nothing else to read (no other files, no network). Each run is a fresh process (nothing is kept between runs), may take up to 600 seconds, and its output is cut at 20,000 characters. You may run code up to 100 times. Each turn is a fresh call that replays your earlier replies and outputs, and your private reasoning is not kept, so write down in your reply whatever you want to remember.
+HOW YOU COMPUTE: you read the weights by running Python code. To run code, end your reply with a code block whose opening line is three backticks followed by the word python. We run it and reply with its printed output. Available: numpy, scipy, scikit-learn, PyTorch (CPU), pandas, sympy, networkx. Before your code runs, numpy is imported as np and W is a dict of the weight arrays by name: W['L5.qkv.W'] is 768 x 2304, W['L5.up.W'] is 768 x 3072, and so on, and they apply as in the computation above. There is nothing else to read (no other files, no network). Each run is a fresh process (nothing is kept between runs), may take up to 600 seconds, and its output is cut at 20,000 characters. You may run code up to 20 times. Each turn is a fresh call that replays your earlier replies and outputs, and your private reasoning is not kept, so write down in your reply whatever you want to remember.
 """
 
 _HINT = """A HINT: for one head, write Q for its 64-column part of qkv.W at the query offset and K for the part at the key offset. Summing the products of Q and K over the same input rows, Q[r] . K[r], for a sample of rows r, tends to be larger for heads that attend to the token after an earlier copy of the current token. This holds from layer 4 onward. In layers 0 to 3 the sum is large for other reasons, so compare only heads in layers 4 to 11.
@@ -95,7 +95,8 @@ def hinted_prompt() -> str:
 
 def python_prompt() -> str:
     """Returns the opening prompt of a reading run with Python: the same question and no method."""
-    return "\n".join((_TASK, NETWORK_OPENING, "", _structure(), "", _PYTHON_RULES, _ANSWER))
+    task = _TASK.replace(f"among the {POSITIVE_HEADS} heads", f"among the {HEADS_TO_NAME} heads")
+    return "\n".join((task, NETWORK_OPENING, "", _structure(), "", _PYTHON_RULES, _ANSWER))
 
 
 def blind_prompt() -> str:

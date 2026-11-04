@@ -22,7 +22,7 @@ INDUCTION_HEADS = 5
 # List prices for gpt-6-astra, from CONTEXT.md.
 INPUT_PER_MILLION, CACHED_PER_MILLION, OUTPUT_PER_MILLION = 10, 1, 50
 _SCRIPTED_CODE = """scores = []
-for layer in range(4, 12):
+for layer in range(12):
     weight = W[f"L{layer}.qkv.W"]
     for head in range(12):
         q, k = weight[:, 64 * head : 64 * (head + 1)], weight[:, 768 + 64 * head : 768 + 64 * (head + 1)]
@@ -54,6 +54,7 @@ def main() -> None:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--live", action="store_true", help="make sealed Astra calls")
     mode.add_argument("--scripted", action="store_true", help="use the scripted reader, with no model calls")
+    parser.add_argument("--resume", type=Path, help="continue a stopped run from its folder")
     arguments = parser.parse_args()
     if arguments.live == (arguments.arm == "scripted"):
         raise ValueError("the scripted arm runs only with --scripted, and the python arms only with --live")
@@ -77,8 +78,8 @@ def main() -> None:
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     label = "live" if arguments.live else "scripted"
-    run_dir = ROOT / "runs" / f"reading-{arguments.arm}__{label}__{stamp}"
-    run_dir.mkdir(parents=True)
+    run_dir = arguments.resume or ROOT / "runs" / f"reading-{arguments.arm}__{label}__{stamp}"
+    run_dir.mkdir(parents=True, exist_ok=bool(arguments.resume))
 
     if arguments.live:
         from wsp.astra import call_astra
