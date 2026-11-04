@@ -184,7 +184,7 @@ Limits:
 ## Reading test with Python, written before any Astra call
 Question: with Python and no hint, can Astra find GPT-2 small's induction heads from its weights, without running it? This takes the setup of the post's Experiment 3 to a real 124M model.
 
-- **Same as Experiment 3:** the target is defined and no method is given. Only the blocks are available, with no token, position or final tensors. Python runs on the weights, each run a fresh process with up to 600 seconds and 20,000 characters of output. Any linear algebra on the weights is allowed, and forward passes and search are not.
+- **Same as Experiment 3:** the target is defined and no recipe is given. Only the blocks are available, with no token, position or final tensors. Python runs on the weights, each run a fresh process with up to 600 seconds and 20,000 characters of output. Any linear algebra on the weights is allowed, and forward passes and search are not.
 - **Different from Experiment 3:**
   - Heads and coordinates are scrambled, and the key bias is noise, because these heads are published. Layer order stays.
   - It names 5 heads, and is told so, rather than labelling all of them.

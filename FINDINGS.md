@@ -12,13 +12,38 @@ Asked to make the model stop repeating while keeping ordinary text, with Python,
 | **Astra, run 2** | **0.011** | **0.013** (0.019 on a larger sample) |
 | Zeroing the top 5 heads | 0.295 | 1.066 |
 | Zeroing all of layers 5 to 7 | 0.010 | 0.222 |
-| Reducing the same heads' keys to their query-bias term | 0.002 | 0.022 |
+| Reducing the same heads' keys to their query-bias term, the simple edit | 0.002 | 0.022 |
 
-**This shows reading, not a cleverer edit.** The last row needs only the head list and matches Astra, so the value is in finding the right heads from scrambled weights. Zeroing was a poor baseline, because most of its text cost comes from losing each head's mean output. Copying on repeated real stories falls less, from 0.92 to about 0.53 in run 2 and 0.7 in run 1. Scored by `wsp/write_task.py`, with baselines in `checks/outputs/write_baselines.txt`.
+**This shows reading, not a cleverer edit.** The last row needs only the head list and matches Astra, so the value is in finding the right heads from scrambled weights. Zeroing was a poor baseline, because most of its text cost comes from losing each head's mean output. Copying on repeated real stories falls less, as the second table below shows. Scored by `wsp/write_task.py`, with baselines in `checks/outputs/write_baselines.txt`.
+
+### What the edits do on plain English
+The repeat score used random tokens and Astra ran nothing, so it never saw these lists. Prompts are fixed in `checks/edit_demo.py` before it runs, after earlier list checks, and every output is in `checks/outputs/edit_demo.txt`.
+
+| On GPT-2 small | Unedited | Astra, run 1 | Astra, run 2 | Simple edit, run 2's heads | Top 5 zeroed |
+|---|---|---|---|---|---|
+| Short lists of common nouns "a, b, c, a, b," right word | 0.95 | 0.14 | 0.05 | 0.05 | 0.40 |
+| Five-word lists repeated, right word | 0.94 | 0.33 | 0.08 | 0.08 | 0.45 |
+| Name again in a second sentence, right name | 0.36 | 0.10 | 0.07 | 0.08 | 0.75 |
+| 30 plain facts, right on top | 15 | the same 15 | the same 15 | 14 | 10 |
+| Top next token unchanged on stories | 1 | 0.95 | 0.95 | 0.96 | 0.52 |
+
+The simple edit reduces each head's keys to what its constant query reads from them, the same projection Astra's run 1 used to protect that term. It needs only the head list. Plain zeroing of the same heads' keys or outputs doesn't match it.
+
+**On short lists of common words, the edited models usually repeat a word they just saw and rarely the next one.** Over 600 such lists they pick a listed word 91 to 99% of the time, the right one 4 to 14%, and mostly the last word again (`checks/outputs/edit_order.txt`). We wrote this check after seeing the examples. It doesn't hold everywhere (`checks/outputs/edit_limits.txt`):
+
+| | Unedited | Astra, run 1 | Astra, run 2 |
+|---|---|---|---|
+| 3-word lists, 4 other word pools, right word | 0.62 to 0.89 | 0.00 to 0.31 | 0.00 to 0.08 |
+| Same lists, any listed word | 0.83 to 1.00 | 0.50 to 0.94 | 0.31 to 0.86 |
+| Random tokens, top token anywhere in the first copy | 0.99 | 0.25 | 0.04 |
+| Repeated stories, right token | 0.91 | 0.74 | 0.53 |
+| Text loss rise, 256-token windows | 0 | 2.0% | 1.9% |
+
+**Copying isn't gone.** On repeated stories it stays well above zero, and "The old man walked to the market and bought three fish. The old man walked to the market and bought" still continues "three fish." Run 2 also edited the heads' outputs, which alone do almost nothing (repeat 0.986). Its stronger score comes from the key cut on all top 5 heads, in a local verifier check.
 
 ## A bigger model: reading held up better than writing
 On scrambled GPT-2 medium, 355M weights and Astra's single run:
-- **Reading:** the three sources it chose are that model's three strongest previous-token heads, 5.11, 4.13 and 6.7 (0.99, 0.96, 0.95). It worked with several sources without being told there were several. Its targets are the set a short recipe also finds.
+- **Reading:** the three sources it chose are that model's three strongest previous-token heads, 5.11, 4.13 and 6.7 (0.99, 0.96, 0.95). It worked with several sources without being told there were several. Its targets are the set a short recipe also finds, and only 2 of those 5 are top-5 induction heads by attention.
 - **Writing:** repeat accuracy 0.737 at text rise 0.135, which is not beyond deletion and worse than a head-list edit on the same heads (0.680 at 0.023). That run hit its cost cap, so this isn't evidence of a limit of size.
 
 The known statistic also changes at this size. By best pairing, top-5 hits on attention score are 5, 2, 4 and 5 on GPT-2 small, medium, distilgpt2 and pythia-14m (`checks/outputs/other_models.txt`). Summing over strong writers gives 3, 4, 5, 5, a recipe written after seeing medium fail. No recipe wins everywhere.

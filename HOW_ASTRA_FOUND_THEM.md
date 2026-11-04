@@ -1,6 +1,6 @@
 # How Astra found the induction heads
 
-With Python and no method given, GPT-6 Astra named the five heads that score highest as induction heads on repeated random tokens, in both runs. GPT-2 has other, weaker ones, so this is the top of the list, not all of them. This is what the logs show about how, and what they can't show. Its reasoning is encrypted, so we have its replies, code, outputs and token counts, not its chain of thought.
+With Python and no recipe, GPT-6 Astra named the five heads that score highest as induction heads on repeated random tokens, in both runs. GPT-2 has other, weaker ones, so this is the top of the list, not all of them. This is what the logs show about how, and what they can't show. Its reasoning is encrypted, so we have its replies, code, outputs and token counts, not its chain of thought.
 
 ![Its words, its key lines and what they printed](figures/how_astra_found_them_v1.png)
 
