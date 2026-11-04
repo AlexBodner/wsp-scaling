@@ -12,13 +12,9 @@ from transformers import GPT2LMHeadModel
 
 from wsp.disguise import _random_invertible
 from wsp.network import writable_tensors
-from wsp.reading import python_prompt
+from wsp.reading import _REPEAT_LENGTH, _TRUTH_BATCH, _TRUTH_SEEDS, _TRUTH_TOKEN_RANGE, python_prompt
 
 HEAD_SIZE = 64
-REPEAT_LENGTH = 50
-TRUTH_SEEDS = (11, 12, 13, 14)
-TRUTH_BATCH = 16
-VOCABULARY = 50257
 MODELS = {"medium": "gpt2-medium", "distil": "distilbert/distilgpt2", "small": "gpt2"}
 
 
@@ -113,7 +109,7 @@ def family_prompt(model: GPT2LMHeadModel) -> str:
             raise ValueError(f"expected to replace {old!r}")
         prompt = prompt.replace(old, new)
     prompt = prompt.replace("```answer\n3.7\n```", "```answer\n0.0\n```")
-    if width != 768 and any(token in prompt for token in (" 768", "2304", "3072", "1535", "124,439")):
+    if width != 768 and any(token in prompt for token in (" 768", "2304", "1535", "124,439")):
         raise ValueError("GPT-2 small's shape survived in the prompt")
     if "L5" in prompt or "3.7" in prompt:
         raise ValueError("a layer-naming example survived in the prompt")
@@ -122,16 +118,20 @@ def family_prompt(model: GPT2LMHeadModel) -> str:
 
 @torch.no_grad()
 def induction_scores(model: GPT2LMHeadModel) -> np.ndarray:
-    """Measures each head's attention to the token after the earlier copy, as the prompt defines it."""
-    layers, heads = model.config.n_layer, model.config.n_head
-    total = np.zeros((layers, heads))
-    second = range(REPEAT_LENGTH, 2 * REPEAT_LENGTH - 1)
-    for seed in TRUTH_SEEDS:
-        generator = torch.Generator().manual_seed(seed)
-        half = torch.randint(0, VOCABULARY, (TRUTH_BATCH, REPEAT_LENGTH), generator=generator)
-        attentions = model(torch.cat([half, half], 1), output_attentions=True).attentions
-        for layer, attention in enumerate(attentions):
-            mean = attention.mean(0)
-            for t in second:
-                total[layer] += mean[:, t, t - REPEAT_LENGTH + 1].numpy()
-    return total / (len(TRUTH_SEEDS) * len(second))
+    """Measures each head's attention to the token after the earlier copy, with the settings GPT-2 small's truth uses."""
+    return np.mean([seed_scores(model, seed) for seed in _TRUTH_SEEDS], axis=0)
+
+
+@torch.no_grad()
+def seed_scores(model: GPT2LMHeadModel, seed: int) -> np.ndarray:
+    """Measures the same score on one seed's sequences, to see how stable near-ties are."""
+    scores = np.zeros((model.config.n_layer, model.config.n_head))
+    second = range(_REPEAT_LENGTH, 2 * _REPEAT_LENGTH - 1)
+    generator = torch.Generator().manual_seed(seed)
+    half = torch.randint(*_TRUTH_TOKEN_RANGE, (_TRUTH_BATCH, _REPEAT_LENGTH), generator=generator)
+    attentions = model(torch.cat([half, half], 1), output_attentions=True).attentions
+    for layer, attention in enumerate(attentions):
+        mean = attention.mean(0)
+        for t in second:
+            scores[layer] += mean[:, t, t - _REPEAT_LENGTH + 1].numpy()
+    return scores / len(second)

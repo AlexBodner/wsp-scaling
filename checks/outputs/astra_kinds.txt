@@ -1,0 +1,19 @@
+duplicate: truth 0.5 0.64, 3.0 0.62, 0.1 0.26, 1.11 0.06, 0.10 0.06, 5.10 0.05, 7.1 0.05
+  baselines: trace(QK^T), own match 4 (4 in its layers); trace(VO), own copying 0 (0 in its layers); best cosine as reader of an earlier head 0 (2 in its layers); best cosine as writer for a later head 0 (1 in its layers); minus trace(VO), own negative copying 1 (1 in its layers)
+  Astra: 4 of 5, 4 within 0.02 of the 5th, picks [(0, 5), (0, 1), (0, 3), (1, 11), (3, 0)], ranks [1, 3, 143, 4, 2], turns 11, code runs 10, flags [], stopped by answer
+  chance within layers: mean 0.92, p 0.0019
+previous: truth 4.11 0.99, 3.7 0.55, 2.2 0.50, 3.2 0.41, 2.9 0.38, 5.6 0.37, 2.5 0.36
+  baselines: trace(QK^T), own match 0 (1 in its layers); trace(VO), own copying 0 (1 in its layers); best cosine as reader of an earlier head 0 (0 in its layers); best cosine as writer for a later head 1 (3 in its layers); minus trace(VO), own negative copying 0 (0 in its layers)
+Traceback (most recent call last):
+  File "/Users/alexanderbodner/Documents/wsp-scaling/checks/astra_kinds.py", line 122, in <module>
+    main()
+  File "/Users/alexanderbodner/Documents/wsp-scaling/checks/astra_kinds.py", line 103, in main
+    result = json.loads((run / "result.json").read_text())
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/pathlib.py", line 1027, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/anaconda3/lib/python3.12/pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/alexanderbodner/Documents/wsp-scaling/runs/kind-previous__live__20261104T041728Z/result.json'

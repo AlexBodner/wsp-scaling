@@ -13,10 +13,10 @@ from wsp.code_reader import run_code_reading, save_blocks
 from wsp.family import MODELS, check_products, disguise_family, family_prompt, induction_scores, load
 
 ROOT = Path(__file__).parent.parent
-ARMS = {"medium-1": ("medium", 1201), "medium-2": ("medium", 1202), "distil-1": ("distil", 1203), "distil-2": ("distil", 1204), "distil-scripted": ("distil", 1205)}
+ARMS = {"medium-1": ("medium", 1201), "medium-2": ("medium", 1202), "distil-1": ("distil", 1203), "distil-2": ("distil", 1204), "distil-scripted": ("distil", 1205), "medium-scripted": ("medium", 1206)}
 MANIFEST = ROOT / "prompts" / "FAMILY_MANIFEST.json"
 NAMED = 5
-FREEZE = ("distil",)
+FREEZE = ("medium", "distil")
 TOP_TEN = 10
 MAX_COST = 6.0
 _SCRIPTED_CODE = 'print("TOP", " ".join(f"{layer}.{layer}" for layer in range(1, 6)))\n'
