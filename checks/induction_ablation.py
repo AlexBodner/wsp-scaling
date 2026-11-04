@@ -61,6 +61,7 @@ print("top five:", ranked[:5], " next five:", ranked[5:10])
 print(f"nothing silenced: {repeat_accuracy(model, tokens):.3f}")
 print(f"top five silenced: {accuracy_without(model, tokens, ranked[:5]):.3f}")
 print(f"next five silenced: {accuracy_without(model, tokens, ranked[5:10]):.3f}")
+print(f"top ten silenced: {accuracy_without(model, tokens, ranked[:10]):.3f}")
 others = ranked[10:]
 scores = [accuracy_without(model, tokens, [others[i] for i in rng.choice(len(others), HEADS_SILENCED, replace=False)]) for _ in range(RANDOM_SETS)]
 print(f"5 other random heads silenced, {RANDOM_SETS} sets: mean {np.mean(scores):.3f}, lowest {min(scores):.3f}, highest {max(scores):.3f}")

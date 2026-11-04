@@ -30,8 +30,8 @@ FIGURE_INCHES, DPI = (10.8, 6.75), 200
 LABEL_POINTS, TITLE_POINTS, RESULT_POINTS, STAT_POINTS = 20, 23, 26, 44
 MARK_WIDTH = 4
 TITLE = "Can GPT-6 Astra find induction heads in scrambled GPT-2 weights?"
-EXAMPLE_INTRO = "An induction head looks back at what came next last time:"
-EXAMPLE_WORDS = ("Harry", "Potter", "went", "home,", "and", "Harry")
+EXAMPLE_INTRO = "An induction head finds what came next last time, and copies it:"
+EXAMPLE_WORDS = ("Mira", "Kowal", "went", "home,", "and", "Mira")
 NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
 STORY_TITLE = "GPT-6 Astra hunts GPT-2's induction heads, with no tools"
 STORY_STEPS = (("Not shown any weights", ("blind",)), ("Shown scrambled weights", ("read-1", "read-2")), ("With our formula and layer hint", ("hinted",)))
@@ -262,7 +262,7 @@ def _story_figure(shuffle: TokenShuffle) -> None:
         axis.text(HEADS / 2, 3.4, result, fontsize=RESULT_POINTS - 3, fontweight="bold", ha="center", color=INK)
     _draw_legend(figure)
     figure.text(0.5, 0.045, STORY_NOTE, fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
-    output = ROOT / "figures" / "reading_story_v3.png"
+    output = ROOT / "figures" / "reading_story_v4.png"
     figure.savefig(output, dpi=DPI)
     output.with_suffix(".json").write_text(json.dumps({"blind_layers": sorted(layer_counts.elements()), "steps": results}, indent=1))
     print(output, {heading: value["hits_induction"] for heading, value in results.items()})
