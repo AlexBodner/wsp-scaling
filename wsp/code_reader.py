@@ -183,6 +183,7 @@ def run_code_reading(
     spent: Callable[[], float],
     run_dir: Path,
     max_cost: float = MAX_COST_USD,
+    last_turn_notice: str = _LAST_TURN_NOTICE,
 ) -> CodeReadingResult:
     """Runs the reader until it answers or a limit is reached, and saves every turn.
 
@@ -196,6 +197,7 @@ def run_code_reading(
         spent: Returns the run's cost so far at list prices.
         run_dir: Where the run is saved.
         max_cost: The spend at which the next turn becomes the last.
+        last_turn_notice: What the reader is told when a turn is its last.
     """
     run_dir.mkdir(parents=True, exist_ok=True)
     transcript, answer, turns, code_runs, flags, stopped_by = "", None, 0, 0, [], "answer"
@@ -250,7 +252,7 @@ def run_code_reading(
                     reason = f"the ${max_cost:g} spend cap"
                 if reason:
                     final_turn, stopped_by = True, reason
-                    transcript += f"\n{_LAST_TURN_NOTICE}"
+                    transcript += f"\n{last_turn_notice}"
                 elif not warned and spent() >= COST_WARNING_SHARE * max_cost:
                     warned = True
                     transcript += f"\n{_LOW_BUDGET_NOTICE}"

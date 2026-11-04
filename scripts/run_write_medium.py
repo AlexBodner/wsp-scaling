@@ -20,7 +20,9 @@ ROOT = Path(__file__).parent.parent
 RUN_SEED = 1401
 BASELINE_SEED = 1499
 MANIFEST = ROOT / "prompts" / "WRITE_MEDIUM_MANIFEST.json"
-MAX_COST = 5.2
+MAX_COST = 4.8
+LAST_TURN = "THIS IS YOUR LAST TURN: end this reply with an edit block and an answer block, or you score zero."
+_SCRIPTED_REPLY = 'Zeroing one head.\n\n```edit\nW["L5.out.W"][0:64, :] = 0\n```\n\n```answer\n5.0\n5.1\n5.2\n5.3\n5.4\n```'
 NAMED = 5
 TOP_TEN = 10
 REPEAT_LENGTH = 50
@@ -93,6 +95,9 @@ def baselines() -> None:
         "attention top 5 zeroed": ATTENTION_TOP,
         "earliest 5 above 0.5 attention zeroed": [(5, 8), (6, 1), (7, 2), (9, 3), (9, 9)],
         "best-pairing 10 zeroed": BEST_PAIRING + [(12, 0), (10, 1), (10, 8), (11, 1), (9, 4)],
+        "all heads in layers 5 to 7 zeroed": [(layer, head) for layer in range(5, 8) for head in range(16)],
+        "all heads in layers 6 to 8 zeroed": [(layer, head) for layer in range(6, 9) for head in range(16)],
+        "all heads in layers 7 to 9 zeroed": [(layer, head) for layer in range(7, 10) for head in range(16)],
         "all heads in layers 5 to 9 zeroed": [(layer, head) for layer in range(5, 10) for head in range(16)],
         "all heads in layers 5 to 12 zeroed": [(layer, head) for layer in range(5, 13) for head in range(16)],
     }
@@ -110,7 +115,7 @@ def baselines() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("mode", choices=["freeze", "baselines", "live"])
+    parser.add_argument("mode", choices=["freeze", "baselines", "live", "scripted"])
     arguments = parser.parse_args()
     if arguments.mode == "baselines":
         baselines()
@@ -125,8 +130,9 @@ def main() -> None:
         return
     if digest != json.loads(MANIFEST.read_text())["write_medium"]:
         raise ValueError("the prompt no longer matches its frozen hash")
-    truth = induction_scores(model)
+    truth = induction_scores(model.double().float())
     disguised = disguise_family(model, RUN_SEED)
+    print("seed's scores before any call:", scores(fresh(disguised.tensors)), flush=True)
     scrambled = np.stack([truth[layer, disguised.original_head[layer]] for layer in range(model.config.n_layer)])
     del model
     order = np.argsort(-scrambled.ravel())
@@ -136,19 +142,23 @@ def main() -> None:
     if not weights.exists():
         save_blocks(disguised, weights)
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    run_dir = ROOT / "runs" / f"write-medium__live__{stamp}"
+    run_dir = ROOT / "runs" / f"write-medium__{arguments.mode}__{stamp}"
     run_dir.mkdir(parents=True)
     (run_dir / "disguise_map.json").write_text(json.dumps(disguised.original_head.tolist()))
-    from wsp.astra import call_astra
+    if arguments.mode == "live":
+        from wsp.astra import call_astra
 
-    def call(text: str, item: str) -> str:
-        return call_astra(text, run_dir, item)["reply"]
+        def call(text: str, item: str) -> str:
+            return call_astra(text, run_dir, item)["reply"]
 
-    result = run_code_reading(prompt, weights, top, top_ten, RUN_SEED, call, lambda: spent_so_far(run_dir), run_dir, MAX_COST)
+        spent = lambda: spent_so_far(run_dir)
+    else:
+        call, spent = (lambda text, item: _SCRIPTED_REPLY), (lambda: 0.0)
+    result = run_code_reading(prompt, weights, top, top_ten, RUN_SEED, call, spent, run_dir, MAX_COST, LAST_TURN)
     print(json.dumps(result.__dict__, default=list)[:300], flush=True)
     last_reply = [json.loads(line) for line in (run_dir / "transcript.jsonl").read_text().splitlines()][-1]["reply"]
     code = edit_code(last_reply)
-    summary: dict = {"seed": RUN_SEED, "cost": spent_so_far(run_dir), "named_heads": [list(pick) for pick in result.answer or []]}
+    summary: dict = {"seed": RUN_SEED, "cost": spent(), "named_heads": [list(pick) for pick in result.answer or []]}
     if code is None:
         summary["counted_as"] = "no edit block"
     else:
