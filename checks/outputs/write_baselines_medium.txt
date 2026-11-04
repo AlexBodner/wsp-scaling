@@ -1,0 +1,8 @@
+unedited: repeat accuracy 0.988, text loss 3.141
+best-pairing 5 zeroed: repeat accuracy 0.573, text loss 3.875, rise 0.734
+attention top 5 zeroed: repeat accuracy 0.946, text loss 3.144, rise 0.003
+earliest 5 above 0.5 attention zeroed: repeat accuracy 0.551, text loss 3.961, rise 0.820
+best-pairing 10 zeroed: repeat accuracy 0.177, text loss 3.867, rise 0.726
+all heads in layers 5 to 9 zeroed: repeat accuracy 0.199, text loss 3.320, rise 0.179
+all heads in layers 5 to 12 zeroed: repeat accuracy 0.002, text loss 3.603, rise 0.462
+4 random sets of 5 zeroed: repeat accuracy mean 0.983, lowest 0.975; text rise mean 0.007
