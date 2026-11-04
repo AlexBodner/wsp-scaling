@@ -5,4 +5,13 @@ name again after 'according to'    0.34/0.36 | 0.92/0.81 | 0.33/0.25 | 0.20/0.29
 same sentence repeated             0.28/0.11 | 0.71/0.49 | 0.80/0.39 | 0.20/0.08 | 0.61/0.33 | 0.29/0.11
 name listed three times            1.00/0.69 | 1.00/0.78 | 0.99/0.75 | 1.00/0.71 | 0.98/0.79 | 0.96/0.61
 word list repeated                 0.93/0.37 | 0.47/0.20 | 0.49/0.22 | 0.88/0.35 | 0.27/0.09 | 0.83/0.30
-figure example, nothing silenced: (1.0, 0.5890885591506958) top 5 zeroed: (1.0, 0.2922704815864563)
+short comma list, 3 words repeated 0.93/0.41 | 0.43/0.26 | 0.51/0.37 | 0.89/0.41 | 0.25/0.12 | 0.76/0.30
+who lives where                    0.12/0.03 | 0.01/0.03 | 0.05/0.09 | 0.20/0.04 | 0.01/0.05 | 0.18/0.04
+'road bird hand road bird' -> 'hand': nothing silenced 0.589 (on top 1), top 5 zeroed 0.292 (on top 1)
+'apple, chair, river, apple, chair,' -> 'river': nothing silenced 0.651 (on top 1), top 5 zeroed 0.028 (on top 0)
+'dog, table, moon, dog, table,' -> 'moon': nothing silenced 0.556 (on top 1), top 5 zeroed 0.187 (on top 0)
+'car, house, tree, car, house,' -> 'tree': nothing silenced 0.229 (on top 1), top 5 zeroed 0.102 (on top 0)
+'cat, book, door, cat, book,' -> 'door': nothing silenced 0.242 (on top 1), top 5 zeroed 0.805 (on top 1)
+'fish, stone, chair, fish, stone,' -> 'chair': nothing silenced 0.403 (on top 1), top 5 zeroed 0.721 (on top 1)
+'Anna lives in Paris. Ben lives in Rome. Anna lives in' -> 'Paris': nothing silenced 0.034 (on top 0), top 5 zeroed 0.106 (on top 0)
+'Anna likes tea. Ben likes milk. Anna likes' -> 'tea': nothing silenced 0.057 (on top 0), top 5 zeroed 0.036 (on top 0)

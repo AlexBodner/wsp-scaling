@@ -13,6 +13,7 @@ from wsp.reading import head_scores
 FIRST = "Mira Lena Tomas Priya Ivan Nora Omar Elsa Hugo Tara Felix Anya Ravi Greta Milo".split()
 LAST = "Kowal Brandt Osei Varga Lindqvist Moreau Takeda Novak Haddad Ferro Quill Dunmore Ashby Rourke Pell".split()
 WORDS = "dog cat tree house car book road fish bird door hand river stone chair table".split()
+CITIES = "Paris Rome London Berlin Madrid Tokyo Cairo Lima Oslo Vienna".split()
 SENTENCES = {
     "name again in a new sentence": "{a} {b} went home, and {a}",
     "name again after a longer gap": "I met {a} {b} at the station. Later that day, {a}",
@@ -20,6 +21,16 @@ SENTENCES = {
     "same sentence repeated": "{a} {b} went home early. {a}",
     "name listed three times": "{a} {b}, {a} {b}, {a}",
 }
+FIGURE_CANDIDATES = (
+    ("road bird hand road bird", "hand"),
+    ("apple, chair, river, apple, chair,", "river"),
+    ("dog, table, moon, dog, table,", "moon"),
+    ("car, house, tree, car, house,", "tree"),
+    ("cat, book, door, cat, book,", "door"),
+    ("fish, stone, chair, fish, stone,", "chair"),
+    ("Anna lives in Paris. Ben lives in Rome. Anna lives in", "Paris"),
+    ("Anna likes tea. Ben likes milk. Anna likes", "tea"),
+)
 RANDOM_SETS = 10
 SEED = 20261103
 BATCH = 256
@@ -86,6 +97,17 @@ for _ in range(300):
     words = [WORDS[i] for i in word_rng.choice(len(WORDS), 5, replace=False)]
     lists.append((shuffle.encode(" ".join(words + words[:3])), shuffle.encode(f" {words[3]}")[0]))
 cases["word list repeated"] = lists
+short_lists = []
+for _ in range(300):
+    first, second, third = [WORDS[i] for i in word_rng.choice(len(WORDS), 3, replace=False)]
+    short_lists.append((shuffle.encode(f"{first}, {second}, {third}, {first}, {second},"), shuffle.encode(f" {third}")[0]))
+cases["short comma list, 3 words repeated"] = short_lists
+who_lives = []
+for _ in range(300):
+    first, second = [FIRST[i] for i in word_rng.choice(len(FIRST), 2, replace=False)]
+    here, there = [CITIES[i] for i in word_rng.choice(len(CITIES), 2, replace=False)]
+    who_lives.append((shuffle.encode(f"{first} lives in {here}. {second} lives in {there}. {first} lives in"), shuffle.encode(f" {here}")[0]))
+cases["who lives where"] = who_lives
 
 print("case | nothing | top 5 zeroed | top 5 mean | next 5 zeroed | top 10 zeroed | 5 others zeroed (mean of 10 sets), each as top-token share / mean probability")
 for label, items in cases.items():
@@ -98,6 +120,7 @@ for label, items in cases.items():
     row.append(tuple(np.mean([measure(model, prompts, answers, heads) for heads in random_sets], axis=0)))
     print(f"{label:34s} " + " | ".join(f"{a:.2f}/{b:.2f}" for a, b in row))
 
-example = shuffle.encode("road bird hand road bird")
-answer = shuffle.encode(" hand")[0]
-print("figure example, nothing silenced:", measure(model, [example], [answer]), "top 5 zeroed:", measure(model, [example], [answer], ranked[:5]))
+for text, word in FIGURE_CANDIDATES:
+    example, answer = shuffle.encode(text), shuffle.encode(f" {word}")[0]
+    before, after = measure(model, [example], [answer]), measure(model, [example], [answer], ranked[:5])
+    print(f"{text!r} -> {word!r}: nothing silenced {before[1]:.3f} (on top {before[0]:.0f}), top 5 zeroed {after[1]:.3f} (on top {after[0]:.0f})")

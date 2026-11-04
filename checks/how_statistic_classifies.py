@@ -154,7 +154,7 @@ def main() -> None:
     top = ranked(induction, 10)
     later = np.arange(HEADS, 144)
 
-    print("1. What the five heads and their source attend to, on repeated random tokens")
+    print(f"1. What the five heads and their source attend to, on {REPEAT_LENGTH} random tokens repeated")
     for pattern, values in patterns.items():
         print(f"  top five by {pattern}: " + ", ".join(f"{name(i)} {values.ravel()[i]:.2f}" for i in ranked(values)))
     print(f"  source {name(source)}: " + ", ".join(f"{pattern} {values.ravel()[source]:.2f} (rank {int((-values.ravel()).argsort().tolist().index(source)) + 1})" for pattern, values in patterns.items()))
@@ -217,13 +217,14 @@ def main() -> None:
     for label, offset in (("keys only", 1), ("queries only", 0)):
         attention, accuracy = path_patched(model, tokens, sources, five, offset)
         print(f"  {label}: the five's induction attention {attention[five].mean():.3f}, per head " + " ".join(f"{name(i)} {attention[i]:.2f}" for i in five) + f", repeat accuracy {accuracy:.3f}")
-    results = []
-    for _ in range(CONTROL_SETS):
-        picked = [(int(i) // HEADS, int(i) % HEADS) for i in rng.choice(others, 8, replace=False)]
-        attention, accuracy = path_patched(model, tokens, picked, five, 1)
-        results.append((attention[five].mean(), accuracy))
-    results = np.array(results)
-    print(f"  {CONTROL_SETS} random sets of 8 other heads, keys only: attention mean {results[:, 0].mean():.3f}, lowest {results[:, 0].min():.3f}; repeat accuracy mean {results[:, 1].mean():.3f}, lowest {results[:, 1].min():.3f}")
+    picked_sets = [[(int(i) // HEADS, int(i) % HEADS) for i in rng.choice(others, 8, replace=False)] for _ in range(CONTROL_SETS)]
+    for label, offset in (("keys only", 1), ("queries only", 0)):
+        results = []
+        for picked in picked_sets:
+            attention, accuracy = path_patched(model, tokens, picked, five, offset)
+            results.append((attention[five].mean(), accuracy))
+        results = np.array(results)
+        print(f"  {CONTROL_SETS} random sets of 8 other heads, {label}: attention mean {results[:, 0].mean():.3f}, lowest {results[:, 0].min():.3f}; repeat accuracy mean {results[:, 1].mean():.3f}, lowest {results[:, 1].min():.3f}")
 
     print("6. Would another previous-token head point to the same five?")
     for writer in previous_heads[:5]:

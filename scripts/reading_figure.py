@@ -32,12 +32,11 @@ LABEL_POINTS, TITLE_POINTS, RESULT_POINTS, STAT_POINTS = 20, 23, 26, 44
 MARK_WIDTH = 4
 TITLE = "Can GPT-6 Astra find induction heads in scrambled GPT-2 weights?"
 EXAMPLE_INTRO = "An induction head finds what came next last time, and copies it:"
-EXAMPLE_WORDS = ("road", "bird", "hand", "road", "bird")
+EXAMPLE_WORDS = ("apple,", "chair,", "river,", "apple,", "chair,", "?")
 EXAMPLE_ANSWER = 2
 NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
 STORY_TITLE = "GPT-6 Astra hunts induction heads in scrambled GPT-2"
-STORY_STEPS = (("Not shown any weights", ("blind",)), ("No tools, shown 20,000 values", ("read-1", "read-2")), ("With Python, all 12 blocks", ("python-1", "python-2")))
-STORY_NO_WEIGHTS_RESULT = "Names the right layers"
+STORY_STEPS = (("No tools, shown 20,000 values", ("read-1", "read-2")), ("With Python, all 12 blocks", ("python-1", "python-2")))
 STORY_NOTE = "No method given. Rows are layers 4 to 9, top 5 induction heads first. A small 2 means picked twice."
 STORY_PYTHON_NOTE = "Both runs picked these same 5"
 STORY_READ_NOTE = "Too few values to run this method"
@@ -235,24 +234,12 @@ def _arithmetic_figure(shuffle: TokenShuffle) -> None:
     print(output, summary)
 
 
-def _story_grid(axis, scores: np.ndarray, induction_heads: set, picks: list[tuple[int, int]], layer_counts: Counter | None) -> None:
-    """Draws one step of the story: marks on heads, or for the no-weights call, how many picks each layer got."""
-    _draw_grid(axis, scores, induction_heads, picks)
-    for layer, count in (layer_counts or {}).items():
-        word = "pick" if count == 1 else "picks"
-        axis.text(HEADS - 0.25, layer + 0.5, f"{count} {word}", fontsize=STORY_POINTS, fontweight="bold", ha="right", va="center", color=INK, zorder=4)
-
-
 def _story_figure(shuffle: TokenShuffle) -> None:
     real = real_network(shuffle).double()
     real.set_attn_implementation("eager")
     scores = head_scores(real)
     order = np.argsort(-scores.ravel())[:INDUCTION_HEADS]
     induction_heads = {(int(i) // HEADS, int(i) % HEADS) for i in order}
-    blind = _run_result("blind")
-    layer_counts = Counter(layer for layer, _ in blind["answer"])
-    if dict(layer_counts) != dict(Counter(layer for layer, _ in induction_heads)):
-        raise ValueError(f"the no-weights layers {layer_counts} no longer match the induction heads")
 
     figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
     figure.text(0.5, 0.955, STORY_TITLE, fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
@@ -261,20 +248,18 @@ def _story_figure(shuffle: TokenShuffle) -> None:
     for index, (heading, arms) in enumerate(STORY_STEPS):
         picks = [pick for arm in arms for pick in _picks_in_original_order(_run_result(arm), shuffle)]
         hits = sum(pick in induction_heads for pick in picks)
-        result = STORY_NO_WEIGHTS_RESULT if not index else f"{hits // len(arms)} of {INDUCTION_HEADS}, twice"
         results[heading] = {"runs": list(arms), "picks": picks, "hits_induction": hits}
-        axis = figure.add_axes([0.042 + index * 0.325, 0.24, 0.292, 0.28])
-        _story_grid(axis, scores, induction_heads, [] if not index else picks, layer_counts if not index else None)
+        axis = figure.add_axes([0.075 + index * 0.475, 0.215, 0.4, 0.32])
+        _draw_grid(axis, scores, induction_heads, picks)
         axis.text(HEADS / 2, 2.15, heading, fontsize=STORY_POINTS + 1, ha="center", color=INK)
-        axis.text(HEADS / 2, 3.4, result, fontsize=RESULT_POINTS - 3, fontweight="bold", ha="center", color=INK)
-        if index:
-            note = STORY_PYTHON_NOTE if arms[0].startswith("python") else STORY_READ_NOTE
-            axis.text(HEADS / 2, SHOWN_LAYERS[-1] + 1.7, note, fontsize=STORY_POINTS, ha="center", va="center", color=MUTED)
+        axis.text(HEADS / 2, 3.4, f"{hits // len(arms)} of {INDUCTION_HEADS}, twice", fontsize=RESULT_POINTS - 3, fontweight="bold", ha="center", color=INK)
+        note = STORY_PYTHON_NOTE if arms[0].startswith("python") else STORY_READ_NOTE
+        axis.text(HEADS / 2, SHOWN_LAYERS[-1] + 1.55, note, fontsize=STORY_POINTS, ha="center", va="center", color=MUTED)
     _draw_legend(figure)
     figure.text(0.5, 0.045, STORY_NOTE, fontsize=LABEL_POINTS - 3, ha="center", va="center", color=MUTED)
     output = ROOT / "figures" / "reading_story_v7.png"
     figure.savefig(output, dpi=DPI)
-    output.with_suffix(".json").write_text(json.dumps({"blind_layers": sorted(layer_counts.elements()), "steps": results}, indent=1))
+    output.with_suffix(".json").write_text(json.dumps({"steps": results}, indent=1))
     print(output, {heading: value["hits_induction"] for heading, value in results.items()})
 
 
