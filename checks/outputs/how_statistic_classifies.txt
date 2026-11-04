@@ -29,6 +29,10 @@
   8 random sets of 5 other heads in the same layers: repeat accuracy mean 0.942, lowest 0.859; induction attention mean 0.810, lowest 0.690
   8 random sets of 8 other heads in the same layers: repeat accuracy mean 0.933, lowest 0.852; induction attention mean 0.796, lowest 0.709
   the five themselves silenced: repeat accuracy 0.353
+7. Which path carries it: silence the top 8 previous-token heads only for the five heads' keys or queries
+  keys only: the five's induction attention 0.524, per head 5.5 0.48 7.10 0.64 6.9 0.71 5.1 0.34 7.2 0.46, repeat accuracy 0.897
+  queries only: the five's induction attention 0.821, per head 5.5 0.89 7.10 0.84 6.9 0.95 5.1 0.71 7.2 0.71, repeat accuracy 0.980
+  8 random sets of 8 other heads, keys only: attention mean 0.802, lowest 0.749; repeat accuracy mean 0.957, lowest 0.938
 6. Would another previous-token head point to the same five?
   cosine with 4.11 (previous 0.98): top five 5.1 6.9 5.5 7.2 7.10, 5 of 5
   cosine with 3.7 (previous 0.55): top five 5.5 5.8 6.9 5.1 5.0, 3 of 5

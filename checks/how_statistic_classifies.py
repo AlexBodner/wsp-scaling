@@ -76,6 +76,40 @@ def attention_patterns(model, tokens: torch.Tensor) -> tuple[dict[str, np.ndarra
     return patterns, float((predicted == tokens[:, REPEAT_LENGTH + 1 :]).float().mean())
 
 
+@torch.no_grad()
+def path_patched(model, tokens: torch.Tensor, sources: list[tuple[int, int]], targets: list[int], offset: int) -> tuple[np.ndarray, float]:
+    """Gives only one part of the target heads (0 query, 1 key) the residual they'd see with the sources silenced."""
+    cached, hooks = {}, []
+    target_layers = {head // HEADS for head in targets}
+    for layer in target_layers:
+        def store(_module, inputs, layer=layer):
+            cached[layer] = inputs[0].detach()
+
+        hooks.append(model.transformer.h[layer].attn.c_attn.register_forward_pre_hook(store))
+    hooks += silenced(model, sources)
+    model(tokens)
+    for hook in hooks:
+        hook.remove()
+
+    hooks = []
+    for layer in target_layers:
+        chosen = [head % HEADS for head in targets if head // HEADS == layer]
+
+        def replace_part(module, _inputs, output, layer=layer, chosen=chosen):
+            output = output.clone()
+            changed = cached[layer] @ module.weight + module.bias
+            for head in chosen:
+                start = offset * WIDTH + head * HEAD_SIZE
+                output[..., start : start + HEAD_SIZE] = changed[..., start : start + HEAD_SIZE]
+            return output
+
+        hooks.append(model.transformer.h[layer].attn.c_attn.register_forward_hook(replace_part))
+    patterns, accuracy = attention_patterns(model, tokens)
+    for hook in hooks:
+        hook.remove()
+    return patterns["induction"].ravel(), accuracy
+
+
 def head_matrices(tensors: dict) -> tuple[list[np.ndarray], list[np.ndarray]]:
     """Returns QK^T and VO for every head, including the layer norm's scale."""
     query_key, value_output = [], []
@@ -177,6 +211,19 @@ def main() -> None:
         print(f"  {CONTROL_SETS} random sets of {size} other heads in the same layers: repeat accuracy mean {results[:, 0].mean():.3f}, lowest {results[:, 0].min():.3f}; induction attention mean {results[:, 1].mean():.3f}, lowest {results[:, 1].min():.3f}")
     attention, accuracy = measured_without(model, tokens, [(i // HEADS, i % HEADS) for i in five])
     print(f"  the five themselves silenced: repeat accuracy {accuracy:.3f}")
+
+    print("7. Which path carries it: silence the top 8 previous-token heads only for the five heads' keys or queries")
+    sources = [(i // HEADS, i % HEADS) for i in previous_heads[:8]]
+    for label, offset in (("keys only", 1), ("queries only", 0)):
+        attention, accuracy = path_patched(model, tokens, sources, five, offset)
+        print(f"  {label}: the five's induction attention {attention[five].mean():.3f}, per head " + " ".join(f"{name(i)} {attention[i]:.2f}" for i in five) + f", repeat accuracy {accuracy:.3f}")
+    results = []
+    for _ in range(CONTROL_SETS):
+        picked = [(int(i) // HEADS, int(i) % HEADS) for i in rng.choice(others, 8, replace=False)]
+        attention, accuracy = path_patched(model, tokens, picked, five, 1)
+        results.append((attention[five].mean(), accuracy))
+    results = np.array(results)
+    print(f"  {CONTROL_SETS} random sets of 8 other heads, keys only: attention mean {results[:, 0].mean():.3f}, lowest {results[:, 0].min():.3f}; repeat accuracy mean {results[:, 1].mean():.3f}, lowest {results[:, 1].min():.3f}")
 
     print("6. Would another previous-token head point to the same five?")
     for writer in previous_heads[:5]:
