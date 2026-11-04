@@ -35,7 +35,7 @@
    ],
    "hits_induction": 1
   },
-  "No tools, scrambled weights": {
+  "No tools, shown 20,000 values": {
    "runs": [
     "read-1",
     "read-2"
@@ -84,7 +84,7 @@
    ],
    "hits_induction": 0
   },
-  "With Python, scrambled weights": {
+  "With Python, all 12 blocks": {
    "runs": [
     "python-1",
     "python-2"

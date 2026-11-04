@@ -5,6 +5,7 @@ Heads are sorted by copying score within each layer, so distance along a row mea
 """
 
 import json
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -34,15 +35,15 @@ EXAMPLE_INTRO = "An induction head finds what came next last time, and copies it
 EXAMPLE_WORDS = ("road", "bird", "hand", "road", "bird")
 EXAMPLE_ANSWER = 2
 NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
-STORY_TITLE = "GPT-6 Astra hunts GPT-2's induction heads, with no hints"
-STORY_STEPS = (("Not shown any weights", ("blind",)), ("No tools, scrambled weights", ("read-1", "read-2")), ("With Python, scrambled weights", ("python-1", "python-2")))
+STORY_TITLE = "GPT-6 Astra hunts induction heads in scrambled GPT-2"
+STORY_STEPS = (("Not shown any weights", ("blind",)), ("No tools, shown 20,000 values", ("read-1", "read-2")), ("With Python, all 12 blocks", ("python-1", "python-2")))
 STORY_NO_WEIGHTS_RESULT = "Names the right layers"
-STORY_NOTE = "Rows are layers 4 to 9 of 12, induction heads first. A small 2 means picked twice."
+STORY_NOTE = "No method given. Rows are layers 4 to 9 of 12, induction heads first. A small 2 means picked twice."
 STORY_PYTHON_NOTE = "Both runs picked these same 5"
 STORY_POINTS = 16
 METHOD_QUOTE = "an earlier head can write the preceding token's features into a position, and a later head can match those features against the current token."
-METHOD_CODE = ("A, B = Q @ K.T, V @ O", "raw = As.reshape(144, -1) @ Bs.reshape(144, -1).T")
-METHOD_CODE_SHOWN = ("A, B = Q @ K.T, V @ O", "raw = As.reshape(144, -1)", "      @ Bs.reshape(144, -1).T")
+METHOD_CODE = ("A, B = Q @ K.T, V @ O", "raw = As.reshape(144, -1) @ Bs.reshape(144, -1).T", "cos = raw / (stats[:, 0, None] * stats[None, :, 2])")
+METHOD_CODE_SHOWN = ("A, B = Q @ K.T, V @ O", "raw = As.reshape(144, -1) @ Bs.reshape(144, -1).T", "cos = raw / (stats[:, 0, None] * stats[None, :, 2])")
 ARITHMETIC_TITLE = "Given our formula, Astra gave 96 sums like this, no tool calls logged"
 EXAMPLE_TERMS = 3
 # The row and the turns where the hinted read typed a dot product for every head in layers 4 to 11.
@@ -150,7 +151,7 @@ def _heads_figure(shuffle: TokenShuffle) -> None:
 
     figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
     figure.text(0.5, 0.955, TITLE, fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
-    _draw_example(figure, 0.8)
+    _draw_example(figure, 0.775)
     panels = {}
     for index, (title, arms) in enumerate(ARMS.items()):
         results = [_run_result(arm) for arm in arms]
@@ -254,12 +255,12 @@ def _story_figure(shuffle: TokenShuffle) -> None:
 
     figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
     figure.text(0.5, 0.955, STORY_TITLE, fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
-    _draw_example(figure, 0.8)
+    _draw_example(figure, 0.775)
     results = {}
     for index, (heading, arms) in enumerate(STORY_STEPS):
         picks = [pick for arm in arms for pick in _picks_in_original_order(_run_result(arm), shuffle)]
         hits = sum(pick in induction_heads for pick in picks)
-        result = STORY_NO_WEIGHTS_RESULT if not index else f"{hits} of {len(picks)} right"
+        result = STORY_NO_WEIGHTS_RESULT if not index else f"{hits // len(arms)} of {INDUCTION_HEADS}, twice"
         results[heading] = {"runs": list(arms), "picks": picks, "hits_induction": hits}
         axis = figure.add_axes([0.042 + index * 0.325, 0.24, 0.292, 0.28])
         _story_grid(axis, scores, induction_heads, [] if not index else picks, layer_counts if not index else None)
@@ -268,7 +269,7 @@ def _story_figure(shuffle: TokenShuffle) -> None:
         if arms[0].startswith("python"):
             axis.text(HEADS / 2, SHOWN_LAYERS[-1] + 1.7, STORY_PYTHON_NOTE, fontsize=STORY_POINTS, ha="center", va="center", color=MUTED)
     _draw_legend(figure)
-    figure.text(0.5, 0.045, STORY_NOTE, fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
+    figure.text(0.5, 0.045, STORY_NOTE, fontsize=LABEL_POINTS - 3, ha="center", va="center", color=MUTED)
     output = ROOT / "figures" / "reading_story_v7.png"
     figure.savefig(output, dpi=DPI)
     output.with_suffix(".json").write_text(json.dumps({"blind_layers": sorted(layer_counts.elements()), "steps": results}, indent=1))
@@ -285,23 +286,24 @@ def _method_figure() -> None:
         if line not in turns[0]["code"]:
             raise ValueError(f"{line!r} is not in the run's code")
     answer = [f"{layer}.{head}" for layer, head in _run_result("python-2")["answer"]]
-    table = [line.split() for line in turns[1]["output"].splitlines()[2:9]]
+    cosines = turns[0]["output"].split("TOP 35 CIRCUITS: COSINE")[1].splitlines()[1:8]
+    table = [re.match(r"\s*(\S+) <-\s+(\S+): raw=\s*\S+ cos=(\S+)", line).groups() for line in cosines]
     figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
-    figure.text(0.5, 0.945, "How GPT-6 Astra found them (Python run 2)", fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
+    figure.text(0.5, 0.945, "How GPT-6 Astra found them: its second Python run, first code", fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
     figure.text(0.05, 0.855, "What it wrote before any code", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
     figure.text(0.05, 0.76, "\"...an earlier head can write the preceding token's\nfeatures into a position, and a later head can match\nthose features against the current token.\"", fontsize=LABEL_POINTS, color=INK, va="center", linespacing=1.3)
     figure.text(0.05, 0.635, "Its key lines", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
-    figure.text(0.05, 0.545, "\n".join(METHOD_CODE_SHOWN), fontsize=LABEL_POINTS - 4, color=INK, va="center", family="Menlo", linespacing=1.5)
+    figure.text(0.05, 0.55, "\n".join(METHOD_CODE_SHOWN), fontsize=LABEL_POINTS - 7, color=INK, va="center", family="Menlo", linespacing=1.5)
     figure.text(0.05, 0.415, "What each matrix is", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
-    figure.text(0.05, 0.3, "A: what a later head searches for\nB: what an earlier head writes\nraw: how well each pair lines up", fontsize=LABEL_POINTS - 2, color=INK, va="center", linespacing=1.4)
-    figure.text(0.68, 0.855, "Next code run, paired with head 4.9", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
-    figure.text(0.68, 0.79, "head    cosine", fontsize=LABEL_POINTS - 3, color=MUTED, va="center", family="Menlo")
+    figure.text(0.05, 0.285, "A: what a later head searches for\nB: what an earlier head writes\ncos: how well each pair lines up", fontsize=LABEL_POINTS - 2, color=INK, va="center", linespacing=1.4)
+    figure.text(0.665, 0.855, "What it printed, top 7", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
+    figure.text(0.665, 0.79, "later   earlier cos", fontsize=LABEL_POINTS - 5, color=MUTED, va="center", family="Menlo")
     for index, row in enumerate(table):
         chosen = row[0] in answer
         height = 0.725 - index * 0.068
-        figure.text(0.68, height, f"{row[0]:<7} {row[1]}", fontsize=LABEL_POINTS - 2, color=BLUE if chosen else INK, fontweight="bold" if chosen else "normal", va="center", family="Menlo")
-    figure.text(0.68, 0.235, "Blue: its final answer.\nAll 5 are induction heads.", fontsize=LABEL_POINTS - 2, color=INK, va="center", linespacing=1.3)
-    figure.text(0.5, 0.075, "Head labels are scrambled. It never ran GPT-2. Its reasoning is hidden.", fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
+        figure.text(0.665, height, f"{row[0]:<7} {row[1]:<7} {row[2][:5]}", fontsize=LABEL_POINTS - 5, color=BLUE if chosen else INK, fontweight="bold" if chosen else "normal", va="center", family="Menlo")
+    figure.text(0.665, 0.235, "Blue: its final answer.\nAll 5 are induction heads.", fontsize=LABEL_POINTS - 2, color=INK, va="center", linespacing=1.3)
+    figure.text(0.5, 0.075, "Head labels are scrambled. 4.9 is GPT-2's head 4.11. It never ran GPT-2.", fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
     output = ROOT / "figures" / "how_astra_found_them_v1.png"
     figure.savefig(output, dpi=DPI)
     print(output, answer)
