@@ -1,0 +1,49 @@
+gpt2-medium: 24 layers, 16 heads of size 64, width 1024, forward passes on mps in float32
+  slices rebuild the model's attention and output in float32, worst error 9.77e-04
+  zeroing ['2.1', '2.15', '4.3'] zeroes only those heads' columns
+  patching every later head from the clean input changes attention by at most 1.8e-07 and no predictions
+  silencing leaves layers up to the first source exactly unchanged, and layer 8 sees only sources before it
+  patching 11.1 changes only its query or key columns; slices match the model's attention within 1.2e-07
+  picks: 6.1 7.2 5.8 6.15 9.9; attention top 5: 9.9 18.5 11.1 12.1 7.2
+  same-layer sets: 5.3 6.10 6.5 7.9 9.5; 5.10 6.2 6.6 7.15 9.3; 5.5 6.6 6.0 7.12 9.11; 5.11 6.13 6.11 7.14 9.15; 5.11 6.2 6.7 7.1 9.15; 5.11 6.7 6.8 7.9 9.3; 5.14 6.11 6.10 7.10 9.1; 5.4 6.5 6.12 7.12 9.6
+  cpu against mps on 4 sequences with the picks patched into queries: worst attention gap 4.8e-07, worst accuracy gap 0.0000
+  32 sequences done, 85 s
+  64 sequences done, 156 s
+  96 sequences done, 226 s
+  128 sequences done, 297 s
+
+  intact on 128 sequences in 4 batches: repeat accuracy 0.9844 (saved 0.9844), late heads' mean attention 0.848
+  intact attention by head against the saved score: 18.5 0.949/0.950, 20.12 0.872/0.871, 13.14 0.808/0.812, 19.15 0.782/0.783, 20.7 0.719/0.721, 11.1 0.913/0.916, 12.1 0.892/0.895
+
+  sources silenced, per intervention; cost is points of repeat accuracy, intact minus intervention; intervals resample sequences
+  picks, silenced everywhere: mean attention 0.479, fall 0.368 (0.363 to 0.374), 43.5% of intact; 18.5 0.949 to 0.446, 20.12 0.872 to 0.329, 13.14 0.808 to 0.610, 19.15 0.782 to 0.236, 20.7 0.719 to 0.230, 11.1 0.913 to 0.768, 12.1 0.892 to 0.737; repeat accuracy 0.5719, cost 41.2 (39.5 to 43.1), by batch 40.1 39.3 44.8 40.8
+  picks, queries: mean attention 0.509, fall 0.339 (0.334 to 0.344), 40.0% of intact; 18.5 0.949 to 0.532, 20.12 0.872 to 0.393, 13.14 0.808 to 0.498, 19.15 0.782 to 0.313, 20.7 0.719 to 0.295, 11.1 0.913 to 0.812, 12.1 0.892 to 0.717; repeat accuracy 0.9783, cost 0.6 (0.4 to 0.8), by batch 0.3 0.8 0.9 0.5
+  picks, keys: mean attention 0.795, fall 0.053 (0.050 to 0.055), 6.2% of intact; 18.5 0.949 to 0.910, 20.12 0.872 to 0.809, 13.14 0.808 to 0.800, 19.15 0.782 to 0.706, 20.7 0.719 to 0.636, 11.1 0.913 to 0.889, 12.1 0.892 to 0.818; repeat accuracy 0.9839, cost 0.0 (-0.1 to 0.2), by batch -0.1 -0.1 0.3 0.0
+  picks, all later queries: mean attention 0.527, fall 0.321 (0.317 to 0.326), 37.9% of intact; 18.5 0.949 to 0.554, 20.12 0.872 to 0.397, 13.14 0.808 to 0.526, 19.15 0.782 to 0.336, 20.7 0.719 to 0.307, 11.1 0.913 to 0.830, 12.1 0.892 to 0.736; repeat accuracy 0.8815, cost 10.3 (9.4 to 11.2), by batch 10.1 10.5 10.9 9.6
+  picks, queries alone: mean attention 0.508, fall 0.339 (0.334 to 0.344), 40.0% of intact; 18.5 0.949 to 0.530, 20.12 0.872 to 0.395, 13.14 0.808 to 0.497, 19.15 0.782 to 0.313, 20.7 0.719 to 0.296, 11.1 0.913 to 0.812, 12.1 0.892 to 0.717
+  picks, keys alone: mean attention 0.795, fall 0.053 (0.051 to 0.056), 6.3% of intact; 18.5 0.949 to 0.913, 20.12 0.872 to 0.811, 13.14 0.808 to 0.792, 19.15 0.782 to 0.709, 20.7 0.719 to 0.637, 11.1 0.913 to 0.889, 12.1 0.892 to 0.815
+  attention top 5, silenced everywhere: mean attention 0.758, fall 0.090 (0.087 to 0.093), 10.7% of intact; 18.5 0.949 to 0.796, 20.12 0.872 to 0.693, 13.14 0.808 to 0.822, 19.15 0.782 to 0.612, 20.7 0.719 to 0.556, 11.1 0.913 to 0.924, 12.1 0.892 to 0.899; repeat accuracy 0.9458, cost 3.9 (3.3 to 4.4), by batch 4.1 3.8 4.5 3.1
+  attention top 5, queries: mean attention 0.750, fall 0.098 (0.095 to 0.102), 11.6% of intact; 18.5 0.949 to 0.790, 20.12 0.872 to 0.679, 13.14 0.808 to 0.815, 19.15 0.782 to 0.597, 20.7 0.719 to 0.542, 11.1 0.913 to 0.925, 12.1 0.892 to 0.899; repeat accuracy 0.9828, cost 0.2 (0.0 to 0.3), by batch 0.1 0.1 0.4 0.1
+  attention top 5, keys: mean attention 0.851, fall -0.003 (-0.003 to -0.002), -0.3% of intact; 18.5 0.949 to 0.950, 20.12 0.872 to 0.877, 13.14 0.808 to 0.814, 19.15 0.782 to 0.788, 20.7 0.719 to 0.726, 11.1 0.913 to 0.911, 12.1 0.892 to 0.889; repeat accuracy 0.9842, cost 0.0 (-0.0 to 0.1), by batch -0.1 0.0 0.1 0.1
+  attention top 5, all later queries: mean attention 0.750, fall 0.098 (0.094 to 0.101), 11.5% of intact; 18.5 0.949 to 0.788, 20.12 0.872 to 0.680, 13.14 0.808 to 0.820, 19.15 0.782 to 0.597, 20.7 0.719 to 0.544, 11.1 0.913 to 0.926, 12.1 0.892 to 0.898; repeat accuracy 0.9713, cost 1.3 (1.0 to 1.7), by batch 1.3 1.3 1.8 0.9
+  attention top 5, queries alone: mean attention 0.750, fall 0.098 (0.094 to 0.101), 11.5% of intact; 18.5 0.949 to 0.789, 20.12 0.872 to 0.680, 13.14 0.808 to 0.815, 19.15 0.782 to 0.599, 20.7 0.719 to 0.543, 11.1 0.913 to 0.925, 12.1 0.892 to 0.899
+  attention top 5, keys alone: mean attention 0.851, fall -0.003 (-0.003 to -0.002), -0.3% of intact; 18.5 0.949 to 0.950, 20.12 0.872 to 0.877, 13.14 0.808 to 0.813, 19.15 0.782 to 0.788, 20.7 0.719 to 0.726, 11.1 0.913 to 0.911, 12.1 0.892 to 0.889
+
+  8 same-layer sets of the picks, fixed before the run
+  silenced everywhere: fall by set 0.010 0.013 -0.002 -0.003 0.016 0.025 0.014 0.003; mean 0.009, largest move 0.025; 18.5 mean 0.942 lowest 0.931, 20.12 mean 0.862 lowest 0.847, 13.14 mean 0.796 lowest 0.779, 19.15 mean 0.769 lowest 0.751, 20.7 mean 0.708 lowest 0.685, 11.1 mean 0.905 lowest 0.883, 12.1 mean 0.888 lowest 0.869; cost by set 0.3 0.1 -0.2 -0.1 -0.0 0.3 0.0 0.1; mean 0.1, lowest -0.2, highest 0.3
+  queries: fall by set 0.016 0.012 0.003 -0.003 -0.001 0.015 0.032 0.001; mean 0.009, largest move 0.032; 18.5 mean 0.942 lowest 0.930, 20.12 mean 0.861 lowest 0.842, 13.14 mean 0.796 lowest 0.766, 19.15 mean 0.768 lowest 0.741, 20.7 mean 0.705 lowest 0.683, 11.1 mean 0.909 lowest 0.889, 12.1 mean 0.889 lowest 0.863; cost by set 0.1 0.1 -0.0 -0.0 -0.0 0.1 0.0 0.1; mean 0.0, lowest -0.0, highest 0.1
+  keys: fall by set -0.003 0.004 -0.003 0.004 0.021 0.015 -0.007 0.004; mean 0.004, largest move 0.021; 18.5 mean 0.947 lowest 0.943, 20.12 mean 0.869 lowest 0.865, 13.14 mean 0.803 lowest 0.776, 19.15 mean 0.779 lowest 0.773, 20.7 mean 0.716 lowest 0.709, 11.1 mean 0.905 lowest 0.870, 12.1 mean 0.886 lowest 0.853; cost by set 0.0 0.0 0.0 0.0 0.1 0.1 -0.0 0.0; mean 0.0, lowest -0.0, highest 0.1
+  all later queries: fall by set 0.021 0.012 0.000 -0.006 -0.003 0.021 0.046 0.004; mean 0.012, largest move 0.046; 18.5 mean 0.938 lowest 0.917, 20.12 mean 0.859 lowest 0.836, 13.14 mean 0.793 lowest 0.733, 19.15 mean 0.764 lowest 0.731, 20.7 mean 0.703 lowest 0.674, 11.1 mean 0.909 lowest 0.887, 12.1 mean 0.886 lowest 0.834; cost by set 0.8 0.4 0.1 -0.0 -0.0 0.3 1.8 0.1; mean 0.4, lowest -0.0, highest 1.8
+  queries alone: fall by set 0.016 0.012 0.003 -0.003 -0.001 0.015 0.032 0.001; mean 0.009, largest move 0.032; 18.5 mean 0.942 lowest 0.930, 20.12 mean 0.861 lowest 0.842, 13.14 mean 0.796 lowest 0.766, 19.15 mean 0.768 lowest 0.741, 20.7 mean 0.705 lowest 0.684, 11.1 mean 0.909 lowest 0.889, 12.1 mean 0.889 lowest 0.863
+  keys alone: fall by set -0.003 0.004 -0.003 0.004 0.020 0.015 -0.007 0.004; mean 0.004, largest move 0.020; 18.5 mean 0.947 lowest 0.944, 20.12 mean 0.870 lowest 0.865, 13.14 mean 0.803 lowest 0.775, 19.15 mean 0.780 lowest 0.773, 20.7 mean 0.716 lowest 0.709, 11.1 mean 0.905 lowest 0.870, 12.1 mean 0.886 lowest 0.853
+
+  reproducing zero_order.py: silenced everywhere costs picks 41.2 (saved 41.2), attention top 5 3.9 (saved 3.9); same-layer mean 0.1 (saved 0.1), lowest -0.2 (saved -0.2), highest 0.3 (saved 0.3)
+
+  card's prediction:
+    picks through queries cut mean attention by at least 50% (40.0%): failed
+    picks through keys cut it by under 25% (6.2%): held
+    every same-layer set through queries moves it under 0.1 (largest 0.032): held
+    attention's top 5 through queries cut it much less, read as under 0.5 of the picks' fall (0.098 against 0.339): held
+  all four: failed
+
+  took 297 s, peak resident memory 2.28 GB, peak MPS driver memory 2.21 GB

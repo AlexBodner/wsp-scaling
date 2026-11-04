@@ -1,0 +1,90 @@
+{
+ "seed": 1302,
+ "cost": 6.395432,
+ "edit_forward_pass_flags": [],
+ "edit_output": "changed 12 tensors, 592512 values\n",
+ "before": [
+  0.9869260204081634,
+  3.369031545122526
+ ],
+ "after": [
+  0.010841836734693876,
+  3.3817050468716583
+ ],
+ "values_changed": 592512,
+ "tensors_changed": [
+  "L5.out.W",
+  "L5.out.b",
+  "L5.qkv.W",
+  "L5.qkv.b",
+  "L6.out.W",
+  "L6.out.b",
+  "L6.qkv.W",
+  "L6.qkv.b",
+  "L7.out.W",
+  "L7.out.b",
+  "L7.qkv.W",
+  "L7.qkv.b"
+ ],
+ "touched_heads": [
+  [
+   5,
+   3
+  ],
+  [
+   5,
+   7
+  ],
+  [
+   5,
+   9
+  ],
+  [
+   6,
+   6
+  ],
+  [
+   7,
+   3
+  ],
+  [
+   7,
+   11
+  ]
+ ],
+ "named_heads": [
+  [
+   4,
+   11
+  ],
+  [
+   5,
+   3
+  ],
+  [
+   5,
+   7
+  ],
+  [
+   5,
+   9
+  ],
+  [
+   6,
+   6
+  ]
+ ],
+ "zeroing_named_heads": [
+  0.5672831632653061,
+  4.000644380738606
+ ],
+ "zeroing_touched_heads": [
+  0.1014030612244898,
+  4.230236031539702
+ ],
+ "detail": {
+  "repeat_loss": 10.26344209539459,
+  "text_divergence_from_unedited": 0.01013187941579714,
+  "repeat_accuracy_on_common_tokens": 0.11575255102040817
+ }
+}
