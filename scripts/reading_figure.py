@@ -40,6 +40,7 @@ STORY_STEPS = (("Not shown any weights", ("blind",)), ("No tools, shown 20,000 v
 STORY_NO_WEIGHTS_RESULT = "Names the right layers"
 STORY_NOTE = "No method given. Rows are layers 4 to 9 of 12, induction heads first. A small 2 means picked twice."
 STORY_PYTHON_NOTE = "Both runs picked these same 5"
+STORY_READ_NOTE = "Too few values to run this method"
 STORY_POINTS = 16
 METHOD_QUOTE = "an earlier head can write the preceding token's features into a position, and a later head can match those features against the current token."
 METHOD_CODE = ("A, B = Q @ K.T, V @ O", "raw = As.reshape(144, -1) @ Bs.reshape(144, -1).T", "cos = raw / (stats[:, 0, None] * stats[None, :, 2])")
@@ -266,8 +267,9 @@ def _story_figure(shuffle: TokenShuffle) -> None:
         _story_grid(axis, scores, induction_heads, [] if not index else picks, layer_counts if not index else None)
         axis.text(HEADS / 2, 2.15, heading, fontsize=STORY_POINTS + 1, ha="center", color=INK)
         axis.text(HEADS / 2, 3.4, result, fontsize=RESULT_POINTS - 3, fontweight="bold", ha="center", color=INK)
-        if arms[0].startswith("python"):
-            axis.text(HEADS / 2, SHOWN_LAYERS[-1] + 1.7, STORY_PYTHON_NOTE, fontsize=STORY_POINTS, ha="center", va="center", color=MUTED)
+        if index:
+            note = STORY_PYTHON_NOTE if arms[0].startswith("python") else STORY_READ_NOTE
+            axis.text(HEADS / 2, SHOWN_LAYERS[-1] + 1.7, note, fontsize=STORY_POINTS, ha="center", va="center", color=MUTED)
     _draw_legend(figure)
     figure.text(0.5, 0.045, STORY_NOTE, fontsize=LABEL_POINTS - 3, ha="center", va="center", color=MUTED)
     output = ROOT / "figures" / "reading_story_v7.png"
@@ -289,21 +291,21 @@ def _method_figure() -> None:
     cosines = turns[0]["output"].split("TOP 35 CIRCUITS: COSINE")[1].splitlines()[1:8]
     table = [re.match(r"\s*(\S+) <-\s+(\S+): raw=\s*\S+ cos=(\S+)", line).groups() for line in cosines]
     figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
-    figure.text(0.5, 0.945, "How GPT-6 Astra found them: its second Python run, first code", fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
+    figure.text(0.5, 0.945, "How GPT-6 Astra found them (Python run 2, first code)", fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
     figure.text(0.05, 0.855, "What it wrote before any code", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
     figure.text(0.05, 0.76, "\"...an earlier head can write the preceding token's\nfeatures into a position, and a later head can match\nthose features against the current token.\"", fontsize=LABEL_POINTS, color=INK, va="center", linespacing=1.3)
     figure.text(0.05, 0.635, "Its key lines", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
     figure.text(0.05, 0.55, "\n".join(METHOD_CODE_SHOWN), fontsize=LABEL_POINTS - 7, color=INK, va="center", family="Menlo", linespacing=1.5)
     figure.text(0.05, 0.415, "What each matrix is", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
     figure.text(0.05, 0.285, "A: what a later head searches for\nB: what an earlier head writes\ncos: how well each pair lines up", fontsize=LABEL_POINTS - 2, color=INK, va="center", linespacing=1.4)
-    figure.text(0.665, 0.855, "What it printed, top 7", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
+    figure.text(0.665, 0.855, "Its cosine table, top 7", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
     figure.text(0.665, 0.79, "later   earlier cos", fontsize=LABEL_POINTS - 5, color=MUTED, va="center", family="Menlo")
     for index, row in enumerate(table):
         chosen = row[0] in answer
         height = 0.725 - index * 0.068
-        figure.text(0.665, height, f"{row[0]:<7} {row[1]:<7} {row[2][:5]}", fontsize=LABEL_POINTS - 5, color=BLUE if chosen else INK, fontweight="bold" if chosen else "normal", va="center", family="Menlo")
+        figure.text(0.665, height, f"{row[0]:<7} {row[1]:<7} {float(row[2]):.3f}", fontsize=LABEL_POINTS - 5, color=BLUE if chosen else INK, fontweight="bold" if chosen else "normal", va="center", family="Menlo")
     figure.text(0.665, 0.235, "Blue: its final answer.\nAll 5 are induction heads.", fontsize=LABEL_POINTS - 2, color=INK, va="center", linespacing=1.3)
-    figure.text(0.5, 0.075, "Head labels are scrambled. 4.9 is GPT-2's head 4.11. It never ran GPT-2.", fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
+    figure.text(0.5, 0.075, "Scrambled labels: 4.9 is GPT-2's head 4.11. 5.1 and 6.9 keep their real numbers by chance.", fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
     output = ROOT / "figures" / "how_astra_found_them_v1.png"
     figure.savefig(output, dpi=DPI)
     print(output, answer)
