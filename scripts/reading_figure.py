@@ -31,7 +31,8 @@ LABEL_POINTS, TITLE_POINTS, RESULT_POINTS, STAT_POINTS = 20, 23, 26, 44
 MARK_WIDTH = 4
 TITLE = "Can GPT-6 Astra find induction heads in scrambled GPT-2 weights?"
 EXAMPLE_INTRO = "An induction head finds what came next last time, and copies it:"
-EXAMPLE_WORDS = ("Mira", "Kowal", "went", "home,", "and", "Mira")
+EXAMPLE_WORDS = ("road", "bird", "hand", "road", "bird")
+EXAMPLE_ANSWER = 2
 NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
 STORY_TITLE = "GPT-6 Astra hunts GPT-2's induction heads, with no hints"
 STORY_STEPS = (("Not shown any weights", ("blind",)), ("No tools, scrambled weights", ("read-1", "read-2")), ("With Python, scrambled weights", ("python-1", "python-2")))
@@ -39,6 +40,9 @@ STORY_NO_WEIGHTS_RESULT = "Names the right layers"
 STORY_NOTE = "Rows are layers 4 to 9 of 12, induction heads first. A small 2 means picked twice."
 STORY_PYTHON_NOTE = "Both runs picked these same 5"
 STORY_POINTS = 16
+METHOD_QUOTE = "an earlier head can write the preceding token's features into a position, and a later head can match those features against the current token."
+METHOD_CODE = ("A, B = Q @ K.T, V @ O", "raw = As.reshape(144, -1) @ Bs.reshape(144, -1).T")
+METHOD_CODE_SHOWN = ("A, B = Q @ K.T, V @ O", "raw = As.reshape(144, -1)", "      @ Bs.reshape(144, -1).T")
 ARITHMETIC_TITLE = "Given our formula, Astra gave 96 sums like this, no tool calls logged"
 EXAMPLE_TERMS = 3
 # The row and the turns where the hinted read typed a dot product for every head in layers 4 to 11.
@@ -101,8 +105,8 @@ def _draw_example(figure, height: float) -> None:
     figure.text(0.5, height + 0.075, EXAMPLE_INTRO, fontsize=LABEL_POINTS, ha="center", va="center", color=MUTED)
     placed, left = [], 0.0
     for index, word in enumerate(EXAMPLE_WORDS):
-        colour = BLUE if index == 1 else INK
-        weight = "bold" if index in (0, 1, 5) else "normal"
+        colour = BLUE if index == EXAMPLE_ANSWER else INK
+        weight = "bold" if index in (EXAMPLE_ANSWER, len(EXAMPLE_WORDS) - 1) else "normal"
         text = figure.text(left, height, word, fontsize=RESULT_POINTS - 2, va="center", color=colour, fontweight=weight)
         box = text.get_window_extent(renderer).transformed(figure.transFigure.inverted())
         placed.append((text, box.width))
@@ -114,7 +118,7 @@ def _draw_example(figure, height: float) -> None:
         text.set_x(x)
         centres.append(x + width / 2)
     figure.add_artist(FancyArrowPatch(
-        (centres[5], height - 0.028), (centres[1], height - 0.028), transform=figure.transFigure,
+        (centres[-1], height - 0.028), (centres[EXAMPLE_ANSWER], height - 0.028), transform=figure.transFigure,
         connectionstyle="arc3,rad=-0.22", arrowstyle="-|>", mutation_scale=20, linewidth=2, color=BLUE,
     ))
 
@@ -265,16 +269,49 @@ def _story_figure(shuffle: TokenShuffle) -> None:
             axis.text(HEADS / 2, SHOWN_LAYERS[-1] + 1.7, STORY_PYTHON_NOTE, fontsize=STORY_POINTS, ha="center", va="center", color=MUTED)
     _draw_legend(figure)
     figure.text(0.5, 0.045, STORY_NOTE, fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
-    output = ROOT / "figures" / "reading_story_v6.png"
+    output = ROOT / "figures" / "reading_story_v7.png"
     figure.savefig(output, dpi=DPI)
     output.with_suffix(".json").write_text(json.dumps({"blind_layers": sorted(layer_counts.elements()), "steps": results}, indent=1))
     print(output, {heading: value["hits_induction"] for heading, value in results.items()})
+
+
+def _method_figure() -> None:
+    """Shows, verbatim from run 2, what Astra said, its key lines of code and what they printed."""
+    turns = [json.loads(line) for line in (_run_folder("python-2") / "transcript.jsonl").read_text().splitlines()]
+    words = turns[0]["reply"].split("```python")[0]
+    if METHOD_QUOTE not in words.replace("\u2019", "'"):
+        raise ValueError("the quote is not in the run's reply")
+    for line in METHOD_CODE:
+        if line not in turns[0]["code"]:
+            raise ValueError(f"{line!r} is not in the run's code")
+    answer = [f"{layer}.{head}" for layer, head in _run_result("python-2")["answer"]]
+    table = [line.split() for line in turns[1]["output"].splitlines()[2:9]]
+    figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
+    figure.text(0.5, 0.945, "How GPT-6 Astra found them, from its second run", fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
+    figure.text(0.05, 0.855, "What it wrote before any code", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
+    figure.text(0.05, 0.76, "\"...an earlier head can write the preceding token's\nfeatures into a position, and a later head can match\nthose features against the current token.\"", fontsize=LABEL_POINTS, color=INK, va="center", linespacing=1.3)
+    figure.text(0.05, 0.635, "Its key lines", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
+    figure.text(0.05, 0.545, "\n".join(METHOD_CODE_SHOWN), fontsize=LABEL_POINTS - 4, color=INK, va="center", family="Menlo", linespacing=1.5)
+    figure.text(0.05, 0.415, "What each matrix is", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
+    figure.text(0.05, 0.3, "A: what a later head searches for\nB: what an earlier head writes\nraw: how well each pair lines up", fontsize=LABEL_POINTS - 2, color=INK, va="center", linespacing=1.4)
+    figure.text(0.68, 0.855, "Next run, its top pairing", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
+    figure.text(0.68, 0.79, "head    cosine", fontsize=LABEL_POINTS - 3, color=MUTED, va="center", family="Menlo")
+    for index, row in enumerate(table):
+        chosen = row[0] in answer
+        height = 0.725 - index * 0.068
+        figure.text(0.68, height, f"{row[0]:<7} {row[1]}", fontsize=LABEL_POINTS - 2, color=BLUE if chosen else INK, fontweight="bold" if chosen else "normal", va="center", family="Menlo")
+    figure.text(0.68, 0.235, "Blue: its final answer.\nAll 5 are induction heads.", fontsize=LABEL_POINTS - 2, color=INK, va="center", linespacing=1.3)
+    figure.text(0.5, 0.075, "Head labels are scrambled. It never ran GPT-2. Its reasoning is hidden.", fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
+    output = ROOT / "figures" / "how_astra_found_them_v1.png"
+    figure.savefig(output, dpi=DPI)
+    print(output, answer)
 
 
 def main() -> None:
     plt.rcParams["font.family"] = "Helvetica"
     shuffle = TokenShuffle()
     _story_figure(shuffle)
+    _method_figure()
     _arithmetic_figure(shuffle)
     _heads_figure(shuffle)
 
