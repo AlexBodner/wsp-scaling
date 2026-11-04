@@ -1,0 +1,5 @@
+seed 1004: source 4.9 (GPT-2 head 4.11), best source's top 5 hit 5 of 5, each head's best pairing hits 5 of 5
+seed 1005: source 4.9 (GPT-2 head 4.11), best source's top 5 hit 5 of 5, each head's best pairing hits 5 of 5
+seed 1006: source 4.3 (GPT-2 head 4.11), best source's top 5 hit 5 of 5, each head's best pairing hits 5 of 5
+seed 1007: source 4.9 (GPT-2 head 4.11), best source's top 5 hit 5 of 5, each head's best pairing hits 5 of 5
+seed 1008: source 4.7 (GPT-2 head 4.11), best source's top 5 hit 5 of 5, each head's best pairing hits 5 of 5

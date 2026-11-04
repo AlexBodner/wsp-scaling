@@ -1,0 +1,33 @@
+{
+  "seed": 1005,
+  "turns": 4,
+  "code_runs": 3,
+  "answer": [
+    [
+      5,
+      1
+    ],
+    [
+      6,
+      9
+    ],
+    [
+      5,
+      11
+    ],
+    [
+      7,
+      4
+    ],
+    [
+      7,
+      5
+    ]
+  ],
+  "hits_top_ten": 5,
+  "hits_induction": 5,
+  "forward_pass_flags": [
+    3
+  ],
+  "stopped_by": "answer"
+}

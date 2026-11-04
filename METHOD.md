@@ -181,6 +181,40 @@ Limits:
 - **The hinted read is one run, on one model, on one kind of head.** The scripted reader's 67% ± 15% gives the comparison for 4 of 5. It says nothing about understanding an LLM in general.
 - **Deviation from plan:** read 2 was optional once the pass rule became unreachable, and both ran at once rather than in order. Neither result was seen before the other was started.
 
+## Reading test with Python, written before any Astra call
+Question: with Python and no hint, can Astra find GPT-2 small's induction heads from its weights, without running it? This takes the setup of the post's Experiment 3 to a real 124M model.
+
+- **Same as Experiment 3:** the target is defined and no method is given. Only the blocks are available, with no token, position or final tensors. Python runs on the weights, each run a fresh process with up to 600 seconds and 20,000 characters of output. Any linear algebra on the weights is allowed, and forward passes and search are not.
+- **Different from Experiment 3:**
+  - Heads and coordinates are scrambled, and the key bias is noise, because these heads are published. Layer order stays.
+  - It names 5 heads, and is told so, rather than labelling all of them.
+  - It has 20 runs, not 100. Their runs took 7 to 12 turns.
+  - Each turn is a fresh sealed call replaying visible replies and outputs, while theirs resumed the session and kept private reasoning. Astra is told this. It makes our test harder, so a failure means failure under replay, not that it cannot be done.
+- **Runs:** 2, at `xhigh`, seeds 1004 and 1005, in order. Spend cap $40 per run at list price, with a warning to Astra at 70%.
+- **Score, primary:** picks among the 5 heads scoring above 0.8, the ones silencing shows do the work. The top 10 is reported beside it, and it is attention only, since silencing the next five barely matters.
+- **Baselines, naming 5 (`checks/python_baselines.py`):** guessing 0.17, guessing within layers 5 to 7 0.69, the query-key trace over all layers 0, and the same trace told to skip layers 0 to 3 gets 3.
+- **How we will read it, across both runs:**
+  - At most 1 in either run: no better than knowing the layers.
+  - 2 or 3: script level. This only counts as reading if its code reaches the picks by its own stated method and doesn't just confirm remembered layers.
+  - 4 or 5 in both runs: beats these simple statistics. That is the only outcome we would call clearly better than a one-line script.
+- **Audit:** every code block and reply is read by hand for forward passes, including ones the keyword flag misses. A run with a forward pass is reported and not counted. Hidden reasoning cannot be audited.
+- **Limits:** two runs against one set of truth. The prompt's shapes identify GPT-2 and layer order survives, so a positive result can still lean on memory. The sandbox and harness are in `wsp/code_reader.py`.
+
+Results, 2 runs, both sealed with no tool items:
+
+| Run | Seed | On the 5 induction heads | On the top 10 | Turns | Code runs | List price |
+|---|---|---|---|---|---|---|
+| Python 1 | 1004 | **5 of 5** | 5 of 5 | 5 | 4 | $1.43 |
+| Python 2 | 1005 | **5 of 5** | 5 of 5 | 4 | 3 | $1.10 |
+
+By the rule written above, this is the outcome we said would be clearly better than a one-line script. Every code block was read by hand, and none runs a layer on an input. The one keyword flag is a variable named `forward_fraction`. Neither run's code or replies name GPT-2 or induction heads.
+
+- **The method:** both runs compared each head's QK^T with earlier heads' VO, the published two-step circuit, on their first code run, then checked it on one earlier head.
+- **It is the method, not recall of the answer:** `checks/composition_statistic.py` reruns that statistic in code with no layer rule and gets 5 of 5 on all five scrambles. The earlier head it picks is GPT-2's 4.11 every time, which we recall as a known previous-token head and did not check.
+- **So a script now gets 5 of 5 too.** The 3 of 5 baseline was set before this statistic was known to work so well. A person who knows the circuit can write this in a page, so this does not show insight beyond the published work, and memory of that work may have guided it. The result was: no method given, and it chose and carried out the right one.
+- **What the scrambling keeps:** layer order and the products QK^T and VO, which are unchanged. The statistic tests the matching half of the circuit. With no embeddings there is no per-head copying score, and "previous token" is inherited from the published work, not measured here.
+- **Limits:** two runs, on one model and one famous circuit. The prompt's shapes identify GPT-2. Private reasoning is hidden.
+
 ## Open
 - What to run next on writing. A size sweep needs a design where size matters.
 - Constraint: use bigger, more relevant ready-made models, and do not train networks ourselves. Astra sets or reads the weights.

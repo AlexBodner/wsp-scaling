@@ -1,0 +1,10 @@
+trace QK, all layers                             on the five (0, 0, 0, 0, 0) on the top 10 (0, 0, 0, 0, 0)
+trace QK, layers 4 to 11                         on the five (3, 3, 3, 3, 3) on the top 10 (4, 4, 4, 4, 4)
+positive eigenvalue share QK, all layers         on the five (1, 1, 1, 1, 1) on the top 10 (1, 1, 1, 1, 1)
+positive eigenvalue share QK, layers 4 to 11     on the five (3, 3, 3, 3, 3) on the top 10 (5, 5, 5, 5, 5)
+trace VO, all layers                             on the five (0, 0, 0, 0, 0) on the top 10 (0, 0, 0, 0, 0)
+trace VO, layers 4 to 11                         on the five (0, 0, 0, 0, 0) on the top 10 (0, 0, 0, 0, 0)
+positive eigenvalue share VO, all layers         on the five (0, 0, 0, 0, 0) on the top 10 (0, 0, 0, 0, 0)
+positive eigenvalue share VO, layers 4 to 11     on the five (0, 0, 0, 0, 0) on the top 10 (0, 0, 0, 0, 0)
+guessing, all heads: expected 0.17 of 5, at least 3 of 5 2.0e-04
+guessing, layers 5 to 7: expected 0.69 of 5, at least 3 of 5 1.3e-02
