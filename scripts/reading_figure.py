@@ -16,7 +16,7 @@ import numpy as np
 from matplotlib.lines import Line2D
 from matplotlib.patches import FancyArrowPatch, Rectangle
 
-from wsp.disguise import HEADS, LAYERS, disguise
+from wsp.disguise import HEAD_SIZE, HEADS, LAYERS, WIDTH, disguise
 from wsp.network import TokenShuffle, real_network
 from wsp.reading import HINTED_SEED, head_scores, positive_heads, query_key_dot, stated_dot_products
 
@@ -38,11 +38,10 @@ STORY_STEPS = (("With no weights at all", ("blind",)), ("Reading scrambled weigh
 STORY_NO_WEIGHTS_RESULT = "It names their layers"
 STORY_NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
 STORY_POINTS = 16
-ARITHMETIC_TITLE = "GPT-6 Astra's math on GPT-2's weights, no tool calls in our logs"
+ARITHMETIC_TITLE = "Given our formula, Astra gave 96 sums like this, no tool calls logged"
+EXAMPLE_TERMS = 3
 # The row and the turns where the hinted read typed a dot product for every head in layers 4 to 11.
 HINTED_TABLE_ROW, HINTED_TABLE_TURNS, HINTED_TABLE_VALUES = 137, (1, 2), 96
-AXIS_LIMITS = (-0.75, 1.35)
-AXIS_TICKS = (-0.5, 0, 0.5, 1)
 
 
 def _run_folder(arm: str) -> Path:
@@ -194,34 +193,34 @@ def _arithmetic_figure(shuffle: TokenShuffle) -> None:
     largest_error = np.abs(typed - in_code).max()
 
     figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
-    axis = figure.add_axes([0.1, 0.14, 0.44, 0.72])
-    axis.plot(AXIS_LIMITS, AXIS_LIMITS, color=GREY, linewidth=2.5, zorder=1)
-    axis.text(1.03, 0.82, "exact match", rotation=45, rotation_mode="anchor", fontsize=LABEL_POINTS - 3, ha="center", color=MUTED)
-    axis.scatter(in_code[matched], typed[matched], s=70, color=BLUE, edgecolor="white", linewidth=0.8, zorder=2)
-    axis.scatter(in_code[~matched], typed[~matched], s=80, color=RED, edgecolor="white", linewidth=0.8, zorder=3)
-    axis.set(xlim=AXIS_LIMITS, ylim=AXIS_LIMITS, xticks=AXIS_TICKS, yticks=AXIS_TICKS, aspect="equal")
-    axis.set_xlabel("Answer from code", fontsize=LABEL_POINTS, color=INK)
-    axis.set_ylabel("Astra's answer", fontsize=LABEL_POINTS, color=INK)
-    axis.tick_params(labelsize=LABEL_POINTS, colors=INK, length=0)
-    axis.spines[["top", "right"]].set_visible(False)
-    axis.spines[["left", "bottom"]].set_color(GREY)
-    figure.text(0.5, 0.94, ARITHMETIC_TITLE, fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
+    figure.text(0.5, 0.945, ARITHMETIC_TITLE, fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
+    biggest = int(np.argmax(in_code))
+    layer, head = keys[biggest]
+    row = disguised.tensors[f"L{layer}.qkv.W"][HINTED_TABLE_ROW]
+    query, key = row[head * HEAD_SIZE : (head + 1) * HEAD_SIZE], row[WIDTH + head * HEAD_SIZE : WIDTH + (head + 1) * HEAD_SIZE]
+    terms = [f"({query[i]:.3g} \u00d7 {key[i]:.3g})".replace("-", "\u2212") for i in range(EXAMPLE_TERMS)]
+    figure.text(0.5, 0.82, " + ".join(terms) + " + ...", fontsize=LABEL_POINTS + 2, ha="center", va="center", color=INK)
+    figure.text(0.5, 0.74, f"64 products in all. Astra's answer: {typed[biggest]:.2f}. Code: {in_code[biggest]:.2f}.", fontsize=LABEL_POINTS, ha="center", va="center", color=MUTED)
+
+    axis = figure.add_axes([0.075, 0.13, 0.5, 0.5])
+    first_layer = min(key[0] for key in keys)
+    for (pair_layer, pair_head), is_match in zip(keys, matched):
+        axis.add_patch(Rectangle((pair_head + GAP / 2, pair_layer - first_layer + GAP / 2), 1 - GAP, 1 - GAP, facecolor=BLUE if is_match else RED, linewidth=0))
+    rows = max(key[0] for key in keys) - first_layer + 1
+    axis.set(xlim=(0, HEADS), ylim=(rows, 0), aspect="equal")
+    axis.axis("off")
+    axis.text(HEADS / 2, -0.35, "All 96 sums, one square each", fontsize=LABEL_POINTS, ha="center", color=INK)
+
     stats = (
-        (0.66, BLUE, f"{matches} of {len(keys)}", STAT_POINTS, "match code to the two\ndecimals it gave"),
-        (0.38, RED, f"{len(keys) - matches} miss", STAT_POINTS - 12, f"by at most {largest_error:.3f}"),
+        (0.46, BLUE, f"{matches} of {len(keys)}", STAT_POINTS, "match code to the two\ndecimals it gave"),
+        (0.22, RED, f"{len(keys) - matches} miss", STAT_POINTS - 12, f"by at most {largest_error:.3f}"),
     )
     for height, colour, value, size, text in stats:
-        figure.add_artist(Line2D([0.595], [height + 0.03], transform=figure.transFigure, marker="o", markersize=11, color=colour, linewidth=0))
-        figure.text(0.62, height, value, fontsize=size, fontweight="bold", color=INK)
-        figure.text(0.62, height - 0.015, text, fontsize=LABEL_POINTS, color=INK, va="top", linespacing=1.25)
-    figure.text(0.62, 0.2, "Each dot is one head:\na sum of 64 products.", fontsize=LABEL_POINTS, color=MUTED, va="center", linespacing=1.25)
-    biggest = int(np.argmax(in_code))
-    axis.annotate(
-        f"Astra {typed[biggest]:.2f}\ncode {in_code[biggest]:.2f}", (in_code[biggest], typed[biggest]), xytext=(0.42, 1.2),
-        fontsize=LABEL_POINTS - 2, color=INK, va="center", ha="center", arrowprops={"arrowstyle": "-", "color": MUTED, "linewidth": 1.2, "shrinkB": 6},
-    )
+        figure.add_artist(Line2D([0.635], [height + 0.03], transform=figure.transFigure, marker="s", markersize=13, color=colour, linewidth=0))
+        figure.text(0.66, height, value, fontsize=size, fontweight="bold", color=INK)
+        figure.text(0.66, height - 0.015, text, fontsize=LABEL_POINTS, color=INK, va="top", linespacing=1.25)
 
-    output = ROOT / "figures" / "arithmetic_v7.png"
+    output = ROOT / "figures" / "arithmetic_v9.png"
     figure.savefig(output, dpi=DPI)
     pairs = [{"layer": key[0], "head": key[1], "typed": float(value), "in_code": float(code)} for key, value, code in zip(keys, typed, in_code)]
     summary = {"row": HINTED_TABLE_ROW, "correlation": correlation, "matches_two_decimals": matches, "largest_error": largest_error}
