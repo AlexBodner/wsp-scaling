@@ -55,7 +55,7 @@ Overlap with each kind's top 5, by statistic: real, then the mean under each con
   [blocks] best cosine as reader of an earlier head
     real: induction 5, duplicate 0, previous 0, self 0, name mover 0, S-inhibition 0
   [blocks] best cosine as writer for a later head
-    real: induction 0, duplicate 0, previous 0, self 0, name mover 1, S-inhibition 0
+    real: induction 0, duplicate 0, previous 1, self 0, name mover 0, S-inhibition 0
   [blocks] minus trace(VO), own negative copying
     real: induction 0, duplicate 1, previous 0, self 1, name mover 0, S-inhibition 0
   [+E] token match
@@ -176,9 +176,9 @@ Overlap with each kind's top 5, by statistic: real, then the mean under each con
 Best statistic per kind at each access level. Each level counts only the statistics that use its table, and the number tried is in brackets
   induction: blocks 5 (best cosine as reader of an earlier head) [5]; +E 2 (copying after MLP) [8]; +P 0 (none) [4]; +E+P+F 2 (copying after MLP, final scale) [13]
   duplicate: blocks 4 (trace(QK^T), own match) [5]; +E 5 (token match after MLP) [8]; +P 0 (none) [4]; +E+P+F 3 (table attention, duplicate) [13]
-  previous: blocks 0 (none) [5]; +E 0 (none) [8]; +P 0 (none) [4]; +E+P+F 2 (table attention, end to receiver and 1 tied) [13]
+  previous: blocks 1 (best cosine as writer for a later head) [5]; +E 0 (none) [8]; +P 0 (none) [4]; +E+P+F 2 (table attention, end to receiver and 1 tied) [13]
   self: blocks 3 (trace(QK^T), own match) [5]; +E 4 (token match) [8]; +P 2 (offset 0 attention) [4]; +E+P+F 4 (table attention, self) [13]
-  name mover: blocks 1 (best cosine as writer for a later head) [5]; +E 4 (absolute copying after MLP) [8]; +P 1 (offset 1 contrast and 1 tied) [4]; +E+P+F 4 (absolute copying after MLP, final scale) [13]
+  name mover: blocks 0 (none) [5]; +E 4 (absolute copying after MLP) [8]; +P 1 (offset 1 contrast and 1 tied) [4]; +E+P+F 4 (absolute copying after MLP, final scale) [13]
   S-inhibition: blocks 0 (none) [5]; +E 1 (minus copying after MLP) [8]; +P 0 (none) [4]; +E+P+F 1 (minus copying after MLP, final scale) [13]
 
 The same under controls, mean over permutations: the best of that level's statistics that use the table / the real winner's own overlap
@@ -213,8 +213,8 @@ Why the position statistics give what they give on previous-token heads, outside
     top 5: 3.0 0.139, 4.2 0.113, 10.8 0.103, 10.5 0.087, 0.5 0.059
 
 The card's predictions
-  previous at least 3 with P: blocks 0, +P 0
-  name mover at least 3 with E and F, from at most 1: blocks 1, +E 4, +E+P+F 4
+  previous at least 3 with P: blocks 1, +P 0
+  name mover at least 3 with E and F, from at most 1: blocks 0, +E 4, +E+P+F 4
   duplicate 3 or more with or without E: blocks 4, +E 5
   induction 5 with blocks alone: blocks 5, +E 2, +P 0, +E+P+F 2
   S-inhibition 1 or less with every table: blocks 0, +E 1, +P 0, +E+P+F 1
