@@ -1,0 +1,20 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny appleevent-send)
+(deny process-exec)
+(allow process-exec (literal "/opt/anaconda3/bin/python3.12"))
+(deny file-write*)
+(deny file-read-data
+  (subpath "/Users")
+  (subpath "/Volumes")
+  (subpath "/private/tmp")
+  (subpath "/private/var/folders")
+  (subpath "/private/var/root")
+  (subpath "/Library/Keychains"))
+(allow file-read-data
+  (literal "/Users/alexanderbodner/Documents/wsp-scaling/data/reading_python/blocks_1006.npz")
+  (subpath "/Users/alexanderbodner/Documents/wsp-scaling/runs/reading-scripted__scripted__20261104T013653Z/code/001"))
+(allow file-write*
+  (literal "/dev/null")
+  (subpath "/Users/alexanderbodner/Documents/wsp-scaling/runs/reading-scripted__scripted__20261104T013653Z/code/001"))
