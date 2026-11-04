@@ -8,4 +8,10 @@ all heads in layers 6 to 8 zeroed: repeat accuracy 0.801, text loss 3.211, rise 
 all heads in layers 7 to 9 zeroed: repeat accuracy 0.886, text loss 3.214, rise 0.073
 all heads in layers 5 to 9 zeroed: repeat accuracy 0.199, text loss 3.320, rise 0.179
 all heads in layers 5 to 12 zeroed: repeat accuracy 0.002, text loss 3.603, rise 0.462
+best-pairing 5, key weights removed: repeat accuracy 0.318, text loss 3.894, rise 0.753
+best-pairing 5, value weights removed: repeat accuracy 0.733, text loss 3.682, rise 0.541
+best-pairing 10, key weights removed: repeat accuracy 0.017, text loss 4.126, rise 0.985
+best-pairing 10, value weights removed: repeat accuracy 0.416, text loss 3.651, rise 0.510
+all heads above 0.5 attention, key weights removed: repeat accuracy 0.006, text loss 3.956, rise 0.815
+all heads above 0.5 attention, value weights removed: repeat accuracy 0.070, text loss 3.855, rise 0.714
 4 random sets of 5 zeroed: repeat accuracy mean 0.983, lowest 0.975; text rise mean 0.007

@@ -84,6 +84,22 @@ def zeroed(disguised: FamilyDisguise, real_heads: list[tuple[int, int]]) -> dict
     return tensors
 
 
+def softened(disguised: FamilyDisguise, real_heads: list[tuple[int, int]], part: str) -> dict[str, np.ndarray]:
+    """Returns edits using only a head list: zero its key weights, or remove the variable part of its values."""
+    tensors = dict(disguised.tensors)
+    for layer, head in real_heads:
+        scrambled = int(np.where(disguised.original_head[layer] == head)[0][0])
+        name, shift = f"L{layer}.qkv.W", tensors[f"L{layer}.norm1.shift"]
+        weight, bias = tensors[name].copy(), tensors[f"L{layer}.qkv.b"].copy()
+        start = (1024 if part == "key" else 2048) + scrambled * 64
+        if part == "value":
+            bias[start : start + 64] += shift @ weight[:, start : start + 64]
+            tensors[f"L{layer}.qkv.b"] = bias
+        weight[:, start : start + 64] = 0
+        tensors[name] = weight
+    return tensors
+
+
 def baselines() -> None:
     model = load("medium")
     disguised = disguise_family(model, BASELINE_SEED)
@@ -104,6 +120,11 @@ def baselines() -> None:
     for label, heads in sets.items():
         repeat, text = scores(fresh(zeroed(disguised, heads)))
         print(f"{label}: repeat accuracy {repeat:.3f}, text loss {text:.3f}, rise {text - base[1]:.3f}", flush=True)
+    lists = {"best-pairing 5": BEST_PAIRING, "best-pairing 10": BEST_PAIRING + [(12, 0), (10, 1), (10, 8), (11, 1), (9, 4)], "all heads above 0.5 attention": [(9, 9), (18, 5), (11, 1), (12, 1), (7, 2), (20, 12), (6, 1), (13, 14), (19, 15), (20, 7), (9, 3), (22, 14), (16, 12), (15, 7), (10, 8), (5, 8), (10, 1)]}
+    for label, heads in lists.items():
+        for part in ("key", "value"):
+            repeat, text = scores(fresh(softened(disguised, heads, part)))
+            print(f"{label}, {part} weights removed: repeat accuracy {repeat:.3f}, text loss {text:.3f}, rise {text - base[1]:.3f}", flush=True)
     rng = np.random.default_rng(BASELINE_SEED)
     results = []
     for _ in range(4):
