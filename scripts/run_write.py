@@ -18,7 +18,7 @@ from wsp.write_task import EDITED_FILE, apply_edit, detailed_scores, edit_code, 
 ROOT = Path(__file__).parent.parent
 SEEDS = {"write-1": 1301, "write-2": 1302, "scripted": 1303}
 MANIFEST = ROOT / "prompts" / "WRITE_MANIFEST.json"
-MAX_COST = 9.0
+MAX_COST = 6.0
 NAMED = 5
 TOP_TEN = 10
 _SCRIPTED_REPLY = 'Zeroing one head.\n\n```edit\nW["L5.out.W"][0:64, :] = 0\n```\n\n```answer\n5.0\n5.1\n5.2\n5.3\n5.4\n```'
