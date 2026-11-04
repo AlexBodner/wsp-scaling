@@ -1,0 +1,25 @@
+1a. Each head's direct effect on the logit
+  the right next token on repeats, most negative: 10.7 -1.24, 11.10 -0.72, 8.10 -0.24, 9.5 -0.09, 7.6 -0.07, 6.6 -0.07
+  the right next token on repeats, most positive: 9.6 1.27, 7.2 1.21, 9.9 1.16, 10.0 1.09, 7.10 1.02, 6.9 0.93
+  the right name over the subject on sentences, most negative: 10.7 -0.86, 11.10 -0.31, 9.8 -0.25, 11.2 -0.13, 8.11 -0.05, 7.5 -0.03
+  the right name over the subject on sentences, most positive: 9.9 1.54, 9.6 0.53, 10.0 0.47, 8.10 0.28, 10.10 0.25, 10.6 0.20
+  named heads, on repeats / on sentences: 5.5 0.26/0.00, 7.10 1.02/0.00, 6.9 0.93/0.00, 5.1 0.58/0.01, 7.2 1.21/0.00, 9.6 1.27/0.53, 9.9 1.16/1.54, 10.0 1.09/0.47, 10.1 0.77/0.11, 10.7 -1.24/-0.86, 11.10 -0.72/-0.31
+1b. Late heads' attention on repeats, with the top five silenced only in that part of the late heads
+  queries: 9.6 0.52 to 0.16, 9.9 0.46 to 0.25, 10.0 0.42 to 0.11, 10.1 0.52 to 0.23, 10.7 0.54 to 0.04, 11.10 0.44 to 0.05
+  keys: 9.6 0.52 to 0.47, 9.9 0.46 to 0.36, 10.0 0.42 to 0.41, 10.1 0.52 to 0.50, 10.7 0.54 to 0.60, 11.10 0.44 to 0.43
+  8 random sets of 5 heads in layers 4 to 8, queries: 9.6 mean 0.50 lowest 0.48, 9.9 mean 0.45 lowest 0.42, 10.0 mean 0.42 lowest 0.40, 10.1 mean 0.51 lowest 0.50, 10.7 mean 0.52 lowest 0.47, 11.10 mean 0.43 lowest 0.39
+1c. On sentences, attention at the end to the right name, with name movers silenced only in late heads' queries
+  queries: 10.7 0.59 to 0.31, 11.10 0.49 to 0.52
+  keys: 10.7 0.59 to 0.59, 11.10 0.49 to 0.49
+  8 random sets of 3 heads in layers 8 and 9, queries: 10.7 mean 0.54 lowest 0.36, 11.10 mean 0.47 lowest 0.42
+2. Repeated names, one token each (16 first names, 16 surnames)
+  name again in a new sentence (n=224): on top/probability, nothing 0.66/0.15, five zeroed 0.81/0.43, late heads zeroed 0.63/0.17, 5 others 0.61/0.15
+    the five attend to the surname 0.53; direct effect on its logit, five 2.30, late heads 9.6 0.74, 9.9 0.38, 10.0 1.27, 10.1 0.67, 10.7 -1.13, 11.10 -0.41
+  name again after a longer gap (n=256): on top/probability, nothing 0.38/0.10, five zeroed 0.57/0.40, late heads zeroed 0.32/0.11, 5 others 0.46/0.13
+    the five attend to the surname 0.53; direct effect on its logit, five 2.54, late heads 9.6 0.85, 9.9 0.37, 10.0 1.32, 10.1 0.76, 10.7 -0.66, 11.10 -0.41
+  name again after 'according to' (n=256): on top/probability, nothing 0.74/0.55, five zeroed 0.99/0.94, late heads zeroed 0.71/0.56, 5 others 0.72/0.53
+    the five attend to the surname 0.65; direct effect on its logit, five 3.06, late heads 9.6 1.58, 9.9 0.63, 10.0 1.75, 10.1 1.08, 10.7 -0.85, 11.10 -1.35
+  same sentence repeated (n=224): on top/probability, nothing 0.67/0.20, five zeroed 0.96/0.70, late heads zeroed 0.59/0.22, 5 others 0.59/0.18
+    the five attend to the surname 0.57; direct effect on its logit, five 2.38, late heads 9.6 0.73, 9.9 0.39, 10.0 1.40, 10.1 0.78, 10.7 -1.03, 11.10 -0.53
+  name listed three times (n=224): on top/probability, nothing 1.00/0.74, five zeroed 1.00/0.84, late heads zeroed 1.00/0.81, 5 others 1.00/0.70
+    the five attend to the surname 0.28; direct effect on its logit, five 2.46, late heads 9.6 0.83, 9.9 0.44, 10.0 1.56, 10.1 0.76, 10.7 -1.41, 11.10 -0.75
