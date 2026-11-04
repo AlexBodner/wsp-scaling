@@ -8,10 +8,10 @@ With Python and no hint, GPT-6 Astra named all five of GPT-2's induction heads i
 1. **It stated a theory before reading a weight.** Run 2, turn 1: "an earlier head can write the preceding token's features into a position, and a later head can match those features against the current token." Run 1 opened with the same comparison. This took 1,291 and 972 reasoning tokens.
 2. **It scored every pair of heads.** For each head, `A = Q @ K.T` is what it searches for and `B = V @ O` is what it writes. The dot product of a later head's A with an earlier head's B says how well they line up. It also noted that these products don't depend on a head's internal coordinates, which is why the scrambling doesn't stop it.
 3. **One earlier head stood out.** It is 4.9 in both runs' scrambled labels, which is GPT-2's head 4.11.
-4. **Five later heads came out on top, and it named them.** In run 1 they top the first table it printed. In run 2 they top its second, which pairs each head with 4.9.
+4. **Five later heads came out on top, and it named them.** In run 1 they top its first ranking by alignment. In run 2 they top its second, which pairs each head with 4.9.
 5. **It spent the remaining turns checking.** It tried other weightings of the same comparison, and did not change its picks.
 
-Total reasoning was 6,542 and 5,759 tokens. The no-tools runs used about 43,000 and 51,000, and failed.
+Total reasoning was 6,542 and 5,759 tokens. The no-tools runs used about 42,000 and 51,000, and failed.
 
 ## Did it cheat?
 We looked for it and found none. An independent audit read every code block and session file:

@@ -287,14 +287,14 @@ def _method_figure() -> None:
     answer = [f"{layer}.{head}" for layer, head in _run_result("python-2")["answer"]]
     table = [line.split() for line in turns[1]["output"].splitlines()[2:9]]
     figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
-    figure.text(0.5, 0.945, "How GPT-6 Astra found them, from its second run", fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
+    figure.text(0.5, 0.945, "How GPT-6 Astra found them (Python run 2)", fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
     figure.text(0.05, 0.855, "What it wrote before any code", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
     figure.text(0.05, 0.76, "\"...an earlier head can write the preceding token's\nfeatures into a position, and a later head can match\nthose features against the current token.\"", fontsize=LABEL_POINTS, color=INK, va="center", linespacing=1.3)
     figure.text(0.05, 0.635, "Its key lines", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
     figure.text(0.05, 0.545, "\n".join(METHOD_CODE_SHOWN), fontsize=LABEL_POINTS - 4, color=INK, va="center", family="Menlo", linespacing=1.5)
     figure.text(0.05, 0.415, "What each matrix is", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
     figure.text(0.05, 0.3, "A: what a later head searches for\nB: what an earlier head writes\nraw: how well each pair lines up", fontsize=LABEL_POINTS - 2, color=INK, va="center", linespacing=1.4)
-    figure.text(0.68, 0.855, "Next run, its top pairing", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
+    figure.text(0.68, 0.855, "Next code run, paired with head 4.9", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
     figure.text(0.68, 0.79, "head    cosine", fontsize=LABEL_POINTS - 3, color=MUTED, va="center", family="Menlo")
     for index, row in enumerate(table):
         chosen = row[0] in answer
