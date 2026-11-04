@@ -19,6 +19,9 @@ top_five = {(int(i) // HEADS, int(i) % HEADS) for i in np.argsort(-scores.ravel(
 for title, panel in heads["panels"].items():
     picks = [tuple(pick) for pick in panel["picks"]]
     print(f"{title}: {sum(p in top_five for p in picks)} of {len(picks)} on the five, {sum(p in top_ten for p in picks)} on the top 10")
+for arm in ("python-1", "python-2"):
+    result = run_result(arm)
+    print(f"{arm}: {result['hits_induction']} of 5 on the five, {result['hits_top_ten']} of 5 on the top 10, in {result['turns']} turns")
 print("layers named with no weights:", sorted(layer for layer, _ in run_result("blind")["answer"]))
 print("layers of the five:", sorted(layer for layer, _ in top_five))
 

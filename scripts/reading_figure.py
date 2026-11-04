@@ -33,10 +33,11 @@ TITLE = "Can GPT-6 Astra find induction heads in scrambled GPT-2 weights?"
 EXAMPLE_INTRO = "An induction head finds what came next last time, and copies it:"
 EXAMPLE_WORDS = ("Mira", "Kowal", "went", "home,", "and", "Mira")
 NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
-STORY_TITLE = "GPT-6 Astra hunts GPT-2's induction heads, with no tools"
-STORY_STEPS = (("Not shown any weights", ("blind",)), ("Shown scrambled weights", ("read-1", "read-2")), ("With our formula and layer hint", ("hinted",)))
+STORY_TITLE = "GPT-6 Astra hunts GPT-2's induction heads, with no hints"
+STORY_STEPS = (("Not shown any weights", ("blind",)), ("No tools, scrambled weights", ("read-1", "read-2")), ("With Python, scrambled weights", ("python-1", "python-2")))
 STORY_NO_WEIGHTS_RESULT = "Names the right layers"
-STORY_NOTE = "Rows are layers 4 to 9 of 12, induction heads first. A small 2: picked in both runs."
+STORY_NOTE = "Rows are layers 4 to 9 of 12, induction heads first. A small 2 means picked twice."
+STORY_PYTHON_NOTE = "Both runs picked these same 5"
 STORY_POINTS = 16
 ARITHMETIC_TITLE = "Given our formula, Astra gave 96 sums like this, no tool calls logged"
 EXAMPLE_TERMS = 3
@@ -260,9 +261,11 @@ def _story_figure(shuffle: TokenShuffle) -> None:
         _story_grid(axis, scores, induction_heads, [] if not index else picks, layer_counts if not index else None)
         axis.text(HEADS / 2, 2.15, heading, fontsize=STORY_POINTS + 1, ha="center", color=INK)
         axis.text(HEADS / 2, 3.4, result, fontsize=RESULT_POINTS - 3, fontweight="bold", ha="center", color=INK)
+        if arms[0].startswith("python"):
+            axis.text(HEADS / 2, SHOWN_LAYERS[-1] + 1.7, STORY_PYTHON_NOTE, fontsize=STORY_POINTS, ha="center", va="center", color=MUTED)
     _draw_legend(figure)
     figure.text(0.5, 0.045, STORY_NOTE, fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
-    output = ROOT / "figures" / "reading_story_v4.png"
+    output = ROOT / "figures" / "reading_story_v6.png"
     figure.savefig(output, dpi=DPI)
     output.with_suffix(".json").write_text(json.dumps({"blind_layers": sorted(layer_counts.elements()), "steps": results}, indent=1))
     print(output, {heading: value["hits_induction"] for heading, value in results.items()})

@@ -1,5 +1,7 @@
 Alone, 2 runs: 0 of 10 on the five, 0 on the top 10
 With a formula and layer hint, 1 run: 3 of 5 on the five, 4 on the top 10
+python-1: 5 of 5 on the five, 5 of 5 on the top 10, in 5 turns
+python-2: 5 of 5 on the five, 5 of 5 on the top 10, in 4 turns
 layers named with no weights: [5, 5, 6, 7, 7]
 layers of the five: [5, 5, 6, 7, 7]
 sums matching code to two decimals: 86 of 96
