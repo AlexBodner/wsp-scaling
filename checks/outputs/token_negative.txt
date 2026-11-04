@@ -1,0 +1,77 @@
+
+gpt2-medium: 24 layers, 16 heads of size 64, width 1024, 384 heads, on cpu in torch.float32
+  slices rebuild the model's attention and output, worst error 9.77e-04
+  trace form of the score matches the direct product on 12.0 on 200 tokens within 1.7e-16; 11 s
+  direct effects measured on 32 repeats, 24 positions, and 128 stories, 63 positions; 30 s
+  most negative by score, with score and on repeats / stories: direct effect (effect rank from the bottom), largest attention, share of positions on itself
+    23.3: score -1.474, effect -0.381 (2)/-0.250 (1), attention 0.65/0.55, on itself 0.00/0.00
+    22.14: score -1.407, effect -0.813 (1)/-0.168 (2), attention 0.75/0.56, on itself 0.00/0.00
+    19.1: score -1.145, effect -0.027 (12)/-0.074 (6), attention 0.81/0.66, on itself 0.00/0.00
+    17.12: score -0.870, effect -0.235 (3)/-0.085 (4), attention 0.71/0.46, on itself 0.00/0.02
+    15.8: score -0.767, effect -0.030 (11)/-0.078 (5), attention 0.63/0.45, on itself 0.03/0.06
+    12.3: score -0.765, effect -0.158 (4)/-0.055 (7), attention 0.32/0.48, on itself 0.06/0.03
+    20.14: score -0.704, effect -0.024 (14)/0.002 (138), attention 0.78/0.82, on itself 0.00/0.00
+    15.1: score -0.675, effect -0.007 (38)/-0.015 (40), attention 0.73/0.42, on itself 0.00/0.04
+    17.6: score -0.649, effect -0.013 (19)/-0.006 (72), attention 0.71/0.60, on itself 0.01/0.02
+    15.11: score -0.626, effect -0.021 (16)/0.007 (197), attention 0.65/0.82, on itself 0.00/0.00
+  most negative effects on repeats: 22.14 -0.813 (score rank 2), 23.3 -0.381 (score rank 1), 17.12 -0.235 (score rank 4), 12.3 -0.158 (score rank 6), 18.9 -0.089 (score rank 22), 1.4 -0.072 (score rank 37), 21.7 -0.059 (score rank 27), 21.3 -0.055 (score rank 24), 10.4 -0.040 (score rank 28), 9.13 -0.031 (score rank 38)
+  most negative effects on stories: 23.3 -0.250 (score rank 1), 22.14 -0.168 (score rank 2), 23.15 -0.093 (score rank 65), 17.12 -0.085 (score rank 4), 15.8 -0.078 (score rank 5), 19.1 -0.074 (score rank 3), 12.3 -0.055 (score rank 6), 11.13 -0.050 (score rank 50), 2.14 -0.042 (score rank 164), 22.2 -0.042 (score rank 40)
+  Spearman between score and direct effect on all 384 heads, with 2000 within-layer shuffles of the score
+    repeats: Spearman 0.808, shuffles mean 0.098, 2.5th to 97.5th percentile -0.000 to 0.195, chance of this or higher 0.0000; within-layer Spearman 0.669; top 3 by score among 10 most negative effects: 2 of 3, shuffles passing 0.0000
+    stories: Spearman 0.538, shuffles mean 0.076, 2.5th to 97.5th percentile -0.019 to 0.171, chance of this or higher 0.0000; within-layer Spearman 0.476; top 3 by score among 10 most negative effects: 3 of 3, shuffles passing 0.0000
+  20 permutations of the embedding rows against the unembedding, on repeats: Spearman mean 0.019, lowest -0.216, highest 0.403; top 3 among the 10 most negative effects: at most 2 of 3, 0 permutations pass; first draw's top 3: 16.15 13.14 3.6; last draw's: 3.6 22.12 19.15
+  took 41 s, peak resident memory 3.08 GB
+
+distilbert/distilgpt2: 6 layers, 12 heads of size 64, width 768, 72 heads, on cpu in torch.float32
+  slices rebuild the model's attention and output, worst error 3.66e-04
+  trace form of the score matches the direct product on 3.0 on 200 tokens within 2.8e-17; 3 s
+  direct effects measured on 32 repeats, 24 positions, and 128 stories, 63 positions; 6 s
+  most negative by score, with score and on repeats / stories: direct effect (effect rank from the bottom), largest attention, share of positions on itself
+    5.10: score -0.679, effect -0.237 (1)/-0.053 (6), attention 0.73/0.48, on itself 0.00/0.01
+    4.5: score -0.605, effect -0.058 (2)/-0.068 (3), attention 0.64/0.70, on itself 0.00/0.00
+    2.4: score -0.437, effect -0.036 (3)/-0.058 (4), attention 0.49/0.61, on itself 0.00/0.00
+    3.3: score -0.303, effect -0.010 (9)/-0.083 (1), attention 0.63/0.58, on itself 0.00/0.00
+    1.7: score -0.135, effect -0.016 (6)/0.018 (36), attention 0.50/0.57, on itself 0.00/0.00
+    5.0: score -0.122, effect 0.011 (26)/0.053 (54), attention 0.17/0.22, on itself 0.03/0.03
+    4.4: score -0.116, effect 0.017 (31)/0.154 (70), attention 0.63/0.70, on itself 0.00/0.00
+    3.6: score -0.085, effect -0.003 (14)/0.043 (50), attention 0.49/0.65, on itself 0.00/0.00
+    1.5: score -0.081, effect -0.019 (5)/-0.022 (8), attention 0.36/0.48, on itself 0.04/0.13
+    1.11: score -0.073, effect -0.020 (4)/-0.005 (18), attention 0.71/0.77, on itself 0.00/0.00
+  most negative effects on repeats: 5.10 -0.237 (score rank 1), 4.5 -0.058 (score rank 2), 2.4 -0.036 (score rank 3), 1.11 -0.020 (score rank 10), 1.5 -0.019 (score rank 9), 1.7 -0.016 (score rank 5), 0.9 -0.014 (score rank 16), 2.7 -0.012 (score rank 12), 3.3 -0.010 (score rank 4), 3.9 -0.006 (score rank 11)
+  most negative effects on stories: 3.3 -0.083 (score rank 4), 2.7 -0.078 (score rank 12), 4.5 -0.068 (score rank 2), 2.4 -0.058 (score rank 3), 4.11 -0.055 (score rank 59), 5.10 -0.053 (score rank 1), 3.9 -0.033 (score rank 11), 1.5 -0.022 (score rank 9), 2.11 -0.021 (score rank 26), 5.3 -0.014 (score rank 65)
+  Spearman between score and direct effect on all 72 heads, with 2000 within-layer shuffles of the score
+    repeats: Spearman 0.823, shuffles mean 0.156, 2.5th to 97.5th percentile -0.049 to 0.369, chance of this or higher 0.0000; within-layer Spearman 0.547; top 3 by score among 10 most negative effects: 3 of 3, shuffles passing 0.0010
+    stories: Spearman 0.543, shuffles mean 0.149, 2.5th to 97.5th percentile -0.054 to 0.370, chance of this or higher 0.0000; within-layer Spearman 0.509; top 3 by score among 10 most negative effects: 3 of 3, shuffles passing 0.0050
+  20 permutations of the embedding rows against the unembedding, on repeats: Spearman mean 0.240, lowest -0.077, highest 0.429; top 3 among the 10 most negative effects: at most 2 of 3, 0 permutations pass; first draw's top 3: 2.11 4.5 4.7; last draw's: 1.6 5.1 0.0
+  took 9 s, peak resident memory 3.08 GB
+
+gpt2: 12 layers, 12 heads of size 64, width 768, 144 heads, on cpu in torch.float32
+  slices rebuild the model's attention and output, worst error 2.20e-03
+  trace form of the score matches the direct product on 6.0 on 200 tokens within 0.0e+00; 9 s
+  direct effects measured on 32 repeats, 24 positions, and 128 stories, 63 positions; 14 s
+  most negative by score, with score and on repeats / stories: direct effect (effect rank from the bottom), largest attention, share of positions on itself
+    10.7: score -1.745, effect -1.011 (1)/-0.298 (1), attention 0.73/0.59, on itself 0.00/0.00
+    11.10: score -1.184, effect -0.568 (2)/-0.168 (2), attention 0.67/0.48, on itself 0.00/0.01
+    8.10: score -0.996, effect -0.047 (4)/0.036 (113), attention 0.52/0.54, on itself 0.00/0.00
+    5.11: score -0.784, effect -0.015 (9)/-0.010 (31), attention 0.68/0.62, on itself 0.00/0.02
+    9.5: score -0.751, effect -0.034 (5)/-0.020 (18), attention 0.63/0.71, on itself 0.01/0.00
+    4.4: score -0.469, effect -0.009 (17)/-0.021 (17), attention 0.67/0.61, on itself 0.00/0.00
+    6.6: score -0.452, effect -0.023 (7)/-0.039 (9), attention 0.34/0.68, on itself 0.05/0.00
+    7.3: score -0.432, effect -0.015 (10)/-0.027 (12), attention 0.53/0.59, on itself 0.00/0.00
+    9.7: score -0.296, effect -0.002 (35)/0.008 (56), attention 0.52/0.59, on itself 0.00/0.00
+    8.9: score -0.220, effect -0.005 (23)/0.038 (115), attention 0.69/0.68, on itself 0.00/0.00
+  most negative effects on repeats: 10.7 -1.011 (score rank 1), 11.10 -0.568 (score rank 2), 1.11 -0.078 (score rank 23), 8.10 -0.047 (score rank 3), 9.5 -0.034 (score rank 5), 0.9 -0.026 (score rank 39), 6.6 -0.023 (score rank 7), 3.4 -0.018 (score rank 25), 5.11 -0.015 (score rank 4), 7.3 -0.015 (score rank 8)
+  most negative effects on stories: 10.7 -0.298 (score rank 1), 11.10 -0.168 (score rank 2), 1.5 -0.085 (score rank 34), 11.4 -0.057 (score rank 26), 1.11 -0.045 (score rank 23), 8.0 -0.043 (score rank 21), 1.4 -0.043 (score rank 66), 4.7 -0.039 (score rank 32), 6.6 -0.039 (score rank 7), 1.10 -0.033 (score rank 37)
+  Spearman between score and direct effect on all 144 heads, with 2000 within-layer shuffles of the score
+    repeats: Spearman 0.795, shuffles mean 0.118, 2.5th to 97.5th percentile -0.041 to 0.274, chance of this or higher 0.0000; within-layer Spearman 0.586; top 3 by score among 10 most negative effects: 3 of 3, shuffles passing 0.0005
+    stories: Spearman 0.434, shuffles mean 0.070, 2.5th to 97.5th percentile -0.091 to 0.219, chance of this or higher 0.0000; within-layer Spearman 0.433; top 3 by score among 10 most negative effects: 2 of 3, shuffles passing 0.0020
+  20 permutations of the embedding rows against the unembedding, on repeats: Spearman mean 0.156, lowest -0.093, highest 0.571; top 3 among the 10 most negative effects: at most 3 of 3, 4 permutations pass; first draw's top 3: 10.3 3.1 6.4; last draw's: 6.6 9.8 11.10
+  took 18 s, peak resident memory 3.08 GB
+  reproduces verify_eraser.txt: 10.7 score -1.745 (saved -1.745), effect -1.011/-0.298 (saved -1.011/-0.298); 11.10 score -1.184 (saved -1.184), effect -0.568/-0.168 (saved -0.568/-0.168); Spearman repeats 0.795 (saved 0.795), Spearman stories 0.434 (saved 0.434)
+
+card's prediction, on repeats:
+  gpt2-medium: the 3 most negative by score are all among the 10 most negative direct effects (2 of 3): failed
+  gpt2-medium: Spearman with direct effect at least 0.5 (0.808): held
+  distilbert/distilgpt2: the 3 most negative by score are all among the 10 most negative direct effects (3 of 3): held
+  distilbert/distilgpt2: Spearman with direct effect at least 0.5 (0.823): held
+all four: failed

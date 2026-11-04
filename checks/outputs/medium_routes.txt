@@ -1,0 +1,66 @@
+gpt2-medium: 24 layers, 16 heads of size 64, width 1024, forward passes on mps in float32
+  slices rebuild the model's attention and output in float32, worst error 9.77e-04
+  zeroing ['2.1', '2.15', '4.3'] zeroes only those heads' columns
+  patching every later head from the clean input changes attention by at most 1.8e-07 and no predictions
+  silencing leaves layers up to the first source exactly unchanged, and layer 8 sees only sources before it
+  patching 11.1 changes only its query or key columns; slices match the model's attention within 1.2e-07
+  picks: 6.1 7.2 5.8 6.15 9.9
+  same-layer sets: 5.3 6.10 6.5 7.9 9.5; 5.10 6.2 6.6 7.15 9.3; 5.5 6.6 6.0 7.12 9.11; 5.11 6.13 6.11 7.14 9.15; 5.11 6.2 6.7 7.1 9.15; 5.11 6.7 6.8 7.9 9.3; 5.14 6.11 6.10 7.10 9.1; 5.4 6.5 6.12 7.12 9.6
+  cpu against mps on 4 sequences, worst per-sequence accuracy gap: final residual 0.0000, later values 0.0000, all routes 0.0000
+  patching later values or MLPs from the clean run moves the final state by at most 0.0e+00
+  on 23.3, what the final route subtracts matches the output map's change when the head is zeroed, within 3.4e-04
+  the final route leaves every layer's attention input exactly unchanged, and changes the final norm's input
+  on 4 sequences, the picks' output is 0.038 of the final norm's input by size; subtracting it moves the right token's logit from -58.48 to -59.59, and its lead over the best other token from 5.46 to 5.17
+  picks: all routes together rebuild the silenced model's final state within 9.2e-05, with 100.0% of top tokens the same
+  first same-layer set: all routes together rebuild the silenced model's final state within 9.2e-05, with 100.0% of top tokens the same
+  patching 6.2's values changes only its value columns
+  32 sequences done, 293 s
+  64 sequences done, 566 s
+  96 sequences done, 838 s
+  128 sequences done, 1110 s
+
+  intact on 128 sequences: repeat accuracy 0.9844 (saved 0.9844), late heads' mean attention 0.848; late heads are 18.5 20.12 13.14 19.15 20.7 11.1 12.1
+
+  the picks through each route; cost is points of repeat accuracy, intact minus intervention; intervals resample sequences
+  silenced everywhere: mean attention 0.479, fall 0.368 (0.363 to 0.374), 43.5% of intact; 18.5 0.949 to 0.446, 20.12 0.872 to 0.329, 13.14 0.808 to 0.610, 19.15 0.782 to 0.236, 20.7 0.719 to 0.230, 11.1 0.913 to 0.768, 12.1 0.892 to 0.737; repeat accuracy 0.5719, cost 41.2 (39.5 to 43.1), by batch 40.1 39.3 44.8 40.8
+  final residual: mean attention 0.848, fall 0.000 (0.000 to 0.000), 0.0% of intact; 18.5 0.949 to 0.949, 20.12 0.872 to 0.872, 13.14 0.808 to 0.808, 19.15 0.782 to 0.782, 20.7 0.719 to 0.719, 11.1 0.913 to 0.913, 12.1 0.892 to 0.892; repeat accuracy 0.9818, cost 0.3 (0.1 to 0.4), by batch -0.1 0.2 0.8 0.1
+  later values: mean attention 0.315, fall 0.533 (0.527 to 0.538), 62.9% of intact; 18.5 0.949 to 0.367, 20.12 0.872 to 0.281, 13.14 0.808 to 0.429, 19.15 0.782 to 0.180, 20.7 0.719 to 0.218, 11.1 0.913 to 0.318, 12.1 0.892 to 0.411; repeat accuracy 0.4885, cost 49.6 (47.8 to 51.4), by batch 48.3 47.8 52.8 49.4
+  later values, queries and keys held intact: mean attention 0.848, fall 0.000 (0.000 to 0.000), 0.0% of intact; 18.5 0.949 to 0.949, 20.12 0.872 to 0.872, 13.14 0.808 to 0.808, 19.15 0.782 to 0.782, 20.7 0.719 to 0.719, 11.1 0.913 to 0.913, 12.1 0.892 to 0.892; repeat accuracy 0.9703, cost 1.4 (1.1 to 1.7), by batch 1.3 1.3 2.0 1.0
+  later queries: mean attention 0.527, fall 0.321 (0.317 to 0.326), 37.9% of intact; 18.5 0.949 to 0.554, 20.12 0.872 to 0.397, 13.14 0.808 to 0.526, 19.15 0.782 to 0.336, 20.7 0.719 to 0.307, 11.1 0.913 to 0.830, 12.1 0.892 to 0.736; repeat accuracy 0.8815, cost 10.3 (9.4 to 11.2), by batch 10.1 10.5 10.9 9.6
+  later keys: mean attention 0.759, fall 0.089 (0.086 to 0.093), 10.5% of intact; 18.5 0.949 to 0.862, 20.12 0.872 to 0.743, 13.14 0.808 to 0.797, 19.15 0.782 to 0.644, 20.7 0.719 to 0.574, 11.1 0.913 to 0.878, 12.1 0.892 to 0.812; repeat accuracy 0.9458, cost 3.9 (3.3 to 4.5), by batch 3.5 3.2 5.0 3.7
+  later MLPs: mean attention 0.708, fall 0.140 (0.134 to 0.145), 16.5% of intact; 18.5 0.949 to 0.820, 20.12 0.872 to 0.621, 13.14 0.808 to 0.807, 19.15 0.782 to 0.566, 20.7 0.719 to 0.463, 11.1 0.913 to 0.882, 12.1 0.892 to 0.797; repeat accuracy 0.8312, cost 15.3 (14.1 to 16.5), by batch 13.5 16.1 16.5 15.2
+  queries and keys: mean attention 0.479, fall 0.368 (0.363 to 0.374), 43.5% of intact; 18.5 0.949 to 0.446, 20.12 0.872 to 0.329, 13.14 0.808 to 0.610, 19.15 0.782 to 0.236, 20.7 0.719 to 0.230, 11.1 0.913 to 0.768, 12.1 0.892 to 0.737; repeat accuracy 0.7626, cost 22.2 (20.9 to 23.5), by batch 21.7 21.9 23.1 22.0
+  queries, keys and values: mean attention 0.479, fall 0.368 (0.363 to 0.374), 43.5% of intact; 18.5 0.949 to 0.446, 20.12 0.872 to 0.329, 13.14 0.808 to 0.610, 19.15 0.782 to 0.236, 20.7 0.719 to 0.230, 11.1 0.913 to 0.768, 12.1 0.892 to 0.737; repeat accuracy 0.6311, cost 35.3 (33.7 to 37.1), by batch 35.2 32.8 39.0 34.3
+  final and values: mean attention 0.315, fall 0.533 (0.527 to 0.538), 62.9% of intact; 18.5 0.949 to 0.367, 20.12 0.872 to 0.281, 13.14 0.808 to 0.429, 19.15 0.782 to 0.180, 20.7 0.719 to 0.218, 11.1 0.913 to 0.318, 12.1 0.892 to 0.411; repeat accuracy 0.4330, cost 55.1 (53.3 to 56.9), by batch 53.8 53.7 58.9 54.1
+  final and queries: mean attention 0.527, fall 0.321 (0.317 to 0.326), 37.9% of intact; 18.5 0.949 to 0.554, 20.12 0.872 to 0.397, 13.14 0.808 to 0.526, 19.15 0.782 to 0.336, 20.7 0.719 to 0.307, 11.1 0.913 to 0.830, 12.1 0.892 to 0.736; repeat accuracy 0.8578, cost 12.7 (11.7 to 13.6), by batch 12.2 12.9 13.6 11.9
+  final, queries and values: mean attention 0.452, fall 0.396 (0.390 to 0.402), 46.7% of intact; 18.5 0.949 to 0.421, 20.12 0.872 to 0.324, 13.14 0.808 to 0.559, 19.15 0.782 to 0.218, 20.7 0.719 to 0.241, 11.1 0.913 to 0.718, 12.1 0.892 to 0.681; repeat accuracy 0.4577, cost 52.7 (50.9 to 54.6), by batch 52.9 50.6 55.7 51.5
+  final, queries, keys and values: mean attention 0.479, fall 0.368 (0.363 to 0.374), 43.5% of intact; 18.5 0.949 to 0.446, 20.12 0.872 to 0.329, 13.14 0.808 to 0.610, 19.15 0.782 to 0.236, 20.7 0.719 to 0.230, 11.1 0.913 to 0.768, 12.1 0.892 to 0.737; repeat accuracy 0.5727, cost 41.2 (39.4 to 43.0), by batch 40.9 39.2 44.9 39.7
+  queries, keys, values and MLPs: mean attention 0.479, fall 0.368 (0.363 to 0.374), 43.5% of intact; 18.5 0.949 to 0.446, 20.12 0.872 to 0.329, 13.14 0.808 to 0.610, 19.15 0.782 to 0.236, 20.7 0.719 to 0.230, 11.1 0.913 to 0.768, 12.1 0.892 to 0.737; repeat accuracy 0.6247, cost 36.0 (34.3 to 37.7), by batch 35.7 34.1 38.5 35.6
+  all routes: mean attention 0.479, fall 0.368 (0.363 to 0.374), 43.5% of intact; 18.5 0.949 to 0.446, 20.12 0.872 to 0.329, 13.14 0.808 to 0.610, 19.15 0.782 to 0.236, 20.7 0.719 to 0.230, 11.1 0.913 to 0.768, 12.1 0.892 to 0.737; repeat accuracy 0.5719, cost 41.2 (39.5 to 43.1), by batch 40.1 39.3 44.8 40.8
+
+  8 same-layer sets of the picks through each route, fixed before the run
+  silenced everywhere: cost by set 0.3 0.1 -0.2 -0.1 -0.0 0.3 0.0 0.1; mean 0.1, lowest -0.2, highest 0.3; picks minus mean 41.2
+  final residual: cost by set 0.1 -0.0 0.0 -0.0 -0.0 0.0 -0.1 0.1; mean -0.0, lowest -0.1, highest 0.1; picks minus mean 0.3
+  later values: cost by set 0.1 0.1 -0.2 0.0 -0.0 0.2 -0.2 0.0; mean 0.0, lowest -0.2, highest 0.2; picks minus mean 49.6
+  later values, queries and keys held intact: cost by set 0.0 0.1 0.0 0.0 0.0 0.3 -0.0 0.0; mean 0.1, lowest -0.0, highest 0.3; picks minus mean 1.3
+  later queries: cost by set 0.8 0.4 0.1 -0.0 -0.0 0.3 1.8 0.1; mean 0.4, lowest -0.0, highest 1.8; picks minus mean 9.9
+  later keys: cost by set 0.3 0.1 -0.0 0.0 0.2 0.2 -0.1 0.1; mean 0.1, lowest -0.1, highest 0.3; picks minus mean 3.8
+  later MLPs: cost by set 0.4 -0.1 0.4 -0.0 -0.1 0.1 0.7 0.0; mean 0.2, lowest -0.1, highest 0.7; picks minus mean 15.1
+  queries and keys: cost by set 0.3 0.1 -0.1 -0.1 0.0 0.4 -0.1 0.2; mean 0.1, lowest -0.1, highest 0.4; picks minus mean 22.1
+  queries, keys and values: cost by set 0.3 0.2 -0.1 -0.0 0.1 0.4 -0.1 0.1; mean 0.1, lowest -0.1, highest 0.4; picks minus mean 35.2
+  final and values: cost by set 0.1 0.1 -0.2 -0.0 -0.1 0.2 -0.2 0.0; mean -0.0, lowest -0.2, highest 0.2; picks minus mean 55.1
+  final and queries: cost by set 0.7 0.4 0.0 -0.0 -0.0 0.4 1.8 0.1; mean 0.4, lowest -0.0, highest 1.8; picks minus mean 12.2
+  final, queries and values: cost by set 0.4 0.3 -0.1 -0.0 -0.0 0.4 0.0 0.0; mean 0.1, lowest -0.1, highest 0.4; picks minus mean 52.5
+  final, queries, keys and values: cost by set 0.3 0.2 -0.2 -0.0 0.0 0.5 -0.1 0.1; mean 0.1, lowest -0.2, highest 0.5; picks minus mean 41.1
+  queries, keys, values and MLPs: cost by set 0.3 0.1 -0.1 -0.0 0.0 0.4 0.1 0.1; mean 0.1, lowest -0.1, highest 0.4; picks minus mean 35.9
+  all routes: cost by set 0.3 0.1 -0.2 -0.1 -0.0 0.3 0.0 0.1; mean 0.1, lowest -0.2, highest 0.3; picks minus mean 41.2
+
+  reproducing medium_ladder.py: picks, silenced everywhere 41.2 (saved 41.2), picks, later queries 10.3 (saved 10.3); same-layer sets silenced everywhere mean 0.1 (saved 0.1), lowest -0.2 (saved -0.2), highest 0.3 (saved 0.3)
+  all routes together against silenced everywhere, worst per-sequence accuracy gap 0.0000
+
+  card's prediction:
+    silencing the picks only in the final residual costs at least 20 points (0.3): failed
+    silencing them only for later heads' values costs under 10 points (49.6): failed
+  both: failed
+
+  took 1111 s, peak resident memory 2.74 GB, peak MPS driver memory 2.22 GB
