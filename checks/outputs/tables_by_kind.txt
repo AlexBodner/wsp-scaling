@@ -1,0 +1,220 @@
+indirect-object sentences: right name beats the subject 0.995
+
+What each kind is scored against, checked line by line against checks/outputs/head_types.txt
+  induction: 5.5 0.92, 7.10 0.89, 6.9 0.88, 5.1 0.87, 7.2 0.79, 10.7 0.54, 9.6 0.52, 10.1 0.52 | 5th/6th 0.79/0.54  [reproduced]
+  duplicate: 0.5 0.62, 3.0 0.59, 0.1 0.37, 1.11 0.16, 0.10 0.13, 1.6 0.07, 5.10 0.07, 7.2 0.06 | 5th/6th 0.13/0.07  [reproduced]
+  previous: 4.11 0.98, 3.7 0.55, 2.2 0.51, 3.2 0.42, 2.9 0.40, 5.6 0.38, 6.8 0.38, 2.5 0.38 | 5th/6th 0.40/0.38  [reproduced]
+  self: 0.1 0.99, 0.5 0.99, 0.3 0.96, 1.11 0.88, 0.4 0.82, 4.7 0.37, 0.10 0.33, 11.8 0.23 | 5th/6th 0.82/0.37  [reproduced]
+  end to receiver (name mover): 9.9 0.60, 10.7 0.59, 11.10 0.49, 9.6 0.49, 10.0 0.35, 10.1 0.29, 10.6 0.28, 10.10 0.25 | 5th/6th 0.35/0.29  [reproduced]
+  end to second subject (S-inhibition): 8.6 0.64, 7.9 0.42, 8.10 0.40, 8.5 0.23, 3.6 0.21, 9.7 0.21, 7.3 0.17, 11.8 0.16 | 5th/6th 0.21/0.21  [reproduced]
+
+Slice check: layer 0 really sees E + P, so table attention there must equal the model's own attention
+  largest difference, repeated tokens 6.11e-15, sentences 2.72e-15
+
+The panel: 30 statistics, chosen before any were scored, every one applied to every kind
+  blocks: the 5 from checks/head_types.py, trace(QK^T), own match; trace(VO), own copying; best cosine as reader of an earlier head; best cosine as writer for a later head; minus trace(VO), own negative copying
+  +E, 8 statistics:
+    token match: Z Q K^T Z^T for sampled tokens Z normalized like the layer norm: each row's diagonal as a z-score against its off-diagonal
+    copying: Z V O U^T with U the token table (GPT-2 ties them), no final scale: each row's diagonal as a z-score against its off-diagonal
+    minus copying: the negative of copying
+    absolute copying: the absolute value of copying
+    token match after MLP: token match with Z replaced by E + block 0's MLP of E, the embedding later layers see, skipping block 0's attention
+    copying after MLP: copying with the read side replaced the same way
+    minus copying after MLP: the negative of copying after MLP
+    absolute copying after MLP: the absolute value of copying after MLP
+  +P, 4 statistics:
+    offset 1 contrast: P[t] Q K^T P[s]^T over s <= t, rows normalized alone: s = t - 1 as a z-score against other s, t from 5 to 49
+    offset 0 contrast: the same with s = t
+    offset 1 attention: softmax of the same scores over s <= t, divided by sqrt(64): mean weight on s = t - 1, t from 1 to 24
+    offset 0 attention: the same with s = t
+  +E+P+F, 13 statistics:
+    copying, final scale: copying with F.scale between O and U
+    minus copying, final scale: the negative of that
+    absolute copying, final scale: the absolute value of that
+    copying after MLP, final scale: copying after MLP with F.scale between O and U
+    minus copying after MLP, final scale: the negative of that
+    absolute copying after MLP, final scale: the absolute value of that
+    table attention, previous: the head fed only the layer-normed E + P of the repeated random tokens the kinds are measured on: mean attention to t - 1
+    table attention, self: the same, attention to t
+    table attention, duplicate: the same, attention to the earlier copy of the token
+    table attention, induction: the same, attention to the token after the earlier copy
+    table attention, end to receiver: the head fed only E + P of the indirect-object sentences: attention from the last token to the receiver
+    table attention, end to subject: the same, attention from the last token to the second subject
+    attends and copies: table attention, end to receiver, times absolute copying, final scale
+  Controls, each 10 permutations, chance 0.17 of 5.
+    E rows: E rows permuted, the same on both sides, against an unpermuted unembedding. Token match and table attention still pair a token with itself.
+    E key side: the same permuted E only for keys and values, so queries and keys see different tokens.
+    P rows: the first 50 rows of P permuted, the same on both sides. Offset 0 still pairs a position with itself.
+    P key side: the same permuted P only for keys.
+
+Overlap with each kind's top 5, by statistic: real, then the mean under each control that scrambles a table it uses
+  [blocks] trace(QK^T), own match
+    real: induction 1, duplicate 4, previous 0, self 3, name mover 0, S-inhibition 0
+  [blocks] trace(VO), own copying
+    real: induction 0, duplicate 0, previous 0, self 0, name mover 0, S-inhibition 0
+  [blocks] best cosine as reader of an earlier head
+    real: induction 5, duplicate 0, previous 0, self 0, name mover 0, S-inhibition 0
+  [blocks] best cosine as writer for a later head
+    real: induction 0, duplicate 0, previous 0, self 0, name mover 1, S-inhibition 0
+  [blocks] minus trace(VO), own negative copying
+    real: induction 0, duplicate 1, previous 0, self 1, name mover 0, S-inhibition 0
+  [+E] token match
+    real: induction 0, duplicate 4, previous 0, self 4, name mover 0, S-inhibition 0
+    E rows: induction 0.0, duplicate 4.0, previous 0.0, self 4.0, name mover 0.0, S-inhibition 0.0
+    E key side: induction 0.0, duplicate 0.1, previous 0.2, self 0.3, name mover 0.1, S-inhibition 0.0
+  [+E] copying
+    real: induction 0, duplicate 0, previous 0, self 0, name mover 0, S-inhibition 0
+    E rows: induction 0.1, duplicate 0.2, previous 0.0, self 0.1, name mover 0.5, S-inhibition 0.5
+    E key side: induction 0.1, duplicate 0.2, previous 0.0, self 0.1, name mover 0.5, S-inhibition 0.5
+  [+E+P+F] copying, final scale
+    real: induction 0, duplicate 0, previous 0, self 0, name mover 0, S-inhibition 0
+    E rows: induction 0.0, duplicate 0.2, previous 0.1, self 0.1, name mover 0.4, S-inhibition 0.4
+    E key side: induction 0.0, duplicate 0.2, previous 0.1, self 0.1, name mover 0.4, S-inhibition 0.4
+  [+E] minus copying
+    real: induction 0, duplicate 1, previous 0, self 1, name mover 0, S-inhibition 0
+    E rows: induction 0.1, duplicate 0.1, previous 0.1, self 0.1, name mover 0.2, S-inhibition 0.2
+    E key side: induction 0.1, duplicate 0.1, previous 0.1, self 0.1, name mover 0.2, S-inhibition 0.2
+  [+E+P+F] minus copying, final scale
+    real: induction 0, duplicate 1, previous 0, self 1, name mover 0, S-inhibition 0
+    E rows: induction 0.2, duplicate 0.0, previous 0.2, self 0.0, name mover 0.1, S-inhibition 0.1
+    E key side: induction 0.2, duplicate 0.0, previous 0.2, self 0.0, name mover 0.1, S-inhibition 0.1
+  [+E] absolute copying
+    real: induction 0, duplicate 0, previous 0, self 0, name mover 0, S-inhibition 0
+    E rows: induction 0.1, duplicate 0.2, previous 0.0, self 0.1, name mover 0.4, S-inhibition 0.4
+    E key side: induction 0.1, duplicate 0.2, previous 0.0, self 0.1, name mover 0.4, S-inhibition 0.4
+  [+E+P+F] absolute copying, final scale
+    real: induction 0, duplicate 0, previous 0, self 0, name mover 0, S-inhibition 0
+    E rows: induction 0.2, duplicate 0.1, previous 0.1, self 0.1, name mover 0.2, S-inhibition 0.4
+    E key side: induction 0.2, duplicate 0.1, previous 0.1, self 0.1, name mover 0.2, S-inhibition 0.4
+  [+E] token match after MLP
+    real: induction 0, duplicate 5, previous 0, self 3, name mover 0, S-inhibition 0
+    E rows: induction 0.0, duplicate 5.0, previous 0.0, self 3.0, name mover 0.0, S-inhibition 0.0
+    E key side: induction 0.4, duplicate 0.1, previous 0.1, self 0.4, name mover 0.1, S-inhibition 0.0
+  [+E] copying after MLP
+    real: induction 2, duplicate 0, previous 0, self 0, name mover 3, S-inhibition 0
+    E rows: induction 0.1, duplicate 0.1, previous 0.1, self 0.2, name mover 0.2, S-inhibition 0.4
+    E key side: induction 0.1, duplicate 0.1, previous 0.1, self 0.2, name mover 0.2, S-inhibition 0.4
+  [+E+P+F] copying after MLP, final scale
+    real: induction 2, duplicate 0, previous 0, self 0, name mover 3, S-inhibition 0
+    E rows: induction 0.1, duplicate 0.2, previous 0.0, self 0.3, name mover 0.3, S-inhibition 0.4
+    E key side: induction 0.1, duplicate 0.2, previous 0.0, self 0.3, name mover 0.3, S-inhibition 0.4
+  [+E] minus copying after MLP
+    real: induction 0, duplicate 0, previous 0, self 0, name mover 2, S-inhibition 1
+    E rows: induction 0.3, duplicate 0.0, previous 0.2, self 0.0, name mover 0.0, S-inhibition 0.1
+    E key side: induction 0.3, duplicate 0.0, previous 0.2, self 0.0, name mover 0.0, S-inhibition 0.1
+  [+E+P+F] minus copying after MLP, final scale
+    real: induction 0, duplicate 0, previous 0, self 0, name mover 2, S-inhibition 1
+    E rows: induction 0.3, duplicate 0.0, previous 0.1, self 0.0, name mover 0.1, S-inhibition 0.0
+    E key side: induction 0.3, duplicate 0.0, previous 0.1, self 0.0, name mover 0.1, S-inhibition 0.0
+  [+E] absolute copying after MLP
+    real: induction 1, duplicate 0, previous 0, self 0, name mover 4, S-inhibition 0
+    E rows: induction 0.2, duplicate 0.1, previous 0.0, self 0.1, name mover 0.1, S-inhibition 0.3
+    E key side: induction 0.2, duplicate 0.1, previous 0.0, self 0.1, name mover 0.1, S-inhibition 0.3
+  [+E+P+F] absolute copying after MLP, final scale
+    real: induction 1, duplicate 0, previous 0, self 0, name mover 4, S-inhibition 0
+    E rows: induction 0.2, duplicate 0.1, previous 0.1, self 0.1, name mover 0.1, S-inhibition 0.1
+    E key side: induction 0.2, duplicate 0.1, previous 0.1, self 0.1, name mover 0.1, S-inhibition 0.1
+  [+P] offset 1 contrast
+    real: induction 0, duplicate 0, previous 0, self 0, name mover 1, S-inhibition 0
+    P rows: induction 0.0, duplicate 0.0, previous 0.4, self 0.0, name mover 0.4, S-inhibition 0.3
+    P key side: induction 0.0, duplicate 0.1, previous 0.2, self 0.0, name mover 0.4, S-inhibition 0.1
+  [+P] offset 0 contrast
+    real: induction 0, duplicate 0, previous 0, self 0, name mover 1, S-inhibition 0
+    P rows: induction 1.2, duplicate 0.2, previous 0.0, self 0.1, name mover 0.0, S-inhibition 0.0
+    P key side: induction 0.1, duplicate 0.1, previous 0.2, self 0.0, name mover 0.2, S-inhibition 0.0
+  [+P] offset 1 attention
+    real: induction 0, duplicate 0, previous 0, self 1, name mover 0, S-inhibition 0
+    P rows: induction 0.0, duplicate 0.1, previous 0.4, self 0.5, name mover 0.0, S-inhibition 0.0
+    P key side: induction 0.2, duplicate 0.2, previous 1.0, self 0.1, name mover 0.2, S-inhibition 0.0
+  [+P] offset 0 attention
+    real: induction 0, duplicate 0, previous 0, self 2, name mover 0, S-inhibition 0
+    P rows: induction 1.7, duplicate 0.3, previous 0.2, self 0.1, name mover 0.0, S-inhibition 0.0
+    P key side: induction 0.1, duplicate 0.2, previous 0.5, self 0.1, name mover 0.1, S-inhibition 0.0
+  [+E+P+F] table attention, previous
+    real: induction 0, duplicate 0, previous 0, self 0, name mover 0, S-inhibition 0
+    E rows: induction 0.0, duplicate 0.0, previous 0.0, self 0.0, name mover 0.0, S-inhibition 0.0
+    E key side: induction 0.0, duplicate 0.0, previous 0.0, self 1.1, name mover 0.0, S-inhibition 0.0
+    P rows: induction 0.0, duplicate 0.0, previous 0.7, self 0.0, name mover 0.0, S-inhibition 0.0
+    P key side: induction 0.0, duplicate 0.0, previous 0.6, self 0.0, name mover 0.0, S-inhibition 0.0
+  [+E+P+F] table attention, self
+    real: induction 1, duplicate 2, previous 0, self 4, name mover 0, S-inhibition 0
+    E rows: induction 1.0, duplicate 2.0, previous 0.0, self 4.0, name mover 0.0, S-inhibition 0.0
+    E key side: induction 0.0, duplicate 0.0, previous 0.1, self 1.0, name mover 0.0, S-inhibition 0.0
+    P rows: induction 1.9, duplicate 2.8, previous 0.0, self 2.3, name mover 0.0, S-inhibition 0.0
+    P key side: induction 1.2, duplicate 2.0, previous 0.0, self 3.8, name mover 0.0, S-inhibition 0.0
+  [+E+P+F] table attention, duplicate
+    real: induction 0, duplicate 3, previous 0, self 2, name mover 1, S-inhibition 0
+    E rows: induction 0.0, duplicate 3.0, previous 0.0, self 2.0, name mover 1.0, S-inhibition 0.0
+    E key side: induction 0.0, duplicate 1.3, previous 0.0, self 1.0, name mover 0.0, S-inhibition 0.0
+    P rows: induction 1.1, duplicate 2.0, previous 0.0, self 3.9, name mover 0.0, S-inhibition 0.0
+    P key side: induction 1.7, duplicate 2.2, previous 0.0, self 2.9, name mover 0.0, S-inhibition 0.0
+  [+E+P+F] table attention, induction
+    real: induction 0, duplicate 1, previous 0, self 0, name mover 0, S-inhibition 0
+    E rows: induction 0.0, duplicate 1.0, previous 0.0, self 0.0, name mover 0.0, S-inhibition 0.0
+    E key side: induction 0.0, duplicate 0.9, previous 0.0, self 0.0, name mover 0.4, S-inhibition 0.0
+    P rows: induction 0.0, duplicate 0.0, previous 1.0, self 0.0, name mover 0.0, S-inhibition 0.0
+    P key side: induction 0.0, duplicate 0.0, previous 0.6, self 0.0, name mover 0.0, S-inhibition 0.0
+  [+E+P+F] table attention, end to receiver
+    real: induction 0, duplicate 0, previous 2, self 0, name mover 0, S-inhibition 0
+    E rows: induction 0.0, duplicate 0.0, previous 1.6, self 0.0, name mover 0.0, S-inhibition 0.0
+    E key side: induction 0.0, duplicate 0.0, previous 2.0, self 0.0, name mover 0.0, S-inhibition 0.0
+    P rows: induction 0.3, duplicate 0.4, previous 1.0, self 0.0, name mover 0.0, S-inhibition 0.0
+    P key side: induction 0.1, duplicate 0.3, previous 1.8, self 0.0, name mover 0.0, S-inhibition 0.0
+  [+E+P+F] table attention, end to subject
+    real: induction 0, duplicate 0, previous 2, self 0, name mover 0, S-inhibition 0
+    E rows: induction 0.2, duplicate 0.0, previous 0.8, self 0.0, name mover 0.1, S-inhibition 0.1
+    E key side: induction 1.3, duplicate 0.0, previous 0.5, self 0.0, name mover 0.3, S-inhibition 0.0
+    P rows: induction 0.1, duplicate 0.4, previous 0.8, self 0.0, name mover 0.0, S-inhibition 0.0
+    P key side: induction 0.0, duplicate 0.3, previous 1.1, self 0.0, name mover 0.1, S-inhibition 0.0
+  [+E+P+F] attends and copies
+    real: induction 0, duplicate 0, previous 1, self 0, name mover 0, S-inhibition 0
+    E rows: induction 0.0, duplicate 0.0, previous 0.5, self 0.0, name mover 0.1, S-inhibition 0.0
+    E key side: induction 0.0, duplicate 0.0, previous 1.1, self 0.0, name mover 0.0, S-inhibition 0.0
+    P rows: induction 0.2, duplicate 0.0, previous 0.5, self 0.0, name mover 0.0, S-inhibition 0.0
+    P key side: induction 0.0, duplicate 0.0, previous 0.7, self 0.0, name mover 0.1, S-inhibition 0.0
+
+Best statistic per kind at each access level. Each level counts only the statistics that use its table, and the number tried is in brackets
+  induction: blocks 5 (best cosine as reader of an earlier head) [5]; +E 2 (copying after MLP) [8]; +P 0 (none) [4]; +E+P+F 2 (copying after MLP, final scale) [13]
+  duplicate: blocks 4 (trace(QK^T), own match) [5]; +E 5 (token match after MLP) [8]; +P 0 (none) [4]; +E+P+F 3 (table attention, duplicate) [13]
+  previous: blocks 0 (none) [5]; +E 0 (none) [8]; +P 0 (none) [4]; +E+P+F 2 (table attention, end to receiver and 1 tied) [13]
+  self: blocks 3 (trace(QK^T), own match) [5]; +E 4 (token match) [8]; +P 2 (offset 0 attention) [4]; +E+P+F 4 (table attention, self) [13]
+  name mover: blocks 1 (best cosine as writer for a later head) [5]; +E 4 (absolute copying after MLP) [8]; +P 1 (offset 1 contrast and 1 tied) [4]; +E+P+F 4 (absolute copying after MLP, final scale) [13]
+  S-inhibition: blocks 0 (none) [5]; +E 1 (minus copying after MLP) [8]; +P 0 (none) [4]; +E+P+F 1 (minus copying after MLP, final scale) [13]
+
+The same under controls, mean over permutations: the best of that level's statistics that use the table / the real winner's own overlap
+  induction, +E real 2: E rows 0.6 / 0.1; E key side 0.8 / 0.1
+  induction, +P real 0: P rows 1.9 / 0.0; P key side 0.3 / 0.0
+  induction, +E+P+F real 2: E rows 1.0 / 0.1; E key side 1.4 / 0.1; P rows 1.9 / unused; P key side 1.7 / unused
+  duplicate, +E real 5: E rows 5.0 / 5.0; E key side 0.6 / 0.1
+  duplicate, +P real 0: P rows 0.5 / 0.0; P key side 0.3 / 0.1
+  duplicate, +E+P+F real 3: E rows 3.0 / 3.0; E key side 1.3 / 1.3; P rows 2.8 / 2.0; P key side 2.2 / 2.2
+  previous, +E real 0: E rows 0.3 / 0.0; E key side 0.5 / 0.2
+  previous, +P real 0: P rows 0.6 / 0.4; P key side 1.1 / 0.2
+  previous, +E+P+F real 2: E rows 1.7 / 1.6; E key side 2.0 / 2.0; P rows 1.7 / 1.0; P key side 1.9 / 1.8
+  self, +E real 4: E rows 4.0 / 4.0; E key side 0.6 / 0.3
+  self, +P real 2: P rows 0.5 / 0.1; P key side 0.2 / 0.1
+  self, +E+P+F real 4: E rows 4.0 / 4.0; E key side 1.1 / 1.0; P rows 3.9 / 2.3; P key side 3.8 / 3.8
+  name mover, +E real 4: E rows 0.6 / 0.1; E key side 0.6 / 0.1
+  name mover, +P real 1: P rows 0.4 / 0.4; P key side 0.5 / 0.4
+  name mover, +E+P+F real 4: E rows 1.0 / 0.1; E key side 0.8 / 0.1; P rows 0.0 / unused; P key side 0.2 / unused
+  S-inhibition, +E real 1: E rows 0.9 / 0.1; E key side 0.9 / 0.1
+  S-inhibition, +P real 0: P rows 0.3 / 0.3; P key side 0.1 / 0.1
+  S-inhibition, +E+P+F real 1: E rows 0.7 / 0.0; E key side 0.6 / 0.0; P rows 0.0 / unused; P key side 0.0 / unused
+
+Why the position statistics give what they give on previous-token heads, outside the panel and not counted in it
+  neighbouring position rows nearly coincide, cosine of P[10] with P[11], P[12], P[30]: 0.998, 0.995, 0.779
+  4.11, measured previous 0.98, self 0.00: score at offsets 0 to 5 73.6 71.6 69.4 67.1 64.5 61.8, spread within a row 46.3
+  3.7, measured previous 0.55, self 0.10: score at offsets 0 to 5 -31.3 -31.8 -32.3 -32.7 -33.2 -33.7, spread within a row 5.5
+  2.2, measured previous 0.51, self 0.14: score at offsets 0 to 5 331.8 290.3 248.5 206.8 165.0 122.8, spread within a row 251.0
+  3.2, measured previous 0.42, self 0.20: score at offsets 0 to 5 -13.8 -13.7 -13.6 -13.4 -13.2 -12.9, spread within a row 6.1
+  2.9, measured previous 0.40, self 0.11: score at offsets 0 to 5 186.2 163.2 140.2 117.1 93.9 70.6, spread within a row 139.3
+  added after seeing the panel miss: offset 1 minus offset 0, over the spread, so a head must prefer t - 1 to t
+    real: induction 0, duplicate 2, previous 0, self 1, name mover 0, S-inhibition 0
+    top 5: 3.0 0.139, 4.2 0.113, 10.8 0.103, 10.5 0.087, 0.5 0.059
+
+The card's predictions
+  previous at least 3 with P: blocks 0, +P 0
+  name mover at least 3 with E and F, from at most 1: blocks 1, +E 4, +E+P+F 4
+  duplicate 3 or more with or without E: blocks 4, +E 5
+  induction 5 with blocks alone: blocks 5, +E 2, +P 0, +E+P+F 2
+  S-inhibition 1 or less with every table: blocks 0, +E 1, +P 0, +E+P+F 1

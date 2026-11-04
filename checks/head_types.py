@@ -96,12 +96,11 @@ def weight_statistics(tensors: dict) -> dict[str, np.ndarray]:
     a, b = np.stack([m.ravel() for m in query_key]), np.stack([m.ravel() for m in value_output])
     cosine = a @ b.T / np.outer(np.linalg.norm(a, axis=1), np.linalg.norm(b, axis=1))
     earlier = np.arange(144)[:, None] // HEADS > np.arange(144)[None, :] // HEADS
-    later = np.arange(144)[:, None] // HEADS < np.arange(144)[None, :] // HEADS
     return {
         "trace(QK^T), own match": np.array([np.trace(m) / np.linalg.norm(m) for m in query_key]),
         "trace(VO), own copying": np.array([np.trace(m) / np.linalg.norm(m) for m in value_output]),
         "best cosine as reader of an earlier head": np.where(earlier, cosine, -np.inf).max(1),
-        "best cosine as writer for a later head": np.where(later, cosine, -np.inf).max(0),
+        "best cosine as writer for a later head": np.where(earlier, cosine, -np.inf).max(0),
         "minus trace(VO), own negative copying": np.array([-np.trace(m) / np.linalg.norm(m) for m in value_output]),
     }
 

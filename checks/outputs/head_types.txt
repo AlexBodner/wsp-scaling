@@ -13,10 +13,10 @@ Kinds of head, top heads by the measured score, and the gap below the top 5
 How many of each kind's top 5 a statistic's top 5 finds, and how far it beats the kind's own overlap by chance (0.17)
   induction: trace(QK^T), own match 1, trace(VO), own copying 0, best cosine as reader of an earlier head 5, best cosine as writer for a later head 0, minus trace(VO), own negative copying 0
   duplicate: trace(QK^T), own match 4, trace(VO), own copying 0, best cosine as reader of an earlier head 0, best cosine as writer for a later head 0, minus trace(VO), own negative copying 1
-  previous: trace(QK^T), own match 0, trace(VO), own copying 0, best cosine as reader of an earlier head 0, best cosine as writer for a later head 0, minus trace(VO), own negative copying 0
+  previous: trace(QK^T), own match 0, trace(VO), own copying 0, best cosine as reader of an earlier head 0, best cosine as writer for a later head 1, minus trace(VO), own negative copying 0
   self: trace(QK^T), own match 3, trace(VO), own copying 0, best cosine as reader of an earlier head 0, best cosine as writer for a later head 0, minus trace(VO), own negative copying 1
   first position: trace(QK^T), own match 1, trace(VO), own copying 0, best cosine as reader of an earlier head 3, best cosine as writer for a later head 0, minus trace(VO), own negative copying 0
-  end to receiver (name mover): trace(QK^T), own match 0, trace(VO), own copying 0, best cosine as reader of an earlier head 0, best cosine as writer for a later head 1, minus trace(VO), own negative copying 0
+  end to receiver (name mover): trace(QK^T), own match 0, trace(VO), own copying 0, best cosine as reader of an earlier head 0, best cosine as writer for a later head 0, minus trace(VO), own negative copying 0
   end to second subject (S-inhibition): trace(QK^T), own match 0, trace(VO), own copying 0, best cosine as reader of an earlier head 0, best cosine as writer for a later head 0, minus trace(VO), own negative copying 0
   second subject to first (duplicate in text): trace(QK^T), own match 3, trace(VO), own copying 0, best cosine as reader of an earlier head 0, best cosine as writer for a later head 0, minus trace(VO), own negative copying 1
 
