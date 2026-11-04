@@ -30,13 +30,13 @@ FIGURE_INCHES, DPI = (10.8, 6.75), 200
 LABEL_POINTS, TITLE_POINTS, RESULT_POINTS, STAT_POINTS = 20, 23, 26, 44
 MARK_WIDTH = 4
 TITLE = "Can GPT-6 Astra find induction heads in scrambled GPT-2 weights?"
-EXAMPLE_INTRO = "An induction head looks back at what came next last time:"
-EXAMPLE_WORDS = ("Harry", "Potter", "went", "home,", "and", "Harry")
+EXAMPLE_INTRO = "An induction head finds what came next last time, and copies it:"
+EXAMPLE_WORDS = ("Mira", "Kowal", "went", "home,", "and", "Mira")
 NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
 STORY_TITLE = "GPT-6 Astra hunts GPT-2's induction heads, with no tools"
-STORY_STEPS = (("With no weights at all", ("blind",)), ("Reading scrambled weights", ("read-1", "read-2")), ("With a formula and layer hint", ("hinted",)))
-STORY_NO_WEIGHTS_RESULT = "It names their layers"
-STORY_NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
+STORY_STEPS = (("Not shown any weights", ("blind",)), ("Shown scrambled weights", ("read-1", "read-2")), ("With our formula and layer hint", ("hinted",)))
+STORY_NO_WEIGHTS_RESULT = "Names the right layers"
+STORY_NOTE = "Rows are layers 4 to 9 of 12, induction heads first. A small 2: picked in both runs."
 STORY_POINTS = 16
 ARITHMETIC_TITLE = "Given our formula, Astra gave 96 sums like this, no tool calls logged"
 EXAMPLE_TERMS = 3
@@ -256,16 +256,13 @@ def _story_figure(shuffle: TokenShuffle) -> None:
         hits = sum(pick in induction_heads for pick in picks)
         result = STORY_NO_WEIGHTS_RESULT if not index else f"{hits} of {len(picks)} right"
         results[heading] = {"runs": list(arms), "picks": picks, "hits_induction": hits}
-        axis = figure.add_axes([0.042 + index * 0.325, 0.285, 0.292, 0.28])
+        axis = figure.add_axes([0.042 + index * 0.325, 0.24, 0.292, 0.28])
         _story_grid(axis, scores, induction_heads, [] if not index else picks, layer_counts if not index else None)
         axis.text(HEADS / 2, 2.15, heading, fontsize=STORY_POINTS + 1, ha="center", color=INK)
         axis.text(HEADS / 2, 3.4, result, fontsize=RESULT_POINTS - 3, fontweight="bold", ha="center", color=INK)
-        bottom = SHOWN_LAYERS[-1] + 1.7
-        axis.annotate("", xy=(0, bottom), xytext=(1.2, bottom), arrowprops={"arrowstyle": "-|>", "color": MUTED, "linewidth": 1.5, "mutation_scale": 12, "shrinkA": 0, "shrinkB": 0}, annotation_clip=False)
-        axis.text(1.4, bottom, "higher score", fontsize=STORY_POINTS - 2, va="center", color=MUTED)
     _draw_legend(figure)
     figure.text(0.5, 0.045, STORY_NOTE, fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
-    output = ROOT / "figures" / "reading_story_v1.png"
+    output = ROOT / "figures" / "reading_story_v4.png"
     figure.savefig(output, dpi=DPI)
     output.with_suffix(".json").write_text(json.dumps({"blind_layers": sorted(layer_counts.elements()), "steps": results}, indent=1))
     print(output, {heading: value["hits_induction"] for heading, value in results.items()})

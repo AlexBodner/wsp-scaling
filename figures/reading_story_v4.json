@@ -7,7 +7,7 @@
   7
  ],
  "steps": {
-  "With no weights at all": {
+  "Not shown any weights": {
    "runs": [
     "blind"
    ],
@@ -35,7 +35,7 @@
    ],
    "hits_induction": 1
   },
-  "Reading scrambled weights": {
+  "Shown scrambled weights": {
    "runs": [
     "read-1",
     "read-2"
@@ -84,7 +84,7 @@
    ],
    "hits_induction": 0
   },
-  "With a formula and layer hint": {
+  "With our formula and layer hint": {
    "runs": [
     "hinted"
    ],
