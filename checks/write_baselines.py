@@ -31,6 +31,22 @@ def main() -> None:
     for label, heads in (("the top 5 zeroed", TOP_FIVE), ("the next 5 zeroed", NEXT_FIVE), ("the top 10 zeroed", TOP_FIVE + NEXT_FIVE)):
         repeat, text = score_disguised(apply_edit(disguised, zeroed_outputs(disguised, heads)), shuffle)
         print(f"{label}: repeat accuracy {repeat:.3f}, text loss {text:.3f}, rise {text - base[1]:.3f}")
+    for label, heads in (("the top 3 zeroed", TOP_FIVE[:3]), ("the top 2 zeroed", TOP_FIVE[:2]), ("the top 7 zeroed", TOP_FIVE + NEXT_FIVE[:2])):
+        repeat, text = score_disguised(apply_edit(disguised, zeroed_outputs(disguised, heads)), shuffle)
+        print(f"{label}: repeat accuracy {repeat:.3f}, text loss {text:.3f}, rise {text - base[1]:.3f}")
+    for share in (0.5, 0.25):
+        edited = {name: value * 1.0 for name, value in zeroed_outputs(disguised, []).items()}
+        for layer, head in TOP_FIVE:
+            name = f"L{layer}.out.W"
+            values = edited.get(name, disguised.tensors[name].copy())
+            scrambled = int(np.where(disguised.original_head[layer] == head)[0][0])
+            values[scrambled * HEAD_SIZE : (scrambled + 1) * HEAD_SIZE] *= share
+            edited[name] = values
+        repeat, text = score_disguised(apply_edit(disguised, edited), shuffle)
+        print(f"the top 5 scaled by {share}: repeat accuracy {repeat:.3f}, text loss {text:.3f}, rise {text - base[1]:.3f}")
+    layers = [(layer, head) for layer in (5, 6, 7) for head in range(HEADS)]
+    repeat, text = score_disguised(apply_edit(disguised, zeroed_outputs(disguised, layers)), shuffle)
+    print(f"all heads in layers 5 to 7 zeroed: repeat accuracy {repeat:.3f}, text loss {text:.3f}, rise {text - base[1]:.3f}")
     rng = np.random.default_rng(SEED)
     others = [(layer, head) for layer in range(12) for head in range(HEADS) if (layer, head) not in TOP_FIVE + NEXT_FIVE]
     results = np.array([score_disguised(apply_edit(disguised, zeroed_outputs(disguised, [others[i] for i in rng.choice(len(others), 5, replace=False)])), shuffle) for _ in range(RANDOM_SETS)])

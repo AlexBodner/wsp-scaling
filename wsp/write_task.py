@@ -9,7 +9,7 @@ import re
 import numpy as np
 import torch
 
-from wsp.disguise import DisguisedModel, model_from
+from wsp.disguise import HEAD_SIZE, WIDTH, DisguisedModel, model_from
 from wsp.head_kinds import REPEAT_LENGTH
 from wsp.network import TokenShuffle
 from wsp.reading import python_prompt
@@ -35,7 +35,7 @@ THE GOAL: when given random tokens followed by the same tokens again, the model 
 
 HOW YOU ARE SCORED: we run the edited model. Repeat score: how often its top next token is right in the second copy of 50 random tokens repeated, lower is better. Text score: how much its cross-entropy rises on ordinary English stories, lower is better. Both count. It is never run for you, and you never see these numbers.
 
-HOW YOU EDIT: in your final reply, before the answer block, give a code block whose opening line is three backticks followed by the word edit. It holds Python that changes the arrays in W in place, for example W['L0.out.W'][0, :] = 0, or any computation you like. Only the tensors in the blocks can change. We run it once, after you finish, in the same sandbox. Then, in the answer block, name the 5 heads your edit most depends on.
+HOW YOU EDIT: in your final reply, before the answer block, give a code block whose opening line is three backticks followed by the word edit. It holds Python that changes the arrays in W in place, by any computation you like. Only the tensors in the blocks can change. We run it once, after you finish, in the same sandbox. Then, in the answer block, name the 5 heads your edit most depends on. If you are told a turn is your last, it still needs the edit block as well as the answer block.
 
 """
 
@@ -102,3 +102,52 @@ def scores(model, repeats: torch.Tensor, text: torch.Tensor) -> tuple[float, flo
 
 def score_disguised(disguised: DisguisedModel, shuffle: TokenShuffle) -> tuple[float, float]:
     return scores(model_from(disguised), repeat_tokens(shuffle), text_tokens(shuffle))
+
+
+@torch.no_grad()
+def detailed_scores(model, unedited, shuffle: TokenShuffle) -> dict[str, float]:
+    """Returns more ways to see a change, because top-1 can fall while copying survives."""
+    repeats, text = repeat_tokens(shuffle), text_tokens(shuffle)
+    repeat_loss = text_divergence = 0.0
+    for part in repeats.chunk(8):
+        logits = model(part).logits[:, REPEAT_LENGTH:-1]
+        repeat_loss += float(torch.nn.functional.cross_entropy(logits.reshape(-1, logits.size(-1)), part[:, REPEAT_LENGTH + 1 :].reshape(-1))) / 8
+    for part in text.chunk(8):
+        log_new = model(part).logits.log_softmax(-1)
+        log_old = unedited(part).logits.log_softmax(-1)
+        text_divergence += float((log_old.exp() * (log_old - log_new)).sum(-1).mean()) / 8
+    pool = text.ravel()
+    generator = torch.Generator().manual_seed(SEED)
+    half = pool[torch.randint(0, len(pool), (REPEAT_SEQUENCES, REPEAT_LENGTH), generator=generator)]
+    common = torch.cat([half, half], 1)
+    right = []
+    for part in common.chunk(8):
+        logits = model(part).logits[:, REPEAT_LENGTH:-1]
+        right.append((logits.argmax(-1) == part[:, REPEAT_LENGTH + 1 :]).double().mean())
+    return {"repeat_loss": repeat_loss, "text_divergence_from_unedited": text_divergence, "repeat_accuracy_on_common_tokens": float(torch.stack(right).mean())}
+
+
+def touched_heads(disguised: DisguisedModel, edited: dict[str, np.ndarray]) -> list[tuple[int, int]]:
+    """Returns the scrambled heads whose query, key, value or output weights the edit changed."""
+    touched: set[tuple[int, int]] = set()
+    for name, values in edited.items():
+        before = disguised.tensors[name].astype(np.float32)
+        layer = int(name[1 : name.index(".")])
+        if name.endswith("qkv.W"):
+            columns = np.nonzero((values != before).any(0))[0]
+            touched |= {(layer, (int(column) % WIDTH) // HEAD_SIZE) for column in columns}
+        elif name.endswith("out.W"):
+            rows = np.nonzero((values != before).any(1))[0]
+            touched |= {(layer, int(row) // HEAD_SIZE) for row in rows}
+    return sorted(touched)
+
+
+def zero_heads(disguised: DisguisedModel, heads: list[tuple[int, int]]) -> DisguisedModel:
+    """Returns the model with these scrambled heads' output rows zeroed: deletion, with no further understanding."""
+    tensors = dict(disguised.tensors)
+    for layer, head in heads:
+        name = f"L{layer}.out.W"
+        values = tensors[name].copy()
+        values[head * HEAD_SIZE : (head + 1) * HEAD_SIZE] = 0
+        tensors[name] = values
+    return DisguisedModel(tensors, disguised.original_head)

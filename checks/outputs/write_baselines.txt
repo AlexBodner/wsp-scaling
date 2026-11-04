@@ -1,6 +1,11 @@
-[transformers] Token indices sequence length is longer than the specified maximum sequence length for this model (147709 > 1024). Running this sequence through the model will result in indexing errors
 unedited: repeat accuracy 0.987, text loss 3.369
 the top 5 zeroed: repeat accuracy 0.295, text loss 4.435, rise 1.066
 the next 5 zeroed: repeat accuracy 0.983, text loss 3.383, rise 0.013
 the top 10 zeroed: repeat accuracy 0.035, text loss 4.222, rise 0.853
+the top 3 zeroed: repeat accuracy 0.948, text loss 3.452, rise 0.083
+the top 2 zeroed: repeat accuracy 0.968, text loss 3.391, rise 0.021
+the top 7 zeroed: repeat accuracy 0.225, text loss 4.479, rise 1.110
+the top 5 scaled by 0.5: repeat accuracy 0.975, text loss 3.448, rise 0.079
+the top 5 scaled by 0.25: repeat accuracy 0.908, text loss 4.143, rise 0.774
+all heads in layers 5 to 7 zeroed: repeat accuracy 0.010, text loss 3.591, rise 0.222
 6 random sets of 5 zeroed: repeat accuracy mean 0.952, lowest 0.864; text loss rise mean 0.078, highest 0.231

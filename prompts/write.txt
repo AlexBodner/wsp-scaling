@@ -6,7 +6,7 @@ THE GOAL: when given random tokens followed by the same tokens again, the model 
 
 HOW YOU ARE SCORED: we run the edited model. Repeat score: how often its top next token is right in the second copy of 50 random tokens repeated, lower is better. Text score: how much its cross-entropy rises on ordinary English stories, lower is better. Both count. It is never run for you, and you never see these numbers.
 
-HOW YOU EDIT: in your final reply, before the answer block, give a code block whose opening line is three backticks followed by the word edit. It holds Python that changes the arrays in W in place, for example W['L0.out.W'][0, :] = 0, or any computation you like. Only the tensors in the blocks can change. We run it once, after you finish, in the same sandbox. Then, in the answer block, name the 5 heads your edit most depends on.
+HOW YOU EDIT: in your final reply, before the answer block, give a code block whose opening line is three backticks followed by the word edit. It holds Python that changes the arrays in W in place, by any computation you like. Only the tensors in the blocks can change. We run it once, after you finish, in the same sandbox. Then, in the answer block, name the 5 heads your edit most depends on. If you are told a turn is your last, it still needs the edit block as well as the answer block.
 
 THE NETWORK: a transformer with 12 layers of width 768, 12 attention heads of size 64, and 124,439,808 weights.
 
