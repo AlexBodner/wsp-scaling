@@ -126,7 +126,7 @@ def head_matrices(tensors: dict) -> tuple[list[np.ndarray], list[np.ndarray]]:
 
 def self_match(embeddings: np.ndarray, query_key: np.ndarray, value_output: np.ndarray) -> float:
     """Returns how often a token scores itself higher than any sampled token, when one head writes and the other reads."""
-    written = embeddings @ value_output.T
+    written = embeddings @ value_output
     scores = (embeddings @ query_key) @ written.T
     return float((scores.argmax(1) == np.arange(len(embeddings))).mean())
 

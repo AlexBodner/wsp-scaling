@@ -1,0 +1,157 @@
+1. Checks before trusting anything
+  shapes: c_attn weight (768, 2304), c_proj weight (768, 768), VO (768, 768), right singular rows (768, 768)
+  VO of 4.11 has numeric rank 64, so rank 64 is its whole row space and no rank above 64 exists for it
+  singular values: 1st 1.68, 8th 1.13, 16th 0.98, 32nd 0.84, 64th 0.59, 65th 1.50e-15
+  basis orthonormal: largest error 2.7e-15
+  nothing changed: repeat accuracy 0.984, the five's mean induction attention 0.870, per head 5.5 0.918 7.10 0.887 6.9 0.882 5.1 0.875 7.2 0.786
+  rank 0 through the recompute, keys: mean 0.870, largest change 2.2e-16
+  rank 0 through the recompute, queries: mean 0.870, largest change 1.1e-16
+  top 8 previous-token heads silenced for keys only: 0.524, repeat accuracy 0.897
+  top 8 previous-token heads silenced for queries only: 0.821, repeat accuracy 0.980
+  4.11 silenced for keys only: 0.800, repeat accuracy 0.977
+  4.11 silenced for queries only: 0.882, repeat accuracy 0.982
+  what 4.11 really writes on the first 8 sequences, share inside its top right singular directions: rank 1 0.2253, rank 2 0.3105, rank 4 0.3470, rank 8 0.4923, rank 16 0.6096, rank 32 0.7569, rank 64 1.0000
+    same share with the left singular directions, the wrong side, rank 64: 0.2181; chance 0.0833
+  cosine of the previous position's normed residual through e @ VO with what 4.11 really writes: 0.991
+  cosine of the previous position's normed residual through e @ VO^T with what 4.11 really writes: 0.113
+  layer norm scale, since the directions live before it: layer 5 min 0.09 median 0.38 max 0.77, layer 6 min 0.06 median 0.35 max 0.78, layer 7 min 0.07 median 0.36 max 0.82
+2. Removing 4.11's top right singular directions from what only the five's keys or queries read, on 25 random tokens repeated
+  rank 1, keys: mean 0.618, per head 5.5 0.694 7.10 0.844 6.9 0.781 5.1 0.227 7.2 0.546, repeat accuracy 0.872
+    8 random rank 1: mean 0.871, lowest 0.868, highest 0.873, per head mean 5.5 0.918 7.10 0.887 6.9 0.885 5.1 0.877 7.2 0.785, repeat accuracy mean 0.983
+  rank 1, queries: mean 0.869, per head 5.5 0.911 7.10 0.888 6.9 0.865 5.1 0.890 7.2 0.789, repeat accuracy 0.980
+    8 random rank 1: mean 0.869, lowest 0.867, highest 0.871, per head mean 5.5 0.918 7.10 0.887 6.9 0.883 5.1 0.873 7.2 0.786, repeat accuracy mean 0.984
+  rank 2, keys: mean 0.321, per head 5.5 0.268 7.10 0.463 6.9 0.511 5.1 0.093 7.2 0.272, repeat accuracy 0.517
+    8 random rank 2: mean 0.868, lowest 0.864, highest 0.877, per head mean 5.5 0.917 7.10 0.886 6.9 0.881 5.1 0.873 7.2 0.785, repeat accuracy mean 0.983
+  rank 2, queries: mean 0.874, per head 5.5 0.902 7.10 0.884 6.9 0.874 5.1 0.917 7.2 0.792, repeat accuracy 0.978
+    8 random rank 2: mean 0.868, lowest 0.865, highest 0.873, per head mean 5.5 0.918 7.10 0.887 6.9 0.882 5.1 0.872 7.2 0.783, repeat accuracy mean 0.983
+  rank 4, keys: mean 0.223, per head 5.5 0.171 7.10 0.326 6.9 0.431 5.1 0.036 7.2 0.154, repeat accuracy 0.368
+    8 random rank 4: mean 0.868, lowest 0.864, highest 0.874, per head mean 5.5 0.915 7.10 0.885 6.9 0.881 5.1 0.875 7.2 0.784, repeat accuracy mean 0.982
+  rank 4, queries: mean 0.869, per head 5.5 0.900 7.10 0.878 6.9 0.869 5.1 0.913 7.2 0.784, repeat accuracy 0.978
+    8 random rank 4: mean 0.869, lowest 0.864, highest 0.872, per head mean 5.5 0.917 7.10 0.886 6.9 0.884 5.1 0.875 7.2 0.784, repeat accuracy mean 0.984
+  rank 8, keys: mean 0.070, per head 5.5 0.033 7.10 0.109 6.9 0.192 5.1 0.003 7.2 0.014, repeat accuracy 0.134
+    8 random rank 8: mean 0.864, lowest 0.842, highest 0.883, per head mean 5.5 0.915 7.10 0.884 6.9 0.882 5.1 0.862 7.2 0.779, repeat accuracy mean 0.982
+  rank 8, queries: mean 0.864, per head 5.5 0.900 7.10 0.885 6.9 0.865 5.1 0.883 7.2 0.786, repeat accuracy 0.980
+    8 random rank 8: mean 0.864, lowest 0.851, highest 0.882, per head mean 5.5 0.915 7.10 0.884 6.9 0.876 5.1 0.867 7.2 0.778, repeat accuracy mean 0.982
+  rank 16, keys: mean 0.018, per head 5.5 0.015 7.10 0.032 6.9 0.042 5.1 0.000 7.2 0.002, repeat accuracy 0.053
+    8 random rank 16: mean 0.856, lowest 0.841, highest 0.875, per head mean 5.5 0.909 7.10 0.879 6.9 0.877 5.1 0.845 7.2 0.771, repeat accuracy mean 0.980
+  rank 16, queries: mean 0.862, per head 5.5 0.901 7.10 0.884 6.9 0.866 5.1 0.878 7.2 0.781, repeat accuracy 0.978
+    8 random rank 16: mean 0.849, lowest 0.831, highest 0.877, per head mean 5.5 0.909 7.10 0.875 6.9 0.865 5.1 0.830 7.2 0.767, repeat accuracy mean 0.980
+  rank 32, keys: mean 0.002, per head 5.5 0.003 7.10 0.004 6.9 0.002 5.1 0.000 7.2 0.000, repeat accuracy 0.036
+    8 random rank 32: mean 0.847, lowest 0.819, highest 0.884, per head mean 5.5 0.895 7.10 0.870 6.9 0.886 5.1 0.830 7.2 0.755, repeat accuracy mean 0.979
+  rank 32, queries: mean 0.809, per head 5.5 0.861 7.10 0.865 6.9 0.807 5.1 0.759 7.2 0.752, repeat accuracy 0.974
+    8 random rank 32: mean 0.853, lowest 0.817, highest 0.891, per head mean 5.5 0.908 7.10 0.873 6.9 0.865 5.1 0.854 7.2 0.767, repeat accuracy mean 0.981
+  rank 64, keys: mean 0.000, per head 5.5 0.000 7.10 0.000 6.9 0.000 5.1 0.000 7.2 0.000, repeat accuracy 0.036
+    8 random rank 64: mean 0.819, lowest 0.766, highest 0.880, per head mean 5.5 0.854 7.10 0.844 6.9 0.852 5.1 0.799 7.2 0.744, repeat accuracy mean 0.977
+  rank 64, queries: mean 0.699, per head 5.5 0.823 7.10 0.837 6.9 0.718 5.1 0.459 7.2 0.659, repeat accuracy 0.965
+    8 random rank 64: mean 0.825, lowest 0.779, highest 0.867, per head mean 5.5 0.892 7.10 0.861 6.9 0.828 5.1 0.805 7.2 0.739, repeat accuracy mean 0.977
+3. Token self-match, 2000 sampled tokens, chance 0.0005
+  self_match from how_statistic_classifies, the form behind the card's 0.020, which writes with e @ VO^T
+    raw E: the five 0.020, per head 5.5 0.009 7.10 0.015 6.9 0.016 5.1 0.036 7.2 0.022; 12 random later heads 0.005
+    E through block 0's MLP alone: the five 0.000, per head 5.5 0.000 7.10 0.000 6.9 0.000 5.1 0.000 7.2 0.000; 12 random later heads 0.000
+    E plus block 0's MLP: the five 0.000, per head 5.5 0.000 7.10 0.000 6.9 0.000 5.1 0.000 7.2 0.000; 12 random later heads 0.000
+  the same with the write as the model does it, e @ VO, which also matches trace(QK^T (VO)^T)
+    raw E: the five 0.641, per head 5.5 0.615 7.10 0.443 6.9 0.725 5.1 0.832 7.2 0.590; 12 random later heads 0.130
+    E through block 0's MLP alone: the five 0.955, per head 5.5 0.978 7.10 0.936 6.9 0.973 5.1 0.976 7.2 0.910; 12 random later heads 0.282
+    E plus block 0's MLP: the five 0.955, per head 5.5 0.978 7.10 0.936 6.9 0.973 5.1 0.976 7.2 0.910; 12 random later heads 0.282
+4. Added after the card: union of top directions from the top 8 previous-token heads (4.11 3.7 2.2 3.2 2.9 2.5 3.8 3.6)
+  top 1 from each head: union rank 8 of 8, smallest singular value 0.494
+  union rank 8, keys: mean 0.694, per head 5.5 0.941 7.10 0.860 6.9 0.905 5.1 0.362 7.2 0.400, repeat accuracy 0.913
+    8 random rank 8: mean 0.872, lowest 0.860, highest 0.879, per head mean 5.5 0.917 7.10 0.884 6.9 0.890 5.1 0.883 7.2 0.783, repeat accuracy mean 0.983
+  union rank 8, queries: mean 0.912, per head 5.5 0.942 7.10 0.917 6.9 0.935 5.1 0.937 7.2 0.831, repeat accuracy 0.986
+    8 random rank 8: mean 0.868, lowest 0.856, highest 0.872, per head mean 5.5 0.918 7.10 0.885 6.9 0.880 5.1 0.876 7.2 0.782, repeat accuracy mean 0.982
+  top 2 from each head: union rank 16 of 16, smallest singular value 0.441
+  union rank 16, keys: mean 0.733, per head 5.5 0.941 7.10 0.834 6.9 0.916 5.1 0.558 7.2 0.415, repeat accuracy 0.941
+    8 random rank 16: mean 0.858, lowest 0.837, highest 0.873, per head mean 5.5 0.907 7.10 0.878 6.9 0.869 5.1 0.862 7.2 0.777, repeat accuracy mean 0.981
+  union rank 16, queries: mean 0.898, per head 5.5 0.934 7.10 0.911 6.9 0.918 5.1 0.910 7.2 0.815, repeat accuracy 0.986
+    8 random rank 16: mean 0.858, lowest 0.844, highest 0.873, per head mean 5.5 0.912 7.10 0.879 6.9 0.873 5.1 0.854 7.2 0.774, repeat accuracy mean 0.982
+  top 4 from each head: union rank 32 of 32, smallest singular value 0.402
+  union rank 32, keys: mean 0.513, per head 5.5 0.865 7.10 0.642 6.9 0.811 5.1 0.147 7.2 0.102, repeat accuracy 0.824
+    8 random rank 32: mean 0.831, lowest 0.781, highest 0.874, per head mean 5.5 0.881 7.10 0.865 6.9 0.865 5.1 0.789 7.2 0.755, repeat accuracy mean 0.977
+  union rank 32, queries: mean 0.880, per head 5.5 0.923 7.10 0.904 6.9 0.901 5.1 0.880 7.2 0.794, repeat accuracy 0.986
+    8 random rank 32: mean 0.853, lowest 0.838, highest 0.867, per head mean 5.5 0.909 7.10 0.874 6.9 0.867 5.1 0.849 7.2 0.767, repeat accuracy mean 0.980
+  top 8 from each head: union rank 64 of 64, smallest singular value 0.345
+  union rank 64, keys: mean 0.333, per head 5.5 0.664 7.10 0.432 6.9 0.522 5.1 0.023 7.2 0.022, repeat accuracy 0.608
+    8 random rank 64: mean 0.817, lowest 0.772, highest 0.857, per head mean 5.5 0.872 7.10 0.854 6.9 0.851 5.1 0.788 7.2 0.722, repeat accuracy mean 0.975
+  union rank 64, queries: mean 0.842, per head 5.5 0.908 7.10 0.892 6.9 0.875 5.1 0.786 7.2 0.749, repeat accuracy 0.986
+    8 random rank 64: mean 0.850, lowest 0.830, highest 0.865, per head mean 5.5 0.905 7.10 0.858 6.9 0.856 5.1 0.875 7.2 0.757, repeat accuracy mean 0.980
+  top 16 from each head: union rank 128 of 128, smallest singular value 0.295
+  union rank 128, keys: mean 0.184, per head 5.5 0.470 7.10 0.202 6.9 0.240 5.1 0.004 7.2 0.005, repeat accuracy 0.419
+    8 random rank 128: mean 0.790, lowest 0.692, highest 0.826, per head mean 5.5 0.852 7.10 0.812 6.9 0.830 5.1 0.767 7.2 0.692, repeat accuracy mean 0.970
+  union rank 128, queries: mean 0.711, per head 5.5 0.825 7.10 0.840 6.9 0.764 5.1 0.489 7.2 0.637, repeat accuracy 0.956
+    8 random rank 128: mean 0.796, lowest 0.730, highest 0.859, per head mean 5.5 0.873 7.10 0.815 6.9 0.818 5.1 0.781 7.2 0.691, repeat accuracy mean 0.973
+  top 32 from each head: union rank 256 of 256, smallest singular value 0.225
+  union rank 256, keys: mean 0.016, per head 5.5 0.058 7.10 0.007 6.9 0.013 5.1 0.000 7.2 0.001, repeat accuracy 0.103
+    8 random rank 256: mean 0.670, lowest 0.573, highest 0.724, per head mean 5.5 0.710 7.10 0.700 6.9 0.735 5.1 0.660 7.2 0.543, repeat accuracy mean 0.929
+  union rank 256, queries: mean 0.460, per head 5.5 0.601 7.10 0.696 6.9 0.489 5.1 0.140 7.2 0.375, repeat accuracy 0.741
+    8 random rank 256: mean 0.682, lowest 0.567, highest 0.812, per head mean 5.5 0.791 7.10 0.711 6.9 0.680 5.1 0.688 7.2 0.539, repeat accuracy mean 0.949
+  top 64 from each head: union rank 512 of 512, smallest singular value 0.096
+  union rank 512, keys: mean 0.006, per head 5.5 0.016 7.10 0.005 6.9 0.007 5.1 0.000 7.2 0.001, repeat accuracy 0.108
+    8 random rank 512: mean 0.378, lowest 0.310, highest 0.422, per head mean 5.5 0.365 7.10 0.373 6.9 0.437 5.1 0.413 7.2 0.301, repeat accuracy mean 0.684
+  union rank 512, queries: mean 0.081, per head 5.5 0.129 7.10 0.150 6.9 0.064 5.1 0.012 7.2 0.052, repeat accuracy 0.118
+    8 random rank 512: mean 0.301, lowest 0.182, highest 0.470, per head mean 5.5 0.429 7.10 0.295 6.9 0.248 5.1 0.333 7.2 0.201, repeat accuracy mean 0.663
+5. Added after the card, because the drop overshoots: how specific is it?
+  where the five's attention goes, nothing changed: next after the match 0.870, the match, which is the first position at 1 of 24 steps 0.022, itself 0.002, previous 0.000, first position 0.072, largest single position 0.877
+  where it goes, 4.11 rank 64 removed from keys: next after the match 0.000, the match, which is the first position at 1 of 24 steps 0.042, itself 0.000, previous 0.000, first position 1.000, largest single position 1.000
+  where it goes, random rank 64 removed from keys: next after the match 0.878, the match, which is the first position at 1 of 24 steps 0.025, itself 0.005, previous 0.001, first position 0.035, largest single position 0.883
+  where it goes, 4.11 rank 64 removed from queries: next after the match 0.699, the match, which is the first position at 1 of 24 steps 0.014, itself 0.000, previous 0.000, first position 0.235, largest single position 0.781
+  where it goes, 4.11 rank 64 removed from keys, keeping its mean: next after the match 0.000, the match, which is the first position at 1 of 24 steps 0.042, itself 0.000, previous 0.000, first position 1.000, largest single position 1.000
+  apart from the first position, nothing changed: first position 0.072, right position among the rest 0.934, per head 5.5 0.957 7.10 0.921 6.9 0.962 5.1 0.986 7.2 0.844
+  apart from the first position, 4.11 rank 1 removed from keys: first position 0.347, right position among the rest 0.941, per head 5.5 0.961 7.10 0.917 6.9 0.974 5.1 0.985 7.2 0.867
+  apart from the first position, 4.11 rank 2 removed from keys: first position 0.659, right position among the rest 0.932, per head 5.5 0.956 7.10 0.895 6.9 0.977 5.1 0.982 7.2 0.849
+  apart from the first position, 4.11 rank 4 removed from keys: first position 0.763, right position among the rest 0.919, per head 5.5 0.952 7.10 0.875 6.9 0.975 5.1 0.977 7.2 0.816
+  apart from the first position, 4.11 rank 8 removed from keys: first position 0.927, right position among the rest 0.890, per head 5.5 0.936 7.10 0.837 6.9 0.962 5.1 0.958 7.2 0.758
+  apart from the first position, 4.11 rank 16 removed from keys: first position 0.981, right position among the rest 0.815, per head 5.5 0.879 7.10 0.773 6.9 0.904 5.1 0.874 7.2 0.645
+  apart from the first position, 4.11 rank 32 removed from keys: first position 0.997, right position among the rest 0.510, per head 5.5 0.540 7.10 0.500 6.9 0.585 5.1 0.546 7.2 0.381
+  apart from the first position, 4.11 rank 64 removed from keys: first position 1.000, right position among the rest 0.114, per head 5.5 0.102 7.10 0.120 6.9 0.105 5.1 0.118 7.2 0.125
+  apart from the first position, random rank 64 removed from keys: first position 0.035, right position among the rest 0.908, per head 5.5 0.933 7.10 0.896 6.9 0.941 5.1 0.967 7.2 0.801
+  apart from the first position, union rank 64 removed from keys: first position 0.629, right position among the rest 0.839, per head 5.5 0.879 7.10 0.789 6.9 0.917 5.1 0.931 7.2 0.681
+  layer 5 residual removed, 4.11 rank 64: energy 0.607, energy around the mean 0.609, layer norm's divisor falls to 0.779 of itself; random rank 64: energy 0.078, energy around the mean 0.078, layer norm's divisor falls to 0.957 of itself
+  layer 6 residual removed, 4.11 rank 64: energy 0.609, energy around the mean 0.610, layer norm's divisor falls to 0.770 of itself; random rank 64: energy 0.078, energy around the mean 0.078, layer norm's divisor falls to 0.957 of itself
+  layer 7 residual removed, 4.11 rank 64: energy 0.608, energy around the mean 0.610, layer norm's divisor falls to 0.778 of itself; random rank 64: energy 0.079, energy around the mean 0.078, layer norm's divisor falls to 0.957 of itself
+  share of the five's keys weights inside 4.11's rank 64: 5.5 0.624 7.10 0.523 6.9 0.664 5.1 0.652 7.2 0.480; chance 0.083
+  share of the five's queries weights inside 4.11's rank 64: 5.5 0.116 7.10 0.111 6.9 0.167 5.1 0.313 7.2 0.186; chance 0.083
+  share of other writers' VO inside 4.11's rank 64: 3.7 0.384 2.2 0.353 3.2 0.262 2.9 0.294 2.5 0.216 3.8 0.212 3.6 0.230; chance 0.083
+  variants of removing from keys and queries, each against same-rank random where shown
+    removed after the layer norm, directions unscaled, rank 64, keys: mean 0.012, per head 5.5 0.020 7.10 0.016 6.9 0.011 5.1 0.001 7.2 0.012, repeat accuracy 0.066
+    from the live residual, so changed heads feed later ones, rank 64, keys: mean 0.000, per head 5.5 0.000 7.10 0.000 6.9 0.000 5.1 0.000 7.2 0.000, repeat accuracy 0.036
+    keeping the subspace's mean, so only what varies by token is removed:
+      4.11 rank 1, keys: mean 0.194, per head 5.5 0.126 7.10 0.443 6.9 0.212 5.1 0.030 7.2 0.159, repeat accuracy 0.230
+      4.11 rank 1, queries: mean 0.778, per head 5.5 0.875 7.10 0.808 6.9 0.815 5.1 0.727 7.2 0.667, repeat accuracy 0.973
+      4.11 rank 2, keys: mean 0.070, per head 5.5 0.009 7.10 0.150 6.9 0.072 5.1 0.002 7.2 0.117, repeat accuracy 0.082
+      4.11 rank 2, queries: mean 0.723, per head 5.5 0.858 7.10 0.783 6.9 0.760 5.1 0.583 7.2 0.631, repeat accuracy 0.965
+      4.11 rank 4, keys: mean 0.043, per head 5.5 0.003 7.10 0.107 6.9 0.040 5.1 0.001 7.2 0.067, repeat accuracy 0.066
+      4.11 rank 4, queries: mean 0.724, per head 5.5 0.855 7.10 0.782 6.9 0.749 5.1 0.598 7.2 0.634, repeat accuracy 0.966
+      4.11 rank 8, keys: mean 0.012, per head 5.5 0.000 7.10 0.036 6.9 0.018 5.1 0.000 7.2 0.005, repeat accuracy 0.047
+      4.11 rank 8, queries: mean 0.720, per head 5.5 0.840 7.10 0.759 6.9 0.736 5.1 0.658 7.2 0.605, repeat accuracy 0.970
+      4.11 rank 16, keys: mean 0.001, per head 5.5 0.000 7.10 0.004 6.9 0.000 5.1 0.000 7.2 0.000, repeat accuracy 0.036
+      4.11 rank 16, queries: mean 0.672, per head 5.5 0.821 7.10 0.736 6.9 0.691 5.1 0.547 7.2 0.566, repeat accuracy 0.960
+      4.11 rank 32, keys: mean 0.000, per head 5.5 0.000 7.10 0.001 6.9 0.000 5.1 0.000 7.2 0.000, repeat accuracy 0.036
+      4.11 rank 32, queries: mean 0.609, per head 5.5 0.798 7.10 0.703 6.9 0.629 5.1 0.395 7.2 0.519, repeat accuracy 0.934
+      4.11 rank 64, keys: mean 0.000, per head 5.5 0.000 7.10 0.000 6.9 0.000 5.1 0.000 7.2 0.000, repeat accuracy 0.036
+      4.11 rank 64, queries: mean 0.472, per head 5.5 0.725 7.10 0.609 6.9 0.453 5.1 0.185 7.2 0.386, repeat accuracy 0.837
+      8 random rank 64, keys: mean 0.745, lowest 0.671
+      8 random rank 64, queries: mean 0.792, lowest 0.764
+      union rank 8, keys: mean 0.524, per head 5.5 0.820 7.10 0.716 6.9 0.759 5.1 0.131 7.2 0.194, repeat accuracy 0.801
+      union rank 16, keys: mean 0.526, per head 5.5 0.792 7.10 0.657 6.9 0.753 5.1 0.257 7.2 0.169, repeat accuracy 0.829
+      union rank 32, keys: mean 0.374, per head 5.5 0.662 7.10 0.515 6.9 0.586 5.1 0.050 7.2 0.054, repeat accuracy 0.643
+      union rank 64, keys: mean 0.159, per head 5.5 0.329 7.10 0.237 6.9 0.219 5.1 0.004 7.2 0.006, repeat accuracy 0.316
+      union rank 128, keys: mean 0.109, per head 5.5 0.276 7.10 0.144 6.9 0.121 5.1 0.001 7.2 0.003, repeat accuracy 0.286
+      union rank 256, keys: mean 0.014, per head 5.5 0.040 7.10 0.018 6.9 0.012 5.1 0.000 7.2 0.002, repeat accuracy 0.112
+      union rank 512, keys: mean 0.014, per head 5.5 0.017 7.10 0.024 6.9 0.016 5.1 0.001 7.2 0.011, repeat accuracy 0.145
+      8 random rank 64, keys: mean 0.794, lowest 0.734
+      8 random rank 512, keys: mean 0.135, lowest 0.073
+  8 random other heads in layers 1 to 4, their own VO's row space removed, rank 64 (their previous-token attention in brackets)
+    3.1 (0.18): keys 0.568 (repeat accuracy 0.846), keys keeping its mean 0.451 (repeat accuracy 0.741), queries 0.854; share of the five's key weights inside 0.102; keys, first position 0.403, right position among the rest 0.927, per head 5.5 0.960 7.10 0.897 6.9 0.972 5.1 0.984 7.2 0.823
+    4.2 (0.07): keys 0.802 (repeat accuracy 0.975), keys keeping its mean 0.707 (repeat accuracy 0.962), queries 0.819; share of the five's key weights inside 0.066; keys, first position 0.159, right position among the rest 0.945, per head 5.5 0.962 7.10 0.931 6.9 0.971 5.1 0.988 7.2 0.872
+    3.5 (0.08): keys 0.656 (repeat accuracy 0.932), keys keeping its mean 0.401 (repeat accuracy 0.697), queries 0.844; share of the five's key weights inside 0.128; keys, first position 0.301, right position among the rest 0.915, per head 5.5 0.950 7.10 0.895 6.9 0.966 5.1 0.976 7.2 0.787
+    4.4 (0.06): keys 0.616 (repeat accuracy 0.893), keys keeping its mean 0.504 (repeat accuracy 0.846), queries 0.528; share of the five's key weights inside 0.093; keys, first position 0.346, right position among the rest 0.930, per head 5.5 0.936 7.10 0.899 6.9 0.971 5.1 0.982 7.2 0.863
+    1.11 (0.02): keys 0.117 (repeat accuracy 0.225), keys keeping its mean 0.169 (repeat accuracy 0.404), queries 0.499; share of the five's key weights inside 0.285; keys, first position 0.858, right position among the rest 0.679, per head 5.5 0.712 7.10 0.591 6.9 0.819 5.1 0.757 7.2 0.517
+    2.1 (0.09): keys 0.484 (repeat accuracy 0.783), keys keeping its mean 0.193 (repeat accuracy 0.324), queries 0.759; share of the five's key weights inside 0.061; keys, first position 0.496, right position among the rest 0.940, per head 5.5 0.965 7.10 0.913 6.9 0.976 5.1 0.986 7.2 0.863
+    1.3 (0.09): keys 0.910 (repeat accuracy 0.973), keys keeping its mean 0.592 (repeat accuracy 0.913), queries 0.939; share of the five's key weights inside 0.098; keys, first position 0.008, right position among the rest 0.916, per head 5.5 0.949 7.10 0.913 6.9 0.950 5.1 0.961 7.2 0.809
+    1.0 (0.24): keys 0.187 (repeat accuracy 0.400), keys keeping its mean 0.215 (repeat accuracy 0.526), queries 0.615; share of the five's key weights inside 0.325; keys, first position 0.691, right position among the rest 0.610, per head 5.5 0.503 7.10 0.510 6.9 0.679 5.1 0.779 7.2 0.580
+6. The card's prediction
+  rank 64 on keys under 0.5: 0.000, held
+  same-rank random above 0.8 on keys: mean 0.819, held; lowest 0.766, did not hold
+  queries as a control: 0.699, random mean 0.825, lowest 0.779
+  token self-match above 0.1, as imported: raw E 0.020, E through block 0's MLP alone 0.000, E plus block 0's MLP 0.000
+  token self-match above 0.1, corrected: raw E 0.641, E through block 0's MLP alone 0.955, E plus block 0's MLP 0.955

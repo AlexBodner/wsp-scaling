@@ -25,7 +25,8 @@ _GROUP_LINE = re.compile(r"^\s*(\d+)\.(\d+)\s*\|\s*(.+?)\s*\|\s*([\d.]+)\s*$")
 
 
 def latest_run(kind: str) -> Path | None:
-    runs = sorted((ROOT / "runs").glob(f"kind-{kind}__live__*"))
+    """Returns a kind's latest finished run. A run stopped by a failure has no result file and no score."""
+    runs = [run for run in sorted((ROOT / "runs").glob(f"kind-{kind}__live__*")) if (run / "result.json").exists()]
     return runs[-1] if runs else None
 
 
@@ -72,13 +73,28 @@ def score_open(run: Path, scores: dict[str, np.ndarray], original: np.ndarray) -
         means = {kind: float(np.mean([values[head] for head, _ in members])) for kind, values in scores.items()}
         best = max(means, key=means.get)
         print(f"  {job!r} ({len(members)} heads, confidence {np.mean([c for _, c in members]):.2f}): highest on {best} {means[best]:.2f}; " + " ".join(f"{kind} {value:.2f}" for kind, value in means.items()))
+    rng = np.random.default_rng(SEED)
+    placements = [(head, job) for job, members in groups.items() for head, _ in members]
     for kind, values in scores.items():
         top = np.argsort(-values.ravel())[:NAMED]
         heads = [(int(i) // HEADS, int(i) % HEADS) for i in top]
         counts = {job: sum(head in {member for member, _ in members} for head in heads) for job, members in groups.items()}
         job = max(counts, key=counts.get)
         placed = sum(counts.values())
-        print(f"  top 5 by {kind}: {placed} placed, {counts[job]} in one group, {job!r}")
+        most = np.zeros(PERMUTATIONS // 10)
+        for trial in range(len(most)):
+            shuffled = {}
+            for layer in range(LAYERS):
+                in_layer = [job_name for (head, job_name) in placements if head[0] == layer]
+                chosen = rng.permutation(HEADS)[: len(in_layer)]
+                for head, job_name in zip(chosen, in_layer):
+                    shuffled[(layer, int(head))] = job_name
+            jobs = [shuffled.get(head) for head in heads]
+            most[trial] = max((jobs.count(name) for name in set(jobs) - {None}), default=0)
+        print(f"  top 5 by {kind}: {placed} placed, {counts[job]} in one group, {job!r}; within-layer shuffle gets that many or more {float((most >= counts[job]).mean()):.3f}")
+    for job, members in sorted(groups.items(), key=lambda item: -len(item[1])):
+        best = sorted(members, key=lambda member: -member[1])[:6]
+        print(f"  {job!r} top members, real heads: " + ", ".join(f"{head[0]}.{head[1]} ({c:.2f}; prev {scores['previous'][head]:.2f}, dup {scores['duplicate'][head]:.2f}, self {scores['self'][head]:.2f}, ind {scores['induction'][head]:.2f}, nm {scores['name_mover'][head]:.2f}, si {scores['s_inhibition'][head]:.2f})" for head, c in best))
 
 
 def main() -> None:
