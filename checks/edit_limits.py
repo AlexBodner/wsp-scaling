@@ -82,11 +82,15 @@ def text_loss(model, windows: torch.Tensor) -> float:
     return total / count
 
 
-def story_windows(shuffle: TokenShuffle) -> tuple[torch.Tensor, torch.Tensor]:
-    """Returns windows from past the part of the stories the scorer reads, so these are fresh text."""
+def story_tokens(shuffle: TokenShuffle) -> list[int]:
+    """Returns tokens from past the part of the stories the scorer reads, so these are fresh text."""
     with open(ROOT / TEXT_FILE, encoding="utf-8", errors="replace") as handle:
         handle.read(600_000)
-        tokens = shuffle.encode(handle.read(1_500_000))
+        return shuffle.encode(handle.read(1_500_000))
+
+
+def story_windows(shuffle: TokenShuffle) -> tuple[torch.Tensor, torch.Tensor]:
+    tokens = story_tokens(shuffle)
     rng = np.random.default_rng(SEED)
     pick = lambda length, number: torch.tensor([tokens[int(start) : int(start) + length] for start in rng.choice(len(tokens) - length, number, replace=False)])
     return pick(STORY_SPAN, STORY_WINDOWS), pick(LONG_WINDOW, LONG_WINDOWS)

@@ -152,7 +152,7 @@ def main() -> None:
     with_source = np.where(earlier[:, source], cosine[:, source], -np.inf)
     induction = patterns["induction"].ravel()
     top = ranked(induction, 10)
-    later = np.arange(HEADS, 144)
+    later = np.arange((source // HEADS + 1) * HEADS, 144)
 
     print(f"1. What the five heads and their source attend to, on {REPEAT_LENGTH} random tokens repeated")
     for pattern, values in patterns.items():
@@ -181,7 +181,7 @@ def main() -> None:
     groups = {
         "top five, written by source": top[:NAMED],
         "next five, written by source": top[NAMED:],
-        "12 random later heads, written by source": [int(i) for i in rng.choice(np.arange(source // HEADS * HEADS + HEADS, 144), CONTROL_HEADS, replace=False)],
+        "12 random later heads, not in the top ten, written by source": [int(i) for i in rng.choice(np.setdiff1d(np.arange(source // HEADS * HEADS + HEADS, 144), top), CONTROL_HEADS, replace=False)],
     }
     for label, heads in groups.items():
         matches = [self_match(embeddings, query_key[head], value_output[source]) for head in heads]

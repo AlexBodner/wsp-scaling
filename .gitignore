@@ -11,7 +11,6 @@ __pycache__/
 runs/reading-solver/seed*/
 post/
 figures/*_preview.*
-figures/*_v2.*
 figures/reading_heads_v3.*
 figures/reading_heads_v4.*
 figures/reading_heads_v5.*

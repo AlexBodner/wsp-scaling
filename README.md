@@ -1,22 +1,25 @@
 # Can GPT-6 Astra read and write GPT-2's weights?
 
-By [Alex Bodner](https://twitter.com/AlexBodner_). A small follow-up to [Sparks of Weight-Space Programming](https://rikiyat.github.io/blog/weight-space-programming/), which reports that LLMs natively read and write network weights. They found every induction head in a 7M-weight model from its weights, using Python. We ask `gpt-6-astra` the same kind of question about a real LLM, GPT-2 small (124M weights), with and without tools, never running the model. One model and few runs, and no size sweep has run.
+By [Alex Bodner](https://twitter.com/AlexBodner_). A small follow-up to [Sparks of Weight-Space Programming](https://rikiyat.github.io/blog/weight-space-programming/), which reports that LLMs natively read and write network weights. They found every induction head in a 7M-weight model from its weights, using Python. We ask `gpt-6-astra` the same kind of question about a real LLM, GPT-2 small (124M weights), with and without tools, never running the model, and then ask it to edit those weights. Few runs and no size sweep, plus one run on a bigger model where the edit was weak.
 
 [FINDINGS.md](FINDINGS.md) has what later experiments found: Astra writing edits from weights alone, other kinds of head, and a bigger model.
 
 ## Reading, then editing
 Asked to weaken one skill in scrambled GPT-2, continuing a repeat, while keeping the rest, with Python and no recipe, Astra wrote weight edits without ever running the model or seeing a score.
 
-![GPT-2 before and after Astra's edit](figures/edit_before_after_v1.png)
+![GPT-2 before and after Astra's edit](figures/edit_before_after_v2.png)
 
-- **Short lists of common nouns it never saw:** the right word falls from 95% to 5% and 14% in two runs, and it usually repeats a word it just saw. On random tokens, the words go too.
-- **What stays:** the 15 of 30 plain facts it got right before. Text loss rises under 1% on short windows and about 2% on long stories, and the top next token changes at about 5% of story positions.
-- **The catch:** a simple edit to the same heads' keys does as well, while zeroing them doesn't. Finding the heads looks like the hard part. A script with Astra's own statistic also finds them on this model, and Astra may remember the published circuit.
-- **Not gone:** on repeated stories, copying goes from 91% to 53% and 74%.
+Numbers are run 1, then run 2.
 
-![Astra's edits against simpler ones](figures/edit_trade_off_v1.png)
+- **What falls:** on short lists of common nouns it never saw, the right word goes from 95% to 14% and 5%. On random-token repeats, the score it was given, 99% to 18% and 1%. On repeated stories, the gain from repeating goes from 45 points to 29 and 8.
+- **What stays:** the 15 of 30 plain facts it got right before. Text loss rises under 1% on 48-token windows and about 2% on 256-token windows, both from children's stories, and the top next token changes at about 5% of story positions.
+- **What doesn't fall:** repeated names in sentences stay around 25% or rise.
+- **The catch:** a simple edit on the same heads does as well, and it reuses a projection from run 1. Fixing the top 5 at their mean output does too, but that needs running the model. A script with Astra's own statistic also finds the heads, and Astra may remember the published circuit.
+- **What the list is worth:** the same simple edit on 16 random sets of 5 heads, none from the top ten and 8 of them inside the right layers, leaves random-token repeats at 97 to 99% and short lists at 56 to 98%. On the top 5, zeroing costs 18 to 32% in text loss against 0.6% with the projection. All of layers 5 to 7 needs no list and costs 20%, or 7% by zeroing their outputs. On GPT-2 medium [the edit was weak](runs/write-medium__live__20261104T072216Z), 99% to 74%.
 
-To check it: [the prompt](prompts/write.txt), run [1](runs/write-write-1__live__20261104T053859Z) and [2](runs/write-write-2__live__20261104T061358Z) with every call and the edit code, [the English outputs](checks/outputs/edit_demo.txt), [the list check](checks/outputs/edit_order.txt) and [where it stops looking clean](checks/outputs/edit_limits.txt). Details are in [FINDINGS.md](FINDINGS.md).
+![The same edit on different heads](figures/edit_trade_off_v2.png)
+
+To check it: [the prompt](prompts/write.txt), run [1](runs/write-write-1__live__20261104T053859Z) and [2](runs/write-write-2__live__20261104T061358Z) with every call and the edit code, [the English outputs](checks/outputs/edit_demo.txt), [the controls](checks/outputs/edit_controls.txt), [the list check, written after seeing the examples](checks/outputs/edit_order.txt), [where it stops looking clean](checks/outputs/edit_limits.txt) and [the audit of the write runs](checks/outputs/audit_write_runs.txt). Details are in [FINDINGS.md](FINDINGS.md).
 
 ## Reading
 With no tools and 20,000 values to read, Astra did no better than guessing. With Python and no recipe, it found GPT-2's top five induction heads in both runs, on scrambled weights.
@@ -51,19 +54,19 @@ The [prompts](prompts/) describe the score exactly and call the targets copying 
 - [METHOD.md](METHOD.md): the design, every result and its limits.
 - [CONTEXT.md](CONTEXT.md): the post, the objection to it, and what its logs show.
 - [DECISIONS.md](DECISIONS.md): a working log of how the design changed, not needed to check any result.
-- `checks/`: the scripts behind the reading, writing, architecture and tokenizer numbers, with saved reading and some writing results in `checks/outputs/`.
+- `checks/`: the scripts behind the reading, writing, architecture and tokenizer numbers, with saved reading and writing results in `checks/outputs/`.
 - `wsp/`, `scripts/`, `tests/`: the pipeline. `prompts/` holds the frozen prompts.
 - `runs/`: every Astra run. The script's 30 seeds keep only `summary.json`.
 
 ## Check it without downloading anything
-This recounts the main numbers from saved files, with no GPT-2 and no model calls:
+This recounts the main reading numbers from saved files, with numpy but no GPT-2 and no model calls. The edit numbers need the commands under Running it:
 
 ```bash
 python3 checks/from_saved_logs.py
 ```
 
 ## Running it
-Needs Python 3.10 or newer. GPT-2 downloads itself on first use, about 550 MB. Only the language task, Predict and the control need `data/`: [TinyStories](https://huggingface.co/datasets/roneneldan/TinyStories) `TinyStoriesV2-GPT4-valid.txt` as `data/tinystories/valid.txt` and the first 100 MB of `TinyStoriesV2-GPT4-train.txt` as `data/tinystories/train_first100mb.txt`, and the post's [Breakout files](https://github.com/RikiyaT/lm_understand-logs) in `data/control/`, with MinAtar 1.0.15 in `.deps/`.
+Tested on Python 3.12 on macOS. New runs and their tests use macOS's `sandbox-exec`, so install into a Python outside your home folder, not a virtual environment, and those tests skip elsewhere. The edit checks and `checks/audit_python_runs.py` run Astra's saved code in your own Python with no sandbox, so read it first. GPT-2 downloads itself on first use, about 550 MB, and `checks/medium_head_list.py` downloads about 1.4 GB more. Most edit checks need only `data/tinystories/valid.txt`. The language task, Predict and the control need `data/`: [TinyStories](https://huggingface.co/datasets/roneneldan/TinyStories) `TinyStoriesV2-GPT4-valid.txt` as `data/tinystories/valid.txt` and the first 100 MB of `TinyStoriesV2-GPT4-train.txt` as `data/tinystories/train_first100mb.txt`, and the post's [Breakout files](https://github.com/RikiyaT/lm_understand-logs) in `data/control/`, with MinAtar 1.0.15 in `.deps/`.
 
 ```bash
 pip install -r requirements.txt
@@ -99,6 +102,40 @@ PYTHONPATH=. python3 scripts/reading_solver.py
 
 ```bash
 PYTHONPATH=. python3 checks/top_five.py
+```
+
+Rerun the edit numbers. These print to the terminal, so compare them with `checks/outputs/`. The figures redraw from the saved files:
+
+```bash
+PYTHONPATH=. python3 checks/edit_demo.py
+```
+
+```bash
+PYTHONPATH=. python3 checks/edit_controls.py
+```
+
+```bash
+PYTHONPATH=. python3 checks/edit_order.py
+```
+
+```bash
+PYTHONPATH=. python3 checks/edit_limits.py
+```
+
+```bash
+PYTHONPATH=. python3 checks/write_baselines.py
+```
+
+```bash
+PYTHONPATH=. python3 checks/medium_head_list.py
+```
+
+```bash
+PYTHONPATH=. python3 checks/audit_write_runs.py
+```
+
+```bash
+PYTHONPATH=. python3 scripts/edit_figure.py
 ```
 
 New Astra calls use `--live`, codex-cli 0.153.4 and a private helper, vlm-jigsaw, that seals each call and is not published. Saved runs and all scoring work without it, and each call's `seal` records what its scan found.

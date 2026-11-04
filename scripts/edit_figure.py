@@ -1,6 +1,6 @@
-"""Draws the post figures for Astra's weight edits: real outputs before and after, and the trade-off against simpler edits.
+"""Draws the post figures for Astra's weight edits: real outputs before and after, and the same simple edit on different heads.
 
-Every word and number is read from the saved outputs of checks/edit_demo.py and checks/write_baselines.py.
+Every word and number is read from the saved outputs of checks/edit_demo.py, checks/edit_controls.py and checks/write_baselines.py, and the words marked in colour are checked against them.
 """
 
 import ast
@@ -16,6 +16,7 @@ from matplotlib.patches import Rectangle
 ROOT = Path(__file__).parent.parent
 DEMO = ROOT / "checks" / "outputs" / "edit_demo.txt"
 BASELINES = ROOT / "checks" / "outputs" / "write_baselines.txt"
+CONTROLS = ROOT / "checks" / "outputs" / "edit_controls.txt"
 BLUE, RED, GREEN, GREY, INK, MUTED = "#2a78d6", "#c8352b", "#1f8a5b", "#8f8e88", "#0b0b0b", "#52514e"
 DPI = 200
 TITLE_POINTS, PROMPT_POINTS, LINE_POINTS, NOTE_POINTS = 27, 23, 22, 18
@@ -29,6 +30,7 @@ EXAMPLES = (
 SHOWN_RUN = "Astra, run 2"
 WRAP_AT = 60
 LONG_PROMPT_POINTS = 20
+RANDOM_SETS = 8
 
 
 def sections() -> dict[str, list[str]]:
@@ -64,7 +66,7 @@ def short(text: str, words: int) -> str:
 def before_after() -> None:
     arms = sections()
     figure = plt.figure(figsize=(10.8, 10.2), facecolor="white")
-    figure.text(0.04, 0.95, "GPT-2 before and after Astra's weight edit", fontsize=TITLE_POINTS, fontweight="bold", color=INK, va="center")
+    figure.text(0.04, 0.95, "GPT-2 before and after the edit", fontsize=TITLE_POINTS, fontweight="bold", color=INK, va="center")
     top, block = 0.875, 0.2
     for index, (prompt, right, wrong, after_colour, words) in enumerate(EXAMPLES):
         y = top - index * block
@@ -79,12 +81,14 @@ def before_after() -> None:
             if marked is None:
                 figure.text(0.2, height, text.strip(), fontsize=LINE_POINTS, color=INK, va="center")
             else:
+                if not text.startswith(marked):
+                    raise ValueError(f"saved text {text!r} doesn't start with {marked!r}")
                 label = figure.text(0.2, height, marked.strip(), fontsize=LINE_POINTS, color=colour, fontweight="bold", va="center")
                 figure.canvas.draw()
                 box = label.get_window_extent().transformed(figure.transFigure.inverted())
                 figure.text(box.x1 + 0.008, height, text[len(marked):].strip(), fontsize=LINE_POINTS, color=INK, va="center")
-    figure.text(0.04, 0.03, "Astra's run 2. Top next words, cut short. Green: right. Red: wrong.", fontsize=NOTE_POINTS, color=MUTED, va="center")
-    figure.savefig(ROOT / "figures" / "edit_before_after_v1.png", dpi=DPI)
+    figure.text(0.04, 0.03, "Astra's run 2, 4 of 8 fixed prompts, cut short. Green: right. Red: wrong.\nOver 48 repeated stories, the gain from repeating falls from 45 to 8 points.", fontsize=NOTE_POINTS, color=MUTED, va="center")
+    figure.savefig(ROOT / "figures" / "edit_before_after_v2.png", dpi=DPI)
     plt.close(figure)
 
 
@@ -93,41 +97,52 @@ def scored(lines: list[str]) -> tuple[float, float]:
     return float(match[1]), float(match[2])
 
 
+def control_point(line_start: str, base: float) -> tuple[float, float]:
+    """Returns one saved control as percent rise in text loss and percent of repeats right."""
+    for line in CONTROLS.read_text().splitlines():
+        if line.startswith(line_start):
+            match = re.search(r"repeat ([\d.]+), text rise ([+-][\d.]+)", line)
+            return 100 * float(match[2]) / base, 100 * float(match[1])
+    raise ValueError(f"no saved control starting {line_start!r}")
+
+
 def trade_off() -> None:
     arms = sections()
     base = scored(arms["unedited"])[1]
-    point = lambda name: (scored(arms[name])[1] - base, 100 * scored(arms[name])[0])
+    point = lambda name: (100 * (scored(arms[name])[1] - base) / base, 100 * scored(arms[name])[0])
     layers = re.search(r"layers 5 to 7 zeroed: repeat accuracy ([\d.]+), text loss [\d.]+, rise ([\d.]+)", BASELINES.read_text())
-    figure, axis = plt.subplots(figsize=(10.8, 7.4), facecolor="white")
+    figure, axis = plt.subplots(figsize=(10.8, 7.8), facecolor="white")
     figure.subplots_adjust(left=0.11, right=0.97, top=0.86, bottom=0.14)
-    figure.text(0.04, 0.93, "A simple edit matches Astra's", fontsize=TITLE_POINTS, fontweight="bold", color=INK, va="center")
-    grey_points = {
-        "Unedited": (point("unedited"), (0.05, 96)),
-        "Top 5 heads zeroed": (point("top 5 zeroed"), (0.72, 36)),
-        "Layers 5 to 7 zeroed": ((float(layers[2]), 100 * float(layers[1])), (0.25, 0.5)),
-    }
-    for label, ((x, y), (text_x, text_y)) in grey_points.items():
+    figure.text(0.04, 0.93, "The same simple edit on different heads", fontsize=TITLE_POINTS, fontweight="bold", color=INK, va="center")
+    randoms = [control_point(f"random 5 {pool}, set {number}", base) for pool in ("anywhere, not the top ten", "in layers 5 to 7, not the top ten") for number in range(RANDOM_SETS)]
+    axis.scatter(*zip(*randoms), s=120, facecolor="white", edgecolor=INK, linewidth=2, zorder=3)
+    axis.text(9.5, 91, "On 16 random sets of 5, no top-10 head", fontsize=LINE_POINTS, color=INK, va="center")
+    whole = control_point("all 36 heads of layers 5 to 7", base)
+    axis.scatter(*whole, s=190, facecolor="white", edgecolor=INK, linewidth=2.5, zorder=4)
+    axis.text(17, 8, "On all of layers 5 to 7", fontsize=LINE_POINTS, color=INK, va="center")
+    top = control_point("top 5:", base)
+    axis.scatter(*top, s=190, facecolor="white", edgecolor=INK, linewidth=2.5, zorder=5)
+    axis.annotate("On the top 5", top, (5.5, 15), fontsize=LINE_POINTS, color=INK, va="center", arrowprops={"arrowstyle": "-", "color": INK, "linewidth": 1.5, "shrinkA": 3, "shrinkB": 6, "relpos": (0, 0.5)})
+    zeroed_layers = (100 * float(layers[2]) / base, 100 * float(layers[1]))
+    for label, (x, y), (text_x, text_y) in (("Unedited", point("unedited"), (0.8, 106)), ("Top 5 outputs zeroed", point("top 5 zeroed"), (23, 37)), ("Layers 5 to 7\noutputs zeroed", zeroed_layers, (7.6, 2.5))):
         axis.scatter(x, y, s=190, color=GREY, zorder=3, linewidth=0)
         axis.text(text_x, text_y, label, fontsize=LINE_POINTS, color=MUTED, va="center")
-    for name in ("head list, run 1's heads", "head list, run 2's heads"):
-        axis.scatter(*point(name), s=190, facecolor="white", edgecolor=INK, linewidth=2.5, zorder=4)
     for name in ("Astra, run 1", "Astra, run 2"):
-        axis.scatter(*point(name), s=190, color=BLUE, zorder=5, linewidth=0)
-    axis.annotate("Astra, run 1", point("Astra, run 1"), (0.07, 20.5), fontsize=LINE_POINTS, color=BLUE, fontweight="bold", va="center")
-    axis.annotate("Astra, run 2", point("Astra, run 2"), (0.07, 13.5), fontsize=LINE_POINTS, color=BLUE, fontweight="bold", va="center", arrowprops={"arrowstyle": "-", "color": BLUE, "linewidth": 1.5, "shrinkA": 3, "shrinkB": 6, "relpos": (0, 0.5)})
-    axis.annotate("Simple edit, same heads", point("head list, run 2's heads"), (0.07, 6.5), fontsize=LINE_POINTS, color=INK, va="center", arrowprops={"arrowstyle": "-", "color": INK, "linewidth": 1.5, "shrinkA": 3, "shrinkB": 6, "relpos": (0, 0.5)})
-    axis.set_xlim(-0.04, 1.2)
-    axis.set_ylim(-4, 106)
-    axis.set_xlabel("Damage to ordinary text (rise in loss)", fontsize=LINE_POINTS, color=INK, labelpad=10)
+        axis.scatter(*point(name), s=190, color=BLUE, zorder=6, linewidth=0)
+    axis.annotate("Astra, run 1", point("Astra, run 1"), (5.5, 34), fontsize=LINE_POINTS, color=BLUE, fontweight="bold", va="center", arrowprops={"arrowstyle": "-", "color": BLUE, "linewidth": 1.5, "shrinkA": 3, "shrinkB": 6, "relpos": (0, 0.5)})
+    axis.annotate("Astra, run 2", point("Astra, run 2"), (5.5, 24.5), fontsize=LINE_POINTS, color=BLUE, fontweight="bold", va="center", arrowprops={"arrowstyle": "-", "color": BLUE, "linewidth": 1.5, "shrinkA": 3, "shrinkB": 6, "relpos": (0, 0.5)})
+    axis.set_xlim(-1.5, 36)
+    axis.set_ylim(-5, 113)
+    axis.set_xlabel("Rise in loss on ordinary text (%)", fontsize=LINE_POINTS, color=INK, labelpad=10)
     axis.set_ylabel("Random-token repeats still right (%)", fontsize=LINE_POINTS, color=INK, labelpad=10)
     axis.tick_params(labelsize=NOTE_POINTS + 1, colors=MUTED, length=0)
-    axis.set_xticks([0, 0.5, 1])
+    axis.set_xticks([0, 10, 20, 30])
     axis.set_yticks([0, 50, 100])
     axis.grid(color="#ecebe6", linewidth=1)
     axis.set_axisbelow(True)
     for side in axis.spines.values():
         side.set_visible(False)
-    figure.savefig(ROOT / "figures" / "edit_trade_off_v1.png", dpi=DPI)
+    figure.savefig(ROOT / "figures" / "edit_trade_off_v2.png", dpi=DPI)
     plt.close(figure)
 
 

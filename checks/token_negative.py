@@ -2,7 +2,7 @@
 
 Each head's score is a token's own logit, through its embedding, block 0's MLP, the layer norm's mean and scale removal, V, O,
 the final scale and the centred unembedding, averaged over 8000 tokens and divided by VO's norm, as in
-.research/verification/last/verify_eraser.py. The behaviour is each head's direct effect on the logit of the token it attends to
+a local verifier run that isn't public. The behaviour is each head's direct effect on the logit of the token it attends to
 most, on the second copy of repeated random tokens and, as a second reading off the prediction, on stories. GPT-2 small is run
 last and has to reproduce the saved numbers. Controls are a within-layer shuffle of the score, and the same score with the embedding
 rows permuted relative to the unembedding. Pass a sequence count to debug on a small sample: it skips the reproduction checks.
@@ -47,7 +47,7 @@ DRAWS = 2000
 PERMUTATIONS = 20
 SLICE_TOLERANCE = 1e-2
 LIMIT_GB = 3.4
-# GPT-2 small from .research/verification/last/verify_eraser.txt.
+# GPT-2 small from a local verifier run that isn't public.
 SAVED = {"10.7": (-1.745, -1.011, -0.298), "11.10": (-1.184, -0.568, -0.168)}
 SAVED_SPEARMAN = {"repeats": 0.795, "stories": 0.434}
 SAVED_TOLERANCE = 0.0015
@@ -150,7 +150,7 @@ def attended_effect(model, tokens: torch.Tensor, positions: torch.Tensor) -> dic
 
 
 def repeat_tokens() -> torch.Tensor:
-    """Returns the repeats signed_ladder.py uses on the shuffled model, mapped back to the original token numbers, as verify_eraser.py does."""
+    """Returns the repeats signed_ladder.py uses on the shuffled model, mapped back to the original token numbers, as the local verifier run does."""
     half = torch.randint(0, VOCABULARY, (BATCH, REPEAT_LENGTH), generator=torch.Generator().manual_seed(SEED))
     to_original = np.argsort(np.random.default_rng(SHUFFLE_SEED).permutation(VOCABULARY))
     return torch.from_numpy(to_original[torch.cat([half, half], 1).numpy()])
@@ -278,7 +278,7 @@ def reproduce(score: np.ndarray, measured: dict, config) -> None:
         raise ValueError(f"{lines[-1]} does not reproduce")
     if [name(int(head), config) for head in order[:2]] != list(SAVED):
         raise ValueError("10.7 and 11.10 are not the two most negative heads")
-    print("  reproduces verify_eraser.txt: " + "; ".join(lines), flush=True)
+    print("  reproduces the local verifier run: " + "; ".join(lines), flush=True)
 
 
 def main() -> None:

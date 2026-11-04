@@ -11,17 +11,17 @@ from wsp.network import TokenShuffle
 from wsp.write_task import apply_edit
 
 LISTS = 300
-LABELS = ("right word", "first word again", "second word again", "other word from the list", "not from the list")
+LABELS = ("right word", "first word again", "second word again", "not from the list")
 
 
-def short_lists(shuffle: TokenShuffle, seed: int) -> list[tuple[list[int], list[int]]]:
-    """Returns comma lists a, b, c, a, b, with the single tokens of a, b and c."""
+def short_lists(shuffle: TokenShuffle, seed: int, prefix: str = "") -> list[tuple[list[int], list[int]]]:
+    """Returns comma lists a, b, c, a, b, after an optional prefix, with the single tokens of a, b and c."""
     rng = np.random.default_rng(seed)
     lists = []
     for _ in range(LISTS):
         first, second, third = [WORDS[i] for i in rng.choice(len(WORDS), 3, replace=False)]
         tokens = [shuffle.encode(f" {word}")[0] for word in (first, second, third)]
-        lists.append((shuffle.encode(f"{first}, {second}, {third}, {first}, {second},"), tokens))
+        lists.append((shuffle.encode(f"{prefix}{first}, {second}, {third}, {first}, {second},"), tokens))
     return lists
 
 
@@ -31,13 +31,13 @@ def picks(model, lists) -> Counter:
     counts: Counter = Counter()
     for prompt, (first, second, third) in lists:
         top = int(model(input_ids=torch.tensor([prompt])).logits[0, -1].argmax())
-        counts[{third: LABELS[0], first: LABELS[1], second: LABELS[2]}.get(top, LABELS[4])] += 1
+        counts[{third: LABELS[0], first: LABELS[1], second: LABELS[2]}.get(top, LABELS[3])] += 1
     return counts
 
 
 def show(label: str, model, lists) -> None:
     counts = picks(model, lists)
-    print(f"{label:28s} " + " | ".join(f"{name} {counts[name] / LISTS:.2f}" for name in LABELS if name != LABELS[3]))
+    print(f"{label:28s} " + " | ".join(f"{name} {counts[name] / LISTS:.2f}" for name in LABELS))
 
 
 def main() -> None:

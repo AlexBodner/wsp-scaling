@@ -67,7 +67,7 @@ gpt2: 12 layers, 12 heads of size 64, width 768, 144 heads, on cpu in torch.floa
     stories: Spearman 0.434, shuffles mean 0.070, 2.5th to 97.5th percentile -0.091 to 0.219, chance of this or higher 0.0000; within-layer Spearman 0.433; top 3 by score among 10 most negative effects: 2 of 3, shuffles passing 0.0020
   20 permutations of the embedding rows against the unembedding, on repeats: Spearman mean 0.156, lowest -0.093, highest 0.571; top 3 among the 10 most negative effects: at most 3 of 3, 4 permutations pass; first draw's top 3: 10.3 3.1 6.4; last draw's: 6.6 9.8 11.10
   took 18 s, peak resident memory 3.08 GB
-  reproduces verify_eraser.txt: 10.7 score -1.745 (saved -1.745), effect -1.011/-0.298 (saved -1.011/-0.298); 11.10 score -1.184 (saved -1.184), effect -0.568/-0.168 (saved -0.568/-0.168); Spearman repeats 0.795 (saved 0.795), Spearman stories 0.434 (saved 0.434)
+  reproduces the local verifier run: 10.7 score -1.745 (saved -1.745), effect -1.011/-0.298 (saved -1.011/-0.298); 11.10 score -1.184 (saved -1.184), effect -0.568/-0.168 (saved -0.568/-0.168); Spearman repeats 0.795 (saved 0.795), Spearman stories 0.434 (saved 0.434)
 
 card's prediction, on repeats:
   gpt2-medium: the 3 most negative by score are all among the 10 most negative direct effects (2 of 3): failed

@@ -1,6 +1,6 @@
 """Tests whether attention to position 0 is a no-match state of the induction heads, or a base rate. Makes no Astra calls.
 
-Card: .research/cards/first_position.md. Measures all 144 heads on random tokens, on real text, with the first token
+Measures all 144 heads on random tokens, on real text, with the first token
 swapped, and on repeated against fresh second halves. Then asks what position 0's attention is inherited from, and what
 the five top induction heads write to the logits from what they read there.
 """

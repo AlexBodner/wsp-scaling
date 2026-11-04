@@ -1,6 +1,6 @@
 """Runs Astra's two weight edits on plain English, next to a head-list edit and zeroing. Makes no Astra calls.
 
-Every prompt is fixed here before any edited model runs, and all of them are printed, so a figure can't pick only what works.
+Every prompt is fixed here before any edited model runs, and all of them are printed. Names and people sit behind a first word, because a word at the very start of a prompt has no leading space and is a different token from the same word later on.
 """
 import json
 from pathlib import Path
@@ -34,8 +34,8 @@ FACTS = [
 ]
 CONTINUATIONS = [
     "apple, chair, river, apple, chair,",
-    "Anna lives in Paris. Ben lives in Rome. Anna lives in",
-    "Mira Kowal went home, and Mira",
+    "Today Anna lives in Paris. Ben lives in Rome. Anna lives in",
+    "Yesterday Mira Kowal went home, and Mira",
     "red fox, blue car, green hat, red fox, blue car,",
     "The old man walked to the market and bought three fish. The old man walked to the market and bought",
     "The capital of France is",
@@ -48,8 +48,8 @@ def copying_cases(shuffle: TokenShuffle) -> dict[str, list[tuple[list[int], int]
     """Returns prompts in plain English where repeating earlier text gives the next token."""
     rng = np.random.default_rng(SEED)
     cases: dict[str, list[tuple[list[int], int]]] = {}
-    cases["name again in a new sentence"] = [(shuffle.encode(f"{a} {b} went home, and {a}"), shuffle.encode(f" {b}")[0]) for a in FIRST for b in LAST]
-    cases["name again in a second sentence"] = [(shuffle.encode(f"{a} {b} went home early. {a}"), shuffle.encode(f" {b}")[0]) for a in FIRST for b in LAST]
+    cases["name again in a new sentence"] = [(shuffle.encode(f"Yesterday {a} {b} went home, and {a}"), shuffle.encode(f" {b}")[0]) for a in FIRST for b in LAST]
+    cases["name again in a second sentence"] = [(shuffle.encode(f"Yesterday {a} {b} went home early. {a}"), shuffle.encode(f" {b}")[0]) for a in FIRST for b in LAST]
     long_lists, short_lists, who_lives = [], [], []
     for _ in range(300):
         words = [WORDS[i] for i in rng.choice(len(WORDS), 5, replace=False)]
@@ -58,7 +58,7 @@ def copying_cases(shuffle: TokenShuffle) -> dict[str, list[tuple[list[int], int]
         short_lists.append((shuffle.encode(f"{first}, {second}, {third}, {first}, {second},"), shuffle.encode(f" {third}")[0]))
         one, other = [FIRST[i] for i in rng.choice(len(FIRST), 2, replace=False)]
         here, there = [CITIES[i] for i in rng.choice(len(CITIES), 2, replace=False)]
-        who_lives.append((shuffle.encode(f"{one} lives in {here}. {other} lives in {there}. {one} lives in"), shuffle.encode(f" {here}")[0]))
+        who_lives.append((shuffle.encode(f"Today {one} lives in {here}. {other} lives in {there}. {one} lives in"), shuffle.encode(f" {here}")[0]))
     cases["word list repeated"] = long_lists
     cases["short comma list"] = short_lists
     cases["who lives where"] = who_lives
@@ -105,7 +105,7 @@ def astra_edit(disguised, run_dir: Path) -> dict[str, np.ndarray]:
     return {name: values for name, values in weights.items() if not np.array_equal(values, original[name])}
 
 
-def head_list_edit(disguised, heads: list[tuple[int, int]]) -> dict[str, np.ndarray]:
+def head_list_edit(disguised, heads: list[tuple[int, int]], width: int = WIDTH) -> dict[str, np.ndarray]:
     """Returns an edit needing only a list of heads: each head's keys keep just what its constant query reads from them."""
     edited: dict[str, np.ndarray] = {}
     for layer, head in heads:
@@ -114,7 +114,7 @@ def head_list_edit(disguised, heads: list[tuple[int, int]]) -> dict[str, np.ndar
         raw = edited.setdefault(f"{prefix}.qkv.W", disguised.tensors[f"{prefix}.qkv.W"].astype(np.float32).copy())
         first, last = HEAD_SIZE * head, HEAD_SIZE * (head + 1)
         raw_query = disguised.tensors[f"{prefix}.qkv.W"][:, first:last]
-        raw_key = disguised.tensors[f"{prefix}.qkv.W"][:, WIDTH + first : WIDTH + last]
+        raw_key = disguised.tensors[f"{prefix}.qkv.W"][:, width + first : width + last]
         constant_query = shift @ raw_query + disguised.tensors[f"{prefix}.qkv.b"][first:last]
         query = scale[:, None] * raw_query
         query = query - query.mean(0, keepdims=True)
@@ -127,7 +127,7 @@ def head_list_edit(disguised, heads: list[tuple[int, int]]) -> dict[str, np.ndar
         change = np.linalg.solve(triangle, (-key_coordinates @ removed).T).T / scale[:, None]
         inverse = 1.0 / scale
         change = change + inverse[:, None] * (-(inverse @ change) / (inverse @ inverse))[None, :]
-        raw[:, WIDTH + first : WIDTH + last] = (raw_key + change).astype(np.float32)
+        raw[:, width + first : width + last] = (raw_key + change).astype(np.float32)
     return edited
 
 

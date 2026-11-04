@@ -1,0 +1,68 @@
+unedited: repeat 0.987, text loss 3.369, short lists 0.947
+
+simple edit, needing only a list of heads
+top 5: repeat 0.012, text rise +0.020, short lists 0.063
+next 5: repeat 0.985, text rise +0.000, short lists 0.977
+all 36 heads of layers 5 to 7: repeat 0.000, text rise +0.667, short lists 0.070
+all 144 heads: repeat 0.000, text rise +4.502, short lists 0.000
+random 5 anywhere, not the top ten, set 0: repeat 0.982, text rise +0.071, short lists 0.823
+random 5 anywhere, not the top ten, set 1: repeat 0.986, text rise +0.036, short lists 0.913
+random 5 anywhere, not the top ten, set 2: repeat 0.984, text rise +0.023, short lists 0.873
+random 5 anywhere, not the top ten, set 3: repeat 0.984, text rise +0.040, short lists 0.850
+random 5 anywhere, not the top ten, set 4: repeat 0.986, text rise +0.023, short lists 0.947
+random 5 anywhere, not the top ten, set 5: repeat 0.985, text rise +0.065, short lists 0.980
+random 5 anywhere, not the top ten, set 6: repeat 0.987, text rise +0.019, short lists 0.957
+random 5 anywhere, not the top ten, set 7: repeat 0.980, text rise +0.025, short lists 0.747
+random 5 anywhere, not the top ten: repeat mean 0.984, lowest 0.980; text rise mean +0.038, highest +0.071
+random 5 in layers 5 to 7, not the top ten, set 0: repeat 0.977, text rise +0.103, short lists 0.947
+random 5 in layers 5 to 7, not the top ten, set 1: repeat 0.982, text rise +0.157, short lists 0.557
+random 5 in layers 5 to 7, not the top ten, set 2: repeat 0.983, text rise +0.027, short lists 0.977
+random 5 in layers 5 to 7, not the top ten, set 3: repeat 0.978, text rise +0.040, short lists 0.817
+random 5 in layers 5 to 7, not the top ten, set 4: repeat 0.972, text rise +0.268, short lists 0.863
+random 5 in layers 5 to 7, not the top ten, set 5: repeat 0.987, text rise +0.091, short lists 0.953
+random 5 in layers 5 to 7, not the top ten, set 6: repeat 0.977, text rise +0.060, short lists 0.940
+random 5 in layers 5 to 7, not the top ten, set 7: repeat 0.986, text rise +0.026, short lists 0.960
+random 5 in layers 5 to 7, not the top ten: repeat mean 0.980, lowest 0.972; text rise mean +0.097, highest +0.268
+
+other bars on the same heads
+top 5 keys zeroed: repeat 0.128, text rise +0.620, short lists 0.463
+top 5 mean-ablated, uses a forward pass: repeat 0.016, text rise +0.004, short lists 0.057
+all of layers 5 to 7 mean-ablated, uses a forward pass: repeat 0.006, text rise +0.114, short lists 0.027
+
+stories, span 50, same targets; where the top five attend on random-token repeats; lists behind 'Words: '
+unedited: stories after real text 0.462, second copy 0.908, gain 44.6 points
+  target: mean 0.902; 5.5 0.930, 7.10 0.912, 6.9 0.918, 5.1 0.909, 7.2 0.840
+  position 0: mean 0.042; 5.5 0.029, 7.10 0.015, 6.9 0.052, 5.1 0.082, 7.2 0.029
+  first copy, position 0: mean 0.915; 5.5 0.873, 7.10 0.901, 6.9 0.925, 5.1 0.982, 7.2 0.896
+  lists: right word 0.96 | first word again 0.03 | second word again 0.01 | not from the list 0.00
+  'Words: apple, chair, river, apple, chair,' -> ' river, apple, chair, river, apple, chair,'
+Astra, run 1: stories after real text 0.448, second copy 0.735, gain 28.7 points
+  target: mean 0.126; 5.5 0.012, 7.10 0.020, 6.9 0.012, 5.1 0.005, 7.2 0.583
+  position 0: mean 0.656; 5.5 0.781, 7.10 0.684, 6.9 0.778, 5.1 0.750, 7.2 0.288
+  first copy, position 0: mean 0.925; 5.5 0.937, 7.10 0.956, 6.9 0.975, 5.1 0.868, 7.2 0.886
+  lists: right word 0.07 | first word again 0.37 | second word again 0.56 | not from the list 0.00
+  'Words: apple, chair, river, apple, chair,' -> ' chair, chair, chair, chair, chair, chair,'
+Astra, run 2: stories after real text 0.451, second copy 0.530, gain 7.9 points
+  target: mean 0.010; 5.5 0.008, 7.10 0.010, 6.9 0.018, 5.1 0.001, 7.2 0.013
+  position 0: mean 0.868; 5.5 0.874, 7.10 0.835, 6.9 0.784, 5.1 0.995, 7.2 0.851
+  first copy, position 0: mean 0.951; 5.5 0.898, 7.10 0.954, 6.9 0.954, 5.1 0.998, 7.2 0.949
+  lists: right word 0.02 | first word again 0.44 | second word again 0.54 | not from the list 0.00
+  'Words: apple, chair, river, apple, chair,' -> ' apple, apple, apple, apple, apple, apple,'
+simple edit, top 5: stories after real text 0.454, second copy 0.530, gain 7.7 points
+  target: mean 0.000; 5.5 0.001, 7.10 0.001, 6.9 0.000, 5.1 0.000, 7.2 0.000
+  position 0: mean 0.981; 5.5 0.960, 7.10 0.967, 6.9 0.996, 5.1 1.000, 7.2 0.980
+  first copy, position 0: mean 0.990; 5.5 0.975, 7.10 0.985, 6.9 0.999, 5.1 1.000, 7.2 0.990
+  lists: right word 0.05 | first word again 0.41 | second word again 0.52 | not from the list 0.02
+  'Words: apple, chair, river, apple, chair,' -> ' apple, apple, apple, apple, apple, apple,'
+simple edit, run 1's heads: stories after real text 0.454, second copy 0.548, gain 9.4 points
+  target: mean 0.084; 5.5 0.001, 7.10 0.001, 6.9 0.000, 5.1 0.000, 7.2 0.417
+  position 0: mean 0.879; 5.5 0.960, 7.10 0.952, 6.9 0.995, 5.1 1.000, 7.2 0.490
+  first copy, position 0: mean 0.979; 5.5 0.975, 7.10 0.983, 6.9 0.999, 5.1 1.000, 7.2 0.937
+  lists: right word 0.02 | first word again 0.42 | second word again 0.55 | not from the list 0.00
+  'Words: apple, chair, river, apple, chair,' -> ' apple, apple, apple, apple, apple, apple,'
+simple edit, run 2's heads: stories after real text 0.453, second copy 0.509, gain 5.5 points
+  target: mean 0.000; 5.5 0.001, 7.10 0.001, 6.9 0.000, 5.1 0.000, 7.2 0.000
+  position 0: mean 0.977; 5.5 0.960, 7.10 0.952, 6.9 0.995, 5.1 1.000, 7.2 0.980
+  first copy, position 0: mean 0.990; 5.5 0.975, 7.10 0.983, 6.9 0.999, 5.1 1.000, 7.2 0.991
+  lists: right word 0.01 | first word again 0.41 | second word again 0.57 | not from the list 0.00
+  'Words: apple, chair, river, apple, chair,' -> ' apple, apple, apple, apple, apple, apple,'
