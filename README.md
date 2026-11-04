@@ -3,7 +3,7 @@
 By [Alex Bodner](https://twitter.com/AlexBodner_). A small follow-up to [Sparks of Weight-Space Programming](https://rikiyat.github.io/blog/weight-space-programming/), which reports that LLMs natively read and write network weights. They found every induction head in a 7M-weight model from its weights, using Python. We ask `gpt-6-astra` the same kind of question about a real LLM, GPT-2 small (124M weights), with no tools and without running the model. One model and few runs, and no size sweep has run.
 
 ## Reading
-Given a formula and layer hint we wrote after seeing GPT-2, it answered 96 sums of 64 products on the weights with no tool calls in our logs, and with more rows found 3 of 5 induction heads, like a short script. Alone, it did no better than guessing.
+On its own, it did no better than guessing, though with no weights at all it named the right layers, likely from memory. Given a formula and layer hint we wrote after seeing GPT-2, it answered 96 sums of 64 products on the weights with no tool calls in our logs, and with more rows found 3 of 5 induction heads, like a short script.
 
 ![Three steps: Astra with no weights, reading alone, and with a formula](figures/reading_story_v1.png)
 
