@@ -1,0 +1,17 @@
+{
+ "seed": 1303,
+ "cost": 0.0,
+ "edit_output": "changed 1 tensors, 49152 values\n",
+ "before": [
+  0.9869260204081634,
+  3.3690315451225277
+ ],
+ "after": [
+  0.9757653061224489,
+  3.5453786993623773
+ ],
+ "values_changed": 49152,
+ "tensors_changed": [
+  "L5.out.W"
+ ]
+}
