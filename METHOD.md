@@ -212,7 +212,7 @@ By the rule written above, this is the outcome we said would be clearly better t
 - **The method:** both runs compared each head's QK^T with earlier heads' VO, the published two-step circuit, on their first code run, then checked it on one earlier head.
 - **It is the method, not recall of the answer:** `checks/composition_statistic.py` reruns that statistic in code with no layer rule and gets 5 of 5 on all five scrambles. The earlier head it picks is GPT-2's 4.11 every time, which `checks/how_statistic_classifies.py` measures as 98% on the previous token.
 - **So a script now gets 5 of 5 too.** The 3 of 5 baseline was set before this statistic was known to work so well. A person who knows the circuit can write this in a page, so this does not show insight beyond the published work, and memory of that work may have guided it. The result was: no method given, and it chose and carried out the right one.
-- **What the scrambling keeps:** layer order and the products QK^T and VO, which are unchanged. The statistic tests the matching half of the circuit. With no embeddings there is no per-head copying score, and "previous token" is inherited from the published work, not measured here.
+- **What the scrambling keeps:** layer order and the products QK^T and VO, which are unchanged. The statistic tests the matching half of the circuit. With no embeddings its code has no per-head copying score. `checks/how_statistic_classifies.py` measures the previous-token claim directly on GPT-2.
 - **Limits:** two runs, on one model and one famous circuit. The prompt's shapes identify GPT-2. Private reasoning is hidden.
 
 ## Open
