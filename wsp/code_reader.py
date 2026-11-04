@@ -107,11 +107,11 @@ def _memory_used(process: subprocess.Popen) -> int:
         return 0
 
 
-def run_code(code: str, weights: Path, seconds: int = RUN_SECONDS) -> str:
+def run_code(code: str, weights: Path, seconds: int = RUN_SECONDS, keep: tuple[str, Path] | None = None) -> str:
     """Runs one piece of code in a fresh sandboxed process and returns its output, cut to the limit.
 
     The process works in an anonymous folder that holds a hard link to the weights, so no path it can
-    see names the project or the seed.
+    see names the project or the seed. `keep` names a file the code writes in its folder, and where to save it.
     """
     with tempfile.TemporaryDirectory(dir=_SANDBOX_ROOT, prefix="run_") as folder:
         work = Path(folder).resolve()
@@ -151,6 +151,9 @@ def run_code(code: str, weights: Path, seconds: int = RUN_SECONDS) -> str:
                 _kill_group(process)
                 process.wait()
         output = log_path.read_text(errors="replace")
+        if keep and (work / keep[0]).exists():
+            keep[1].parent.mkdir(parents=True, exist_ok=True)
+            os.replace(work / keep[0], keep[1])
     if len(output) > OUTPUT_CHARACTERS:
         output = output[:OUTPUT_CHARACTERS] + f"\n[output cut at {OUTPUT_CHARACTERS:,} characters]"
     if ended:
