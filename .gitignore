@@ -27,4 +27,7 @@ figures/arithmetic_v8.*
 figures/reading_summary_*
 runs/*/calls/catalog/
 runs/control__dry-published*/reply.md
-.research/
+.research/*
+!.research/cards/
+!.research/ledger.jsonl
+.claude/

@@ -1,0 +1,13 @@
+# Can Astra use what it reads to write: stop a model repeating, from weights alone?
+
+Question: Q012. Can Astra turn reading into writing: edit scrambled weights so repeating fails while real text survives, with no forward pass?
+Rests on: checks/outputs/write_baselines.txt, the bar set before this run. Alex: reading then writing is "probably the key component". MIT's post reports edits to weights; this is a test where the edit can be scored by running the model, on a scrambled real model, with no forward pass allowed.
+Mechanism: if Astra understands the circuit, it can do better than zeroing heads: for example removing the matching directions from the five heads' keys, or editing only what repeating needs. If it only identifies heads, it will zero them.
+Prediction: Astra zeroes or scales the induction heads it identifies. Some baseline edit is at least as good on both scores, so it isn't beyond the list, and zeroing the heads its edit touches scores about the same as the edit itself.
+Control: write_baselines.txt, including random sets of 5. The score comes from running the edited model, with the text file and tokens fixed in wsp/write_task.py, which Astra never sees. The edit runs once in the sandbox, after the conversation ends. Fresh scramble seed 1301. Prompt frozen in prompts/WRITE_MANIFEST.json. A forward pass voids the run. An edit that fails to run counts as no edit.
+Combining rule, fixed now: the edit is beyond deletion only if no baseline in write_baselines.txt has repeat accuracy within 0.03 of it or lower and text rise within 0.05 of it or lower. It fails if its repeat accuracy is above the lowest random set's (0.864), meaning repeating wasn't really lowered. Anything else is in between, reported as those two numbers.
+If it comes out as predicted: Astra's reading gives it the same as knowing which heads to remove, so writing here is identification followed by deletion.
+If it comes out otherwise: if it's beyond deletion and zeroing its touched heads does much worse than the edit itself, it's using more than a head list. Then read the edit by hand, rerun it on another scramble, and it becomes a main result. If it fails, its reading doesn't convert to writing.
+Also reported: repeat loss, text divergence from the unedited model, and repeat accuracy on common tokens, since top-1 can fall while copying survives. The edit block is flagged and read by hand for forward passes. A shape error or a non-finite score counts as no edit.
+Output: scripts/run_write.py writing runs/write-write-1__live__*/write_score.json, with the edit saved as edit.py
+Cost: 1 sealed run, about $6 to $9 at list price, capped at $9, ChatGPT plan pays, within the night's $30. Small memory.
