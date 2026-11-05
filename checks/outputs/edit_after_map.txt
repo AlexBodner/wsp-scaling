@@ -1,0 +1,7 @@
+5.5: cosine with 4.11 before 0.419, after -0.005; size of its whole search map kept 0.597
+6.9: cosine with 4.11 before 0.498, after -0.004; size of its whole search map kept 0.557
+7.10: cosine with 4.11 before 0.36, after -0.002; size of its whole search map kept 0.695
+5.1: cosine with 4.11 before 0.536, after -0.003; size of its whole search map kept 0.576
+7.2: cosine with 4.11 before 0.377, after -0.001; size of its whole search map kept 0.735
+6.9 before: mean diagonal 1.581, largest value 2.485
+6.9 after: mean diagonal -0.003, largest value 0.039

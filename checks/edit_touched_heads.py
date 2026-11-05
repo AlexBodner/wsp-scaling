@@ -30,7 +30,7 @@ def main() -> None:
                 if touched:
                     _, _, value, output = parts(original, layer, head)
                     _, _, new_value, new_output = parts(changed, layer, head)
-                    print(f"real {layer}.{disguised.original_head[layer][head]}: changed {touched}; key weights move {100 * relative_change(columns(original, WIDTH), columns(changed, WIDTH)):.0f}%, VO moves {100 * relative_change(value @ output, new_value @ new_output):.0f}%", flush=True)
+                    print(f"real {layer}.{disguised.original_head[layer][head]}: changed {touched}; key weights move {100 * relative_change(columns(original, WIDTH), columns(changed, WIDTH)):.0f}%, output weights move {100 * relative_change(rows(original), rows(changed)):.0f}%, VO moves {100 * relative_change(value @ output, new_value @ new_output):.0f}%", flush=True)
 
 
 if __name__ == "__main__":
