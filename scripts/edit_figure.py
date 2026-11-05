@@ -171,7 +171,7 @@ def how_it_found() -> None:
     """Draws the table each run chose heads from, with the true top five marked, which Astra could not see."""
     figure, axes = plt.subplots(1, 2, figsize=(10.8, 8.6), facecolor="white")
     figure.subplots_adjust(left=0.09, right=0.97, top=0.76, bottom=0.14, wspace=0.42)
-    figure.text(0.04, 0.945, "Its printed scores put the true top 5 highest", fontsize=TITLE_POINTS, fontweight="bold", color=INK, va="center")
+    figure.text(0.04, 0.945, "Its printed numbers put the true top 5 highest", fontsize=TITLE_POINTS, fontweight="bold", color=INK, va="center")
     figure.text(0.04, 0.875, "How closely each head's search pattern matches\nwhat one earlier head writes, from Astra's code. We sorted run 2's.", fontsize=LINE_POINTS - 2, color=MUTED, va="center", linespacing=1.3)
     tables = printed_tables()
     for axis, (name, rows) in zip(axes, tables.items()):
@@ -194,7 +194,7 @@ def how_it_found() -> None:
     figure.add_artist(Rectangle((0.04, 0.075), 0.022, 0.022, transform=figure.transFigure, facecolor=BLUE, linewidth=0))
     figure.text(0.07, 0.086, "True top 5 by attention on repeats, measured by running the model", fontsize=NOTE_POINTS, color=INK, va="center")
     figure.text(0.04, 0.035, "Real head names added by us. Astra saw scrambled ones. Scales differ by run.", fontsize=NOTE_POINTS - 1, color=MUTED, va="center")
-    figure.savefig(ROOT / "figures" / "edit_how_it_found_v1.png", dpi=DPI)
+    figure.savefig(ROOT / "figures" / "edit_how_it_found_v2.png", dpi=DPI)
     plt.close(figure)
 
 
@@ -299,7 +299,7 @@ def side_effects() -> None:
     for label, ability in (("Capitals", "capitals"), ("Pronoun gender", "pronoun gender"), ("Days, months, numbers", "successor"), ("Picking a later year", "greater-than years"), ("Who received it", "indirect object")):
         rows.append((label, arm("unedited", ability), arm("Astra, run 1", ability), arm("Astra, run 2", ability), arm("top 5 fixed at their mean, real weights", ability)))
     figure = plt.figure(figsize=(10.8, 9.6), facecolor="white")
-    figure.text(0.04, 0.95, "What the edit changed, and what it left alone", fontsize=TITLE_POINTS - 2, fontweight="bold", color=INK, va="center")
+    figure.text(0.04, 0.95, "What the edit changed, and what held up", fontsize=TITLE_POINTS - 2, fontweight="bold", color=INK, va="center")
     figure.text(0.04, 0.89, "Repeats: the top word is right. The rest: the right answer beats the wrong\nones. The last column takes running the model.", fontsize=NOTE_POINTS, color=MUTED, va="center", linespacing=1.3)
     columns = (0.5, 0.63, 0.76, 0.89)
     for x, title in zip(columns, ("Before", "Astra\nrun 1", "Astra\nrun 2", "Top 5 fixed\nat average")):
@@ -313,7 +313,7 @@ def side_effects() -> None:
             figure.text(x, y, f"{100 * value:.0f}%", fontsize=LINE_POINTS - 2, color=RED if fell and is_astra else INK, fontweight="bold" if fell and is_astra else "normal", ha="center", va="center")
     figure.text(0.04, 0.095, "The last two use these heads too, so they drop about as much.", fontsize=NOTE_POINTS - 2, color=INK, va="center")
     figure.text(0.04, 0.045, "Other repeats: names are mixed, and repeating a story helps 29 and 8 points, vs 45.", fontsize=NOTE_POINTS - 3, color=INK, va="center")
-    figure.savefig(ROOT / "figures" / "edit_side_effects_v1.png", dpi=DPI)
+    figure.savefig(ROOT / "figures" / "edit_side_effects_v2.png", dpi=DPI)
     plt.close(figure)
 
 
@@ -330,10 +330,11 @@ def match_picture() -> None:
         ([0.51, 0.5, 0.21, 0.21], other["seen"], f"{other['head']} searches", f"match {other['cosine']:.2f}", MUTED),
         ([0.745, 0.5, 0.21, 0.21], hard["seen"], f"{hard['head']} searches", f"match {hard['cosine']:.2f}", INK),
     )
+    search_limit = float(np.percentile(np.abs(np.array(match["seen"])), 99.5))
     for box, values, title, score, colour in panels:
         axis = figure.add_axes(box)
         values = np.array(values)
-        limit = float(np.percentile(np.abs(values), 99.5))
+        limit = float(np.percentile(np.abs(values), 99.5)) if title.endswith("writes this") else search_limit
         axis.imshow(values, cmap="RdBu_r", vmin=-limit, vmax=limit, interpolation="nearest")
         axis.set_xticks([])
         axis.set_yticks([])
@@ -344,8 +345,8 @@ def match_picture() -> None:
     figure.text(0.04, 0.335, "6.9 has a line where 4.11's is. 6.3 has almost nothing there.", fontsize=LINE_POINTS - 1, color=INK, va="center")
     figure.text(0.04, 0.275, "5.8 scores 0.32 but barely does induction, so the score isn't perfect.", fontsize=LINE_POINTS - 3, color=INK, va="center")
     figure.text(0.04, 0.195, "This is the published two-step circuit for finishing A B ... A with B.\nAstra's run 1 proposed this test before seeing any output.", fontsize=NOTE_POINTS, color=MUTED, va="center", linespacing=1.3)
-    figure.text(0.04, 0.08, "Real weights in 4.11's own top 32 of 64 directions, so this looks cleaner than a match of 0.50.\nEach panel has its own colour scale: 6.3's values are about 40x smaller than 6.9's.\nMatch is the cosine Astra's code computes. Head names added by us.", fontsize=NOTE_POINTS - 4, color=MUTED, va="center", linespacing=1.3)
-    figure.savefig(ROOT / "figures" / "edit_match_v2.png", dpi=DPI)
+    figure.text(0.04, 0.08, "Real weights in 4.11's own top 32 of 64 directions, so this looks cleaner than a match of 0.50.\nThe searches share one colour scale. 6.3's values are about 40x smaller than 6.9's.\nMatch is the cosine Astra's code computes. Head names added by us.", fontsize=NOTE_POINTS - 4, color=MUTED, va="center", linespacing=1.3)
+    figure.savefig(ROOT / "figures" / "edit_match_v3.png", dpi=DPI)
     plt.close(figure)
 
 

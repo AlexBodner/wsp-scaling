@@ -21,11 +21,11 @@ Numbers are run 1, then run 2.
 
 [How the edit runs found the heads](HOW_ASTRA_FOUND_THEM.md#how-the-edit-runs-found-them) shows what Astra was given and the tables it chose from.
 
-**Does it replicate on another model?** On GPT-Neo 125M, the same size with unrelated weights and its heads in other layers, the first two runs edited the same five heads, Neo's top previous-token heads, and repeats fell from 96% to 0.3% and 0.5%. Those runs could read "neo" in their folder path. Rerun without it, one did the same (1.0%), and one edited 5 of Neo's top 10 induction heads and only reached 42%. We had predicted it would edit the induction heads, and our written rule said missing them means the GPT-2 result leaned on memory. Yet its code lists 9 of the top 10 as readers, so we call this unsettled. It rules out remembered head numbers, not remembered layers or the method. [Details](FINDINGS.md#another-model-is-it-remembering-gpt-2).
+**Does it replicate on another model?** On GPT-Neo 125M, the same size with unrelated weights and its heads in other layers, the first two runs edited the same five heads, Neo's top previous-token heads, and repeats fell from 96% to 0.3% and 0.5%. Those runs could read "neo" in their folder path. Rerun without it, one did the same (1.0%), and one edited 5 of Neo's top 10 induction heads and only reached 42%. We had predicted it would edit the induction heads, and our written rule said missing them means the GPT-2 result leaned on memory. Yet the code of one of the first runs lists 9 of the top 10 as readers, so we call this unsettled. It rules out remembered head numbers, not remembered layers or the method. [Details](FINDINGS.md#another-model-is-it-remembering-gpt-2).
 
 ![GPT-Neo, the same five heads in 3 of 4 runs](figures/edit_neo_v1.png)
 
-[A video of the edit](figures/edit_story_v12.mp4) walks through one example from run 2.
+[A video of the edit](figures/edit_story_v20.mp4) walks through one example from run 2.
 
 To check it: [the prompt](prompts/write.txt), run [1](runs/write-write-1__live__20261104T053859Z) and [2](runs/write-write-2__live__20261104T061358Z) with every call and the edit code, [the English outputs](checks/outputs/edit_demo.txt), [the controls](checks/outputs/edit_controls.txt), [the list check, written after seeing the examples](checks/outputs/edit_order.txt), [where it stops looking clean](checks/outputs/edit_limits.txt), [what else the edits changed](checks/outputs/edit_side_effects.txt) with [its breakdown](checks/outputs/side_effect_breakdown.txt), [text loss](checks/outputs/edit_text_loss.txt), [repeated names](checks/outputs/edit_names.txt), [which heads each edit touched](checks/outputs/edit_touched_heads.txt), [the GPT-Neo check](checks/outputs/neo_edit_check_named_folder.txt) with [its text windows](checks/outputs/neo_text_windows.txt) and [the audit of the write runs](checks/outputs/audit_write_runs.txt). Details are in [FINDINGS.md](FINDINGS.md).
 
@@ -142,7 +142,7 @@ PYTHONPATH=. python3 checks/write_baselines.py
 PYTHONPATH=. python3 checks/medium_head_list.py
 ```
 
-These two are slow, 5 and 7 minutes at 2 threads on our Mac, and over 6.5 minutes when the machine is busy. `checks/neo_edit_check.py` reads the runs in `NAMED_FOLDER_RUNS` unless you pass two run folders, and its saved output is `checks/outputs/neo_edit_check_named_folder.txt`, which predates its line on reader 6.1:
+These two are slow, 5 and 7 minutes at 2 threads on our Mac, and over 6.5 minutes when the machine is busy. `checks/edit_controls.py` takes about 11 minutes. `checks/neo_edit_check.py` reads the runs in `NAMED_FOLDER_RUNS` unless you pass two run folders, and its saved output is `checks/outputs/neo_edit_check_named_folder.txt`:
 
 ```bash
 PYTHONPATH=. python3 checks/edit_side_effects.py

@@ -17,11 +17,11 @@ Both runs tested how closely each head's QK^T matches an earlier head's VO, the 
 
 Its reasoning is encrypted, so we can only read what it wrote and did. The right-hand column is our interpretation.
 
-![What the matching test sees](figures/edit_match_v2.png)
+![What the matching test sees](figures/edit_match_v3.png)
 
 The picture shows what this test measures. In 4.11's own directions its map is diagonal by construction, and head 6.9's QK^T has a line in the same place, with a cosine of 0.498, the value run 1 printed. Head 6.3, from the same layer, has a cosine of 0.006, with values about 40 times smaller. The view is the top 32 of 64 directions, so it looks cleaner than 0.50: the cosine's square says about 75% of 6.9's map lies elsewhere. And the score isn't a perfect detector: head 5.8 scores 0.32 but barely does induction (`checks/edit_method_data.py`).
 
-![Astra's own tables](figures/edit_how_it_found_v1.png)
+![Astra's own tables](figures/edit_how_it_found_v2.png)
 
 In both runs, the scores its code printed against one earlier head, real 4.11, put the true top 5 highest. Run 1's first turn sorted them that way itself. Run 2's third turn prints in head order, and we sorted it in `scripts/edit_figure.py`. Run 2's only sorted pair table, in turn 2, keeps heads with OVcopy above 1.2, opens with 6.9, 5.5 and 5.0, and leaves out 5.1, 7.10 and 7.2. The rest of each run built the edit and shortened the list, and both printed how much each head's VO copies beside it. Run 2 ended on the top 5 plus 5.0. Run 1 ended on 4 of them plus 5.0, dropping 7.2 at its last code run, though 7.2 ranked 4th. Its copying signal is low (0.41), which may be why, but that's our reading: the code only shows the list getting shorter, and the reasoning is encrypted. The true top 5 is measured by attention on repeats, which Astra couldn't see.
 
