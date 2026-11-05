@@ -1,0 +1,108 @@
+
+[unedited]
+scored test: repeat accuracy 0.987, text loss 3.369
+copying, name again in a new sentence: 0.250
+copying, name again in a second sentence: 0.260
+copying, word list repeated: 0.943
+copying, short comma list: 0.947
+copying, who lives where: 0.147
+facts: 0.500 of 30; right: ['The capital of Italy is', 'The capital of Spain is', 'The Statue of Liberty is in New', 'Water is made of hydrogen and', 'The opposite of hot is', 'The opposite of up is', 'Monday, Tuesday,', 'January, February,', 'one, two, three,', 'Barack', 'The Great Wall of', 'United States of', 'Once upon a', 'Thank you very', 'Merry']
+stories: top next token unchanged at 1.000 of positions
+  'apple, chair, river, apple, chair,' -> ' river, apple, chair, river, apple, chair,'
+  'Today Anna lives in Paris. Ben lives in Rome. Anna lives in' -> ' London.\n\nAnna is a freelance writer and editor.'
+  'Yesterday Mira Kowal went home, and Mira' -> " Kowal's father, who was in the house,"
+  'red fox, blue car, green hat, red fox, blue car,' -> ' green hat, red fox, blue car, green hat,'
+  'The old man walked to the market and bought three fish. The old man walked to the market and bought' -> ' three fish.\n\n"I\'m going to buy a'
+  'The capital of France is' -> ' the capital of the French Republic, and the capital of the'
+  'Once upon a time' -> ', the world was a place of great beauty and great danger'
+  'The sun rises in the' -> ' sky, and the moon rises in the sky. The sun'
+
+[Astra, run 1]
+scored test: repeat accuracy 0.180, text loss 3.383
+copying, name again in a new sentence: 0.440
+copying, name again in a second sentence: 0.480
+copying, word list repeated: 0.330
+copying, short comma list: 0.140
+copying, who lives where: 0.127
+facts: 0.500 of 30; right: ['The capital of Italy is', 'The capital of Spain is', 'The Statue of Liberty is in New', 'Water is made of hydrogen and', 'The opposite of hot is', 'The opposite of up is', 'Monday, Tuesday,', 'January, February,', 'one, two, three,', 'Barack', 'The Great Wall of', 'United States of', 'Once upon a', 'Thank you very', 'Merry']
+stories: top next token unchanged at 0.947 of positions
+  'apple, chair, river, apple, chair,' -> ' apple, apple, apple, apple, apple, apple,'
+  'Today Anna lives in Paris. Ben lives in Rome. Anna lives in' -> ' London.\n\nAnna lives in London. Ben lives in'
+  'Yesterday Mira Kowal went home, and Mira' -> ' Kowal was the one who had to go to the'
+  'red fox, blue car, green hat, red fox, blue car,' -> ' red fox, red fox, red fox, red fox,'
+  'The old man walked to the market and bought three fish. The old man walked to the market and bought' -> ' three fish.\n\nThe old man walked to the market'
+  'The capital of France is' -> ' the capital of the French Republic. The capital of France is'
+  'Once upon a time' -> ', the world was a place of peace and harmony.\n'
+  'The sun rises in the' -> ' sky, and the moon rises in the sky.\n\n'
+
+[head list, run 1's heads]
+scored test: repeat accuracy 0.014, text loss 3.390
+copying, name again in a new sentence: 0.300
+copying, name again in a second sentence: 0.360
+copying, word list repeated: 0.167
+copying, short comma list: 0.060
+copying, who lives where: 0.460
+facts: 0.500 of 30; right: ['The capital of Italy is', 'The capital of Spain is', 'The Statue of Liberty is in New', 'Water is made of hydrogen and', 'The opposite of hot is', 'The opposite of up is', 'Monday, Tuesday,', 'January, February,', 'one, two, three,', 'Barack', 'The Great Wall of', 'United States of', 'Once upon a', 'Thank you very', 'Merry']
+stories: top next token unchanged at 0.960 of positions
+  'apple, chair, river, apple, chair,' -> ' apple, apple, apple, apple, apple, apple,'
+  'Today Anna lives in Paris. Ben lives in Rome. Anna lives in' -> ' London.\n\nAnna lives in London.\n\nAnna'
+  'Yesterday Mira Kowal went home, and Mira' -> ' Kowal, the mother of the victim, was there'
+  'red fox, blue car, green hat, red fox, blue car,' -> ' blue fox, blue fox, blue fox, blue fox,'
+  'The old man walked to the market and bought three fish. The old man walked to the market and bought' -> ' three fish.\n\n"I bought three fish. I'
+  'The capital of France is' -> ' the capital of the French Republic, and the capital of the'
+  'Once upon a time' -> ', the world was a place of great beauty and great danger'
+  'The sun rises in the' -> ' sky, and the moon rises in the sky. The sun'
+
+[Astra, run 2]
+scored test: repeat accuracy 0.011, text loss 3.382
+copying, name again in a new sentence: 0.250
+copying, name again in a second sentence: 0.230
+copying, word list repeated: 0.080
+copying, short comma list: 0.047
+copying, who lives where: 0.363
+facts: 0.500 of 30; right: ['The capital of Italy is', 'The capital of Spain is', 'The Statue of Liberty is in New', 'Water is made of hydrogen and', 'The opposite of hot is', 'The opposite of up is', 'Monday, Tuesday,', 'January, February,', 'one, two, three,', 'Barack', 'The Great Wall of', 'United States of', 'Once upon a', 'Thank you very', 'Merry']
+stories: top next token unchanged at 0.948 of positions
+  'apple, chair, river, apple, chair,' -> ' apple, apple, apple, apple, apple, apple,'
+  'Today Anna lives in Paris. Ben lives in Rome. Anna lives in' -> ' London.\n\nAnna lives in London.\n\nAnna'
+  'Yesterday Mira Kowal went home, and Mira' -> ' was there. She was very happy. She was very happy'
+  'red fox, blue car, green hat, red fox, blue car,' -> ' blue fox, blue fox, blue fox, blue fox,'
+  'The old man walked to the market and bought three fish. The old man walked to the market and bought' -> ' three fish.\n\n"I bought three fish and I'
+  'The capital of France is' -> ' the capital of the French Republic. The French Republic is the'
+  'Once upon a time' -> ', the world was a place of great beauty and great danger'
+  'The sun rises in the' -> ' sky, and the moon rises in the sky. The sun'
+
+[head list, run 2's heads]
+scored test: repeat accuracy 0.002, text loss 3.391
+copying, name again in a new sentence: 0.230
+copying, name again in a second sentence: 0.290
+copying, word list repeated: 0.077
+copying, short comma list: 0.047
+copying, who lives where: 0.443
+facts: 0.467 of 30; right: ['The capital of Italy is', 'The capital of Spain is', 'The Statue of Liberty is in New', 'Water is made of hydrogen and', 'The opposite of hot is', 'The opposite of up is', 'January, February,', 'one, two, three,', 'Barack', 'The Great Wall of', 'United States of', 'Once upon a', 'Thank you very', 'Merry']
+stories: top next token unchanged at 0.958 of positions
+  'apple, chair, river, apple, chair,' -> ' apple, apple, apple, apple, apple, apple,'
+  'Today Anna lives in Paris. Ben lives in Rome. Anna lives in' -> ' London.\n\nAnna lives in London.\n\nAnna'
+  'Yesterday Mira Kowal went home, and Mira' -> ' Kowal, the mother of the victim, was there'
+  'red fox, blue car, green hat, red fox, blue car,' -> ' blue fox, blue fox, blue fox, blue fox,'
+  'The old man walked to the market and bought three fish. The old man walked to the market and bought' -> ' three fish.\n\n"I bought three fish and I'
+  'The capital of France is' -> ' the capital of the French Republic, and the capital of the'
+  'Once upon a time' -> ', the world was a place of great beauty and great danger'
+  'The sun rises in the' -> ' sky, and the moon rises in the sky. The sun'
+
+[top 5 zeroed]
+scored test: repeat accuracy 0.295, text loss 4.435
+copying, name again in a new sentence: 0.170
+copying, name again in a second sentence: 0.660
+copying, word list repeated: 0.453
+copying, short comma list: 0.400
+copying, who lives where: 0.007
+facts: 0.333 of 30; right: ['The capital of Spain is', 'The Statue of Liberty is in New', 'The opposite of hot is', 'The opposite of up is', 'Monday, Tuesday,', 'one, two, three,', 'Barack', 'The Great Wall of', 'United States of', 'Thank you very']
+stories: top next token unchanged at 0.521 of positions
+  'apple, chair, river, apple, chair,' -> ' chair, chair, chair, chair, chair, chair,'
+  'Today Anna lives in Paris. Ben lives in Rome. Anna lives in' -> ' Rome.\n\nThe following is a list of all the'
+  'Yesterday Mira Kowal went home, and Mira' -> ' went home.\n\n"I\'m not going to lie'
+  'red fox, blue car, green hat, red fox, blue car,' -> ' blue car, blue car, blue car, blue car,'
+  'The old man walked to the market and bought three fish. The old man walked to the market and bought' -> ' three fish.\n\nThe old man walked to the market'
+  'The capital of France is' -> ' France.\n\nThe capital of France is France.\n'
+  'Once upon a time' -> ', I was a little more patient. I learned that when'
+  'The sun rises in the' -> ' morning.\n\nThe sun rises in the afternoon.\n'

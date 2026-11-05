@@ -11,7 +11,6 @@ __pycache__/
 runs/reading-solver/seed*/
 post/
 figures/*_preview.*
-figures/*_v2.*
 figures/reading_heads_v3.*
 figures/reading_heads_v4.*
 figures/reading_heads_v5.*
@@ -19,6 +18,7 @@ figures/reading_heads_v6.*
 figures/reading_heads_v7.*
 figures/reading_story_v1.*
 figures/reading_story_v3.*
+figures/reading_story_v6.*
 figures/arithmetic_v3.*
 figures/arithmetic_v4.*
 figures/arithmetic_v5.*
@@ -27,3 +27,7 @@ figures/arithmetic_v8.*
 figures/reading_summary_*
 runs/*/calls/catalog/
 runs/control__dry-published*/reply.md
+.research/*
+!.research/cards/
+!.research/ledger.jsonl
+.claude/

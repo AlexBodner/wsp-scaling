@@ -1,0 +1,5 @@
+unedited: repeat accuracy 0.988, text loss 3.141
+Astra's edit: repeat accuracy 0.737, rise 0.135
+simple edit, Astra's five: repeat accuracy 0.680, rise 0.023
+simple edit, top 5 by attention: repeat accuracy 0.901, rise -0.033
+simple edit, best-pairing 5: repeat accuracy 0.491, rise 0.169

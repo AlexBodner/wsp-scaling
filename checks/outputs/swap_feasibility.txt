@@ -1,0 +1,13 @@
+unedited: next word (today) 0.885 | current word 0.015 | word before 0.025
+top 5 search like duplicate heads: next word (today) 0.000 | current word 0.985 | word before 0.000; text loss rise +2.119 of 3.270
+  'Context: door chair car door chair' -> ' chair chair chair chair chair chair chair chair chair chair'
+  'Context: door chair car desk door chair' -> ' chair chair chair chair chair chair chair chair chair chair'
+  'The capital of France is' -> ' also also also also also also also also also also'
+  'Once upon a time' -> ', I would be a man man man man man'
+  'The sun rises in the' -> ' sun, and the sun shines.\n\nThe'
+  'Mary went to the store and bought' -> ' bought bought bought bought bought bought bought bought bought bought'
+random 5 heads search like duplicate heads, set 0: next word (today) 0.870 | current word 0.060 | word before 0.010; text loss rise +0.151
+random 5 heads search like duplicate heads, set 1: next word (today) 0.940 | current word 0.000 | word before 0.005; text loss rise +0.055
+random 5 heads search like duplicate heads, set 2: next word (today) 0.920 | current word 0.000 | word before 0.000; text loss rise +0.097
+random 5 heads search like duplicate heads, set 3: next word (today) 0.835 | current word 0.015 | word before 0.030; text loss rise +0.021
+and their values read what 4.11 writes: next word (today) 0.305 | current word 0.075 | word before 0.085; text loss rise +0.295

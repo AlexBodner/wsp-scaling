@@ -1,4 +1,5 @@
 import json
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -6,6 +7,8 @@ import pytest
 
 from wsp.code_reader import OUTPUT_CHARACTERS, last_python_block, run_code, run_code_reading
 from wsp.reading import python_prompt
+
+pytestmark = pytest.mark.skipif(sys.platform != "darwin", reason="the sandbox uses macOS's sandbox-exec")
 
 
 @pytest.fixture(scope="module")

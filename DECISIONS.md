@@ -38,6 +38,7 @@ A working log of how the design changed, kept for transparency and not needed to
 | 24 | "Yes, public repo" | Public repo, leaving out third-party text | The post links to the code and logs, and GPL MinAtar source, the post's answer and Codex's catalog are not ours to republish |
 | 25 | "Cut it from the post" | The post covers only reading on its own | The hint is close to a recipe, and MIT gave no method |
 | 26 | "do you think it makes sense to give python for our astra to solve it? no hints", then "Python first" | Python run with no hint before posting | It removes the first objection and tests Experiment 3 on a real LLM |
+| 27 | "also i think that the analysis of the CoT is important" | Publish how it found them, with a rerunnable audit | Reviewers could not check the audit claims from what was public |
 
 ## Things we corrected along the way
 - **Beating chance was too easy.** On capitals, one right answer out of 190 would have passed. Each task must now beat the best trivial strategy.

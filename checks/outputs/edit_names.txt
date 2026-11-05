@@ -1,0 +1,7 @@
+top token right (mean log probability of the right surname)
+unedited, the repo's rare names, 100 prompts each: new sentence 0.25 (-3.05) | second sentence 0.26 (-2.78) | met 0.00 (-5.42)
+unedited, common names, 100 prompts each: new sentence 0.44 (-2.48) | second sentence 0.31 (-2.30) | met 0.16 (-3.51)
+Astra, run 1, the repo's rare names, 100 prompts each: new sentence 0.44 (-3.08) | second sentence 0.48 (-2.80) | met 0.22 (-4.13)
+Astra, run 1, common names, 100 prompts each: new sentence 0.29 (-3.08) | second sentence 0.49 (-2.15) | met 0.42 (-2.78)
+Astra, run 2, the repo's rare names, 100 prompts each: new sentence 0.25 (-4.08) | second sentence 0.23 (-3.72) | met 0.01 (-6.31)
+Astra, run 2, common names, 100 prompts each: new sentence 0.13 (-3.66) | second sentence 0.17 (-3.15) | met 0.16 (-4.07)

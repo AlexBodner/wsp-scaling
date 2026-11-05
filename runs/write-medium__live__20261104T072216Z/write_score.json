@@ -1,0 +1,49 @@
+{
+ "seed": 1401,
+ "cost": 6.428556,
+ "named_heads": [
+  [
+   5,
+   9
+  ],
+  [
+   6,
+   8
+  ],
+  [
+   7,
+   12
+  ],
+  [
+   9,
+   8
+  ],
+  [
+   10,
+   2
+  ]
+ ],
+ "edit_forward_pass_flags": [],
+ "edit_output": "changed 10 tensors, 328000 values\n",
+ "tensors_changed": [
+  "L10.qkv.W",
+  "L10.qkv.b",
+  "L5.qkv.W",
+  "L5.qkv.b",
+  "L6.qkv.W",
+  "L6.qkv.b",
+  "L7.qkv.W",
+  "L7.qkv.b",
+  "L9.qkv.W",
+  "L9.qkv.b"
+ ],
+ "values_changed": 328000,
+ "before": [
+  0.9876701235771179,
+  3.1409832365969392
+ ],
+ "after": [
+  0.7372449040412903,
+  3.275605952486079
+ ]
+}

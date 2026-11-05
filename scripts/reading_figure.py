@@ -5,6 +5,7 @@ Heads are sorted by copying score within each layer, so distance along a row mea
 """
 
 import json
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -31,14 +32,18 @@ LABEL_POINTS, TITLE_POINTS, RESULT_POINTS, STAT_POINTS = 20, 23, 26, 44
 MARK_WIDTH = 4
 TITLE = "Can GPT-6 Astra find induction heads in scrambled GPT-2 weights?"
 EXAMPLE_INTRO = "An induction head finds what came next last time, and copies it:"
-EXAMPLE_WORDS = ("Mira", "Kowal", "went", "home,", "and", "Mira")
+EXAMPLE_WORDS = ("apple,", "chair,", "river,", "apple,", "chair,", "?")
+EXAMPLE_ANSWER = 2
 NOTE = "Layers 4 to 9 of 12. A small 2 means picked in both runs."
-STORY_TITLE = "GPT-6 Astra hunts GPT-2's induction heads, with no hints"
-STORY_STEPS = (("Not shown any weights", ("blind",)), ("No tools, scrambled weights", ("read-1", "read-2")), ("With Python, scrambled weights", ("python-1", "python-2")))
-STORY_NO_WEIGHTS_RESULT = "Names the right layers"
-STORY_NOTE = "Rows are layers 4 to 9 of 12, induction heads first. A small 2 means picked twice."
+STORY_TITLE = "GPT-6 Astra hunts induction heads in scrambled GPT-2"
+STORY_STEPS = (("No tools, shown 20,000 values", ("read-1", "read-2")), ("With Python, all 12 blocks", ("python-1", "python-2")))
+STORY_NOTE = "No method given. Rows are layers 4 to 9, top 5 induction heads first. A small 2 means picked twice."
 STORY_PYTHON_NOTE = "Both runs picked these same 5"
+STORY_READ_NOTE = "Too few values to run this method"
 STORY_POINTS = 16
+METHOD_QUOTE = "an earlier head can write the preceding token's features into a position, and a later head can match those features against the current token."
+METHOD_CODE = ("A, B = Q @ K.T, V @ O", "raw = As.reshape(144, -1) @ Bs.reshape(144, -1).T", "cos = raw / (stats[:, 0, None] * stats[None, :, 2])")
+METHOD_CODE_SHOWN = ("A, B = Q @ K.T, V @ O", "raw = As.reshape(144, -1) @ Bs.reshape(144, -1).T", "cos = raw / (stats[:, 0, None] * stats[None, :, 2])")
 ARITHMETIC_TITLE = "Given our formula, Astra gave 96 sums like this, no tool calls logged"
 EXAMPLE_TERMS = 3
 # The row and the turns where the hinted read typed a dot product for every head in layers 4 to 11.
@@ -101,8 +106,8 @@ def _draw_example(figure, height: float) -> None:
     figure.text(0.5, height + 0.075, EXAMPLE_INTRO, fontsize=LABEL_POINTS, ha="center", va="center", color=MUTED)
     placed, left = [], 0.0
     for index, word in enumerate(EXAMPLE_WORDS):
-        colour = BLUE if index == 1 else INK
-        weight = "bold" if index in (0, 1, 5) else "normal"
+        colour = BLUE if index == EXAMPLE_ANSWER else INK
+        weight = "bold" if index in (EXAMPLE_ANSWER, len(EXAMPLE_WORDS) - 1) else "normal"
         text = figure.text(left, height, word, fontsize=RESULT_POINTS - 2, va="center", color=colour, fontweight=weight)
         box = text.get_window_extent(renderer).transformed(figure.transFigure.inverted())
         placed.append((text, box.width))
@@ -114,7 +119,7 @@ def _draw_example(figure, height: float) -> None:
         text.set_x(x)
         centres.append(x + width / 2)
     figure.add_artist(FancyArrowPatch(
-        (centres[5], height - 0.028), (centres[1], height - 0.028), transform=figure.transFigure,
+        (centres[-1], height - 0.028), (centres[EXAMPLE_ANSWER], height - 0.028), transform=figure.transFigure,
         connectionstyle="arc3,rad=-0.22", arrowstyle="-|>", mutation_scale=20, linewidth=2, color=BLUE,
     ))
 
@@ -146,7 +151,7 @@ def _heads_figure(shuffle: TokenShuffle) -> None:
 
     figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
     figure.text(0.5, 0.955, TITLE, fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
-    _draw_example(figure, 0.8)
+    _draw_example(figure, 0.775)
     panels = {}
     for index, (title, arms) in enumerate(ARMS.items()):
         results = [_run_result(arm) for arm in arms]
@@ -229,52 +234,73 @@ def _arithmetic_figure(shuffle: TokenShuffle) -> None:
     print(output, summary)
 
 
-def _story_grid(axis, scores: np.ndarray, induction_heads: set, picks: list[tuple[int, int]], layer_counts: Counter | None) -> None:
-    """Draws one step of the story: marks on heads, or for the no-weights call, how many picks each layer got."""
-    _draw_grid(axis, scores, induction_heads, picks)
-    for layer, count in (layer_counts or {}).items():
-        word = "pick" if count == 1 else "picks"
-        axis.text(HEADS - 0.25, layer + 0.5, f"{count} {word}", fontsize=STORY_POINTS, fontweight="bold", ha="right", va="center", color=INK, zorder=4)
-
-
 def _story_figure(shuffle: TokenShuffle) -> None:
     real = real_network(shuffle).double()
     real.set_attn_implementation("eager")
     scores = head_scores(real)
     order = np.argsort(-scores.ravel())[:INDUCTION_HEADS]
     induction_heads = {(int(i) // HEADS, int(i) % HEADS) for i in order}
-    blind = _run_result("blind")
-    layer_counts = Counter(layer for layer, _ in blind["answer"])
-    if dict(layer_counts) != dict(Counter(layer for layer, _ in induction_heads)):
-        raise ValueError(f"the no-weights layers {layer_counts} no longer match the induction heads")
 
     figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
     figure.text(0.5, 0.955, STORY_TITLE, fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
-    _draw_example(figure, 0.8)
+    _draw_example(figure, 0.775)
     results = {}
     for index, (heading, arms) in enumerate(STORY_STEPS):
         picks = [pick for arm in arms for pick in _picks_in_original_order(_run_result(arm), shuffle)]
         hits = sum(pick in induction_heads for pick in picks)
-        result = STORY_NO_WEIGHTS_RESULT if not index else f"{hits} of {len(picks)} right"
         results[heading] = {"runs": list(arms), "picks": picks, "hits_induction": hits}
-        axis = figure.add_axes([0.042 + index * 0.325, 0.24, 0.292, 0.28])
-        _story_grid(axis, scores, induction_heads, [] if not index else picks, layer_counts if not index else None)
+        axis = figure.add_axes([0.075 + index * 0.475, 0.215, 0.4, 0.32])
+        _draw_grid(axis, scores, induction_heads, picks)
         axis.text(HEADS / 2, 2.15, heading, fontsize=STORY_POINTS + 1, ha="center", color=INK)
-        axis.text(HEADS / 2, 3.4, result, fontsize=RESULT_POINTS - 3, fontweight="bold", ha="center", color=INK)
-        if arms[0].startswith("python"):
-            axis.text(HEADS / 2, SHOWN_LAYERS[-1] + 1.7, STORY_PYTHON_NOTE, fontsize=STORY_POINTS, ha="center", va="center", color=MUTED)
+        axis.text(HEADS / 2, 3.4, f"{hits // len(arms)} of {INDUCTION_HEADS}, twice", fontsize=RESULT_POINTS - 3, fontweight="bold", ha="center", color=INK)
+        note = STORY_PYTHON_NOTE if arms[0].startswith("python") else STORY_READ_NOTE
+        axis.text(HEADS / 2, SHOWN_LAYERS[-1] + 1.55, note, fontsize=STORY_POINTS, ha="center", va="center", color=MUTED)
     _draw_legend(figure)
-    figure.text(0.5, 0.045, STORY_NOTE, fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
-    output = ROOT / "figures" / "reading_story_v6.png"
+    figure.text(0.5, 0.045, STORY_NOTE, fontsize=LABEL_POINTS - 3, ha="center", va="center", color=MUTED)
+    output = ROOT / "figures" / "reading_story_v7.png"
     figure.savefig(output, dpi=DPI)
-    output.with_suffix(".json").write_text(json.dumps({"blind_layers": sorted(layer_counts.elements()), "steps": results}, indent=1))
+    output.with_suffix(".json").write_text(json.dumps({"steps": results}, indent=1))
     print(output, {heading: value["hits_induction"] for heading, value in results.items()})
+
+
+def _method_figure() -> None:
+    """Shows, verbatim from run 2, what Astra said, its key lines of code and what they printed."""
+    turns = [json.loads(line) for line in (_run_folder("python-2") / "transcript.jsonl").read_text().splitlines()]
+    words = turns[0]["reply"].split("```python")[0]
+    if METHOD_QUOTE not in words.replace("\u2019", "'"):
+        raise ValueError("the quote is not in the run's reply")
+    for line in METHOD_CODE:
+        if line not in turns[0]["code"]:
+            raise ValueError(f"{line!r} is not in the run's code")
+    answer = [f"{layer}.{head}" for layer, head in _run_result("python-2")["answer"]]
+    cosines = turns[0]["output"].split("TOP 35 CIRCUITS: COSINE")[1].splitlines()[1:8]
+    table = [re.match(r"\s*(\S+) <-\s+(\S+): raw=\s*\S+ cos=(\S+)", line).groups() for line in cosines]
+    figure = plt.figure(figsize=FIGURE_INCHES, facecolor="white")
+    figure.text(0.5, 0.945, "How GPT-6 Astra found them (Python run 2, first code)", fontsize=TITLE_POINTS, ha="center", va="center", color=INK)
+    figure.text(0.05, 0.855, "What it wrote before any code", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
+    figure.text(0.05, 0.76, "\"...an earlier head can write the preceding token's\nfeatures into a position, and a later head can match\nthose features against the current token.\"", fontsize=LABEL_POINTS, color=INK, va="center", linespacing=1.3)
+    figure.text(0.05, 0.635, "Its key lines", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
+    figure.text(0.05, 0.55, "\n".join(METHOD_CODE_SHOWN), fontsize=LABEL_POINTS - 7, color=INK, va="center", family="Menlo", linespacing=1.5)
+    figure.text(0.05, 0.415, "What each matrix is", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
+    figure.text(0.05, 0.285, "A: what a later head searches for\nB: what an earlier head writes\ncos: how well each pair lines up", fontsize=LABEL_POINTS - 2, color=INK, va="center", linespacing=1.4)
+    figure.text(0.665, 0.855, "Its cosine table, top 7", fontsize=LABEL_POINTS - 2, color=MUTED, va="center")
+    figure.text(0.665, 0.79, "later   earlier cos", fontsize=LABEL_POINTS - 5, color=MUTED, va="center", family="Menlo")
+    for index, row in enumerate(table):
+        chosen = row[0] in answer
+        height = 0.725 - index * 0.068
+        figure.text(0.665, height, f"{row[0]:<7} {row[1]:<7} {float(row[2]):.3f}", fontsize=LABEL_POINTS - 5, color=BLUE if chosen else INK, fontweight="bold" if chosen else "normal", va="center", family="Menlo")
+    figure.text(0.665, 0.235, "Blue: its final answer.\nAll 5 are induction heads.", fontsize=LABEL_POINTS - 2, color=INK, va="center", linespacing=1.3)
+    figure.text(0.5, 0.075, "Scrambled labels: 4.9 is GPT-2's head 4.11. 5.1 and 6.9 keep their real numbers by chance.", fontsize=LABEL_POINTS - 2, ha="center", va="center", color=MUTED)
+    output = ROOT / "figures" / "how_astra_found_them_v1.png"
+    figure.savefig(output, dpi=DPI)
+    print(output, answer)
 
 
 def main() -> None:
     plt.rcParams["font.family"] = "Helvetica"
     shuffle = TokenShuffle()
     _story_figure(shuffle)
+    _method_figure()
     _arithmetic_figure(shuffle)
     _heads_figure(shuffle)
 

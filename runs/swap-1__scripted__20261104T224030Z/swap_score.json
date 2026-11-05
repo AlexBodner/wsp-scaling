@@ -1,0 +1,68 @@
+{
+ "seed": 1601,
+ "cost": 0.0,
+ "named_heads": [
+  [
+   5,
+   0
+  ],
+  [
+   5,
+   1
+  ],
+  [
+   5,
+   2
+  ],
+  [
+   5,
+   3
+  ],
+  [
+   5,
+   4
+  ]
+ ],
+ "edit_forward_pass_flags": [],
+ "edit_output": "changed 1 tensors, 49152 values\n",
+ "before": {
+  "swap_random_tokens": 0.0,
+  "old_behaviour_random_tokens": 0.9869260204081632,
+  "text_loss": 3.3690315451225272,
+  "lists_next_word": 0.885,
+  "lists_current_word": 0.015,
+  "abilities": {
+   "indirect object": 0.995,
+   "pronoun gender": 1.0,
+   "greater-than years": 1.0,
+   "successor": 1.0,
+   "capitals": 1.0
+  },
+  "facts_right": 15
+ },
+ "after": {
+  "swap_random_tokens": 0.0,
+  "old_behaviour_random_tokens": 0.9888392857142857,
+  "text_loss": 3.38023930932272,
+  "lists_next_word": 0.88,
+  "lists_current_word": 0.02,
+  "abilities": {
+   "indirect object": 0.995,
+   "pronoun gender": 1.0,
+   "greater-than years": 1.0,
+   "successor": 1.0,
+   "capitals": 1.0
+  },
+  "facts_right": 14
+ },
+ "values_changed": 49152,
+ "touched_heads": [
+  [
+   5,
+   0
+  ]
+ ],
+ "tensors_changed": [
+  "L5.out.W"
+ ]
+}

@@ -1,0 +1,40 @@
+{
+ "seed": 1401,
+ "cost": 0.0,
+ "named_heads": [
+  [
+   5,
+   0
+  ],
+  [
+   5,
+   1
+  ],
+  [
+   5,
+   2
+  ],
+  [
+   5,
+   3
+  ],
+  [
+   5,
+   4
+  ]
+ ],
+ "edit_forward_pass_flags": [],
+ "edit_output": "changed 1 tensors, 65536 values\n",
+ "tensors_changed": [
+  "L5.out.W"
+ ],
+ "values_changed": 65536,
+ "before": [
+  0.9876701235771179,
+  3.1409832365969392
+ ],
+ "after": [
+  0.9868197441101074,
+  3.1430685165080616
+ ]
+}

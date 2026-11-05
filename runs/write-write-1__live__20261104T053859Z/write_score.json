@@ -1,0 +1,80 @@
+{
+ "seed": 1301,
+ "cost": 4.111538,
+ "edit_forward_pass_flags": [],
+ "edit_output": "changed 6 tensors, 246080 values\n",
+ "before": [
+  0.9869260204081634,
+  3.369031545122526
+ ],
+ "after": [
+  0.18016581632653061,
+  3.3825167432461067
+ ],
+ "values_changed": 246080,
+ "tensors_changed": [
+  "L5.qkv.W",
+  "L5.qkv.b",
+  "L6.qkv.W",
+  "L6.qkv.b",
+  "L7.qkv.W",
+  "L7.qkv.b"
+ ],
+ "touched_heads": [
+  [
+   5,
+   0
+  ],
+  [
+   5,
+   1
+  ],
+  [
+   5,
+   6
+  ],
+  [
+   6,
+   4
+  ],
+  [
+   7,
+   8
+  ]
+ ],
+ "named_heads": [
+  [
+   5,
+   0
+  ],
+  [
+   5,
+   1
+  ],
+  [
+   5,
+   6
+  ],
+  [
+   6,
+   4
+  ],
+  [
+   7,
+   8
+  ]
+ ],
+ "zeroing_named_heads": [
+  0.481186224489796,
+  4.223658813062377
+ ],
+ "zeroing_touched_heads": [
+  0.481186224489796,
+  4.223658813062377
+ ],
+ "detail": {
+  "repeat_loss": 7.11036938257437,
+  "text_divergence_from_unedited": 0.010518008045593427,
+  "repeat_accuracy_on_common_tokens": 0.45248724489795916
+ }
+}

@@ -1,0 +1,121 @@
+0. Reproductions on the earlier checks' own tokens
+  head_types first position (first half of a repeat, 32 sequences): 5.5 0.912 (#7), 7.10 0.933 (#5), 6.9 0.951 (#2), 5.1 0.986 (#1), 7.2 0.927 (#6), 7.9 0.943 (#3), 5.7 0.938 (#4), 7.8 0.897 (#8)
+  signed_ladder direct effect on repeats: 5.5 0.26, 7.10 1.02, 6.9 0.93, 5.1 0.58, 7.2 1.21
+
+1. Attention to position 0, 256 random and 256 real sequences of 50 tokens
+  real text's commonest first token 'Once' in 0.59 of sequences, 17 different first tokens
+  uniform attention would give 0.071 over positions 1 to 49, 0.027 over 26 to 49
+  Heads above 0.5 by layer 0 to 11, mean over positions 1 to 49
+    random:  0  1  2  5  8  9  9 10 11 11 10  7 | all 83, layers 4-9 58
+    random, first token swapped:  0  1  2  5  8  9  9 10 11 11 10  7 | all 83, layers 4-9 58
+    real:  0  1  1  4  6 10  9 11 10 11 11  8 | all 82, layers 4-9 57
+    real, first swapped for a random token:  0  1  1  4  6 10  9 11 10 11 11  8 | all 82, layers 4-9 57
+    real, first swapped for a token from another story:  0  1  1  4  6 10  9 11 10 11 11  8 | all 82, layers 4-9 57
+  Same, mean over positions 26 to 49 only
+    random:  0  1  2  5  7  9  9  8 11 11  6  5 | all 74, layers 4-9 55
+    random, first token swapped:  0  1  2  5  7  9  9  8 11 11  6  5 | all 74, layers 4-9 55
+    real:  0  1  1  4  4 10  9 11  7 11 10  5 | all 73, layers 4-9 52
+    real, first swapped for a random token:  0  1  1  4  5 10  9 11  7 11  9  5 | all 73, layers 4-9 53
+    real, first swapped for a token from another story:  0  1  1  4  5 10  9 11  7 11  9  5 | all 73, layers 4-9 53
+  Named heads, value and rank of 144
+    random: 5.5 0.867 (#13), 7.10 0.897 (#7), 6.9 0.919 (#4), 5.1 0.979 (#1), 7.2 0.894 (#8), 7.9 0.950 (#2), 5.7 0.934 (#3), 7.8 0.886 (#9)
+    random, first token swapped: 5.5 0.867 (#13), 7.10 0.897 (#6), 6.9 0.919 (#4), 5.1 0.980 (#1), 7.2 0.895 (#8), 7.9 0.951 (#2), 5.7 0.934 (#3), 7.8 0.886 (#9)
+    real: 5.5 0.761 (#28), 7.10 0.930 (#4), 6.9 0.942 (#3), 5.1 0.976 (#2), 7.2 0.981 (#1), 7.9 0.587 (#72), 5.7 0.694 (#44), 7.8 0.535 (#79)
+    real, first swapped for a random token: 5.5 0.758 (#27), 7.10 0.930 (#4), 6.9 0.944 (#3), 5.1 0.977 (#2), 7.2 0.982 (#1), 7.9 0.592 (#69), 5.7 0.708 (#40), 7.8 0.539 (#79)
+    real, first swapped for a token from another story: 5.5 0.759 (#28), 7.10 0.927 (#4), 6.9 0.941 (#3), 5.1 0.976 (#2), 7.2 0.980 (#1), 7.9 0.595 (#68), 5.7 0.708 (#40), 7.8 0.542 (#78)
+  Top heads
+    random: 5.1 0.979, 7.9 0.950, 5.7 0.934, 6.9 0.919, 8.4 0.902, 7.4 0.898, 7.10 0.897, 7.2 0.894, 7.8 0.886, 9.5 0.877, 6.1 0.877, 10.7 0.868
+    real: 7.2 0.981, 5.1 0.976, 6.9 0.942, 7.10 0.930, 8.1 0.921, 7.7 0.895, 7.11 0.872, 9.11 0.864, 11.9 0.849, 10.8 0.844, 9.6 0.844, 9.1 0.830
+  Swapping the first token, sequence by sequence
+    random, first token swapped: correlation with random over heads 1.0000; mean absolute change 5.5 0.008, 7.10 0.007, 6.9 0.007, 5.1 0.003, 7.2 0.008, 7.9 0.004, 5.7 0.003, 7.8 0.004
+    real, first swapped for a random token: correlation with real over heads 0.9984; mean absolute change 5.5 0.007, 7.10 0.005, 6.9 0.003, 5.1 0.002, 7.2 0.002, 7.9 0.009, 5.7 0.015, 7.8 0.010
+    real, first swapped for a token from another story: correlation with real over heads 0.9991; mean absolute change 5.5 0.007, 7.10 0.006, 6.9 0.004, 5.1 0.003, 7.2 0.003, 7.9 0.011, 5.7 0.015, 7.8 0.011
+  The five against other heads in layers 4 to 9, mean attention to position 0: random 0.911 against 0.656, real 0.918 against 0.619
+
+2. What attention to position 0 is inherited from, on random tokens
+  queries and keys rebuild the model's attention, largest difference 0.0e+00
+  over all 144 heads, rank correlation with attention to position 0: position 0's key norm ratio -0.433; difference in query cosine 0.639
+  over layers 4 to 9: key norm ratio -0.073; difference in query cosine 0.392
+  heads above 0.5: 83; with position 0's key clamped to the mean norm 84; with its direction replaced by the last position's key 60
+  median key norm ratio over all heads 0.449, over heads above 0.5 0.361, over the rest 0.584
+    5.5: attention 0.869, key norm ratio 0.301, norm clamped 0.999, direction replaced 0.278, query cosine to position 0 0.396 against others -0.230, key agreement across sequences at position 0 1.000 against position 25 0.517
+    7.10: attention 0.899, key norm ratio 0.499, norm clamped 0.997, direction replaced 0.107, query cosine to position 0 0.443 against others -0.160, key agreement across sequences at position 0 1.000 against position 25 0.596
+    6.9: attention 0.920, key norm ratio 0.446, norm clamped 0.999, direction replaced 0.104, query cosine to position 0 0.422 against others -0.181, key agreement across sequences at position 0 1.000 against position 25 0.484
+    5.1: attention 0.980, key norm ratio 0.277, norm clamped 1.000, direction replaced 0.257, query cosine to position 0 0.533 against others -0.226, key agreement across sequences at position 0 1.000 against position 25 0.541
+    7.2: attention 0.895, key norm ratio 0.565, norm clamped 0.997, direction replaced 0.036, query cosine to position 0 0.521 against others -0.091, key agreement across sequences at position 0 1.000 against position 25 0.583
+    7.9: attention 0.949, key norm ratio 0.241, norm clamped 0.975, direction replaced 0.939, query cosine to position 0 0.078 against others -0.274, key agreement across sequences at position 0 1.000 against position 25 0.926
+    5.7: attention 0.933, key norm ratio 0.264, norm clamped 0.998, direction replaced 0.808, query cosine to position 0 0.217 against others -0.255, key agreement across sequences at position 0 1.000 against position 25 0.869
+    7.8: attention 0.886, key norm ratio 0.253, norm clamped 0.952, direction replaced 0.862, query cosine to position 0 0.100 against others -0.248, key agreement across sequences at position 0 1.000 against position 25 0.919
+  position embedding norms: position 0 9.88, 1 5.19, 25 3.49, 50 3.38; median token embedding 3.95
+  Residual before each layer's norm
+    layer 0: norm at position 0 11, position 25 5; agreement across sequences at position 0 0.8966, position 25 0.5958
+    layer 1: norm at position 0 138, position 25 59; agreement across sequences at position 0 0.9586, position 25 0.6306
+    layer 2: norm at position 0 627, position 25 65; agreement across sequences at position 0 0.9984, position 25 0.6255
+    layer 3: norm at position 0 2572, position 25 69; agreement across sequences at position 0 0.9999, position 25 0.6107
+    layer 4: norm at position 0 2752, position 25 72; agreement across sequences at position 0 0.9999, position 25 0.5623
+    layer 5: norm at position 0 2900, position 25 77; agreement across sequences at position 0 0.9999, position 25 0.5519
+    layer 6: norm at position 0 2992, position 25 83; agreement across sequences at position 0 0.9999, position 25 0.5477
+    layer 7: norm at position 0 3047, position 25 90; agreement across sequences at position 0 0.9999, position 25 0.5501
+    layer 8: norm at position 0 3081, position 25 103; agreement across sequences at position 0 0.9999, position 25 0.5729
+    layer 9: norm at position 0 3101, position 25 121; agreement across sequences at position 0 0.9999, position 25 0.6254
+    layer 10: norm at position 0 3111, position 25 150; agreement across sequences at position 0 0.9999, position 25 0.6913
+    layer 11: norm at position 0 3112, position 25 221; agreement across sequences at position 0 0.9999, position 25 0.8158
+  position 0 given position 50's embedding: heads above 0.5:  2  3 10  9  8  6  7  5  3  2  2  0 | all 57, layers 4-9 31
+    5.5 0.174 (#80), 7.10 0.259 (#69), 6.9 0.274 (#66), 5.1 0.147 (#85), 7.2 0.148 (#84), 7.9 0.722 (#47), 5.7 0.880 (#27), 7.8 0.829 (#36)
+  position 25 given position 0's embedding, attention to position 25 from later positions, normal to given: 5.5 0.005 to 0.414, 7.10 0.004 to 0.403, 6.9 0.003 to 0.420, 5.1 0.000 to 0.447, 7.2 0.003 to 0.376, 7.9 0.001 to 0.483, 5.7 0.002 to 0.465, 7.8 0.004 to 0.451
+
+3. Direct effect on the logits, 32 sequences, positions up to the last with a next token
+  random tokens: read at position 0 / total
+    5.5: next token +0.000/+0.001, first token -0.011/-0.009, root mean square logit 0.056/0.063, largest logit 0.278/0.305
+    7.10: next token +0.001/+0.001, first token +0.007/+0.008, root mean square logit 0.023/0.030, largest logit 0.103/0.141
+    6.9: next token +0.002/+0.002, first token +0.004/+0.003, root mean square logit 0.030/0.037, largest logit 0.153/0.179
+    5.1: next token +0.000/+0.000, first token -0.003/-0.003, root mean square logit 0.049/0.049, largest logit 0.244/0.249
+    7.2: next token +0.000/+0.001, first token +0.013/+0.010, root mean square logit 0.012/0.022, largest logit 0.057/0.105
+    7.9: next token +0.000/+0.000, first token -0.010/-0.009, root mean square logit 0.025/0.026, largest logit 0.215/0.223
+    5.7: next token +0.000/+0.000, first token +0.003/+0.003, root mean square logit 0.025/0.026, largest logit 0.120/0.123
+    7.8: next token +0.000/+0.000, first token +0.005/+0.006, root mean square logit 0.010/0.015, largest logit 0.047/0.073
+    five summed: next token +0.003/+0.005, first token +0.011/+0.008
+  real text: read at position 0 / total
+    5.5: next token +0.029/+0.057, first token -0.008/+0.008, root mean square logit 0.051/0.072, largest logit 0.252/0.364
+    7.10: next token +0.015/+0.034, first token -0.001/-0.000, root mean square logit 0.024/0.031, largest logit 0.108/0.144
+    6.9: next token +0.018/+0.041, first token +0.034/+0.037, root mean square logit 0.031/0.037, largest logit 0.159/0.189
+    5.1: next token +0.039/+0.043, first token +0.021/+0.018, root mean square logit 0.050/0.051, largest logit 0.249/0.255
+    7.2: next token -0.000/+0.005, first token +0.006/+0.004, root mean square logit 0.012/0.014, largest logit 0.064/0.071
+    7.9: next token -0.012/+0.009, first token -0.009/-0.012, root mean square logit 0.015/0.046, largest logit 0.135/0.250
+    5.7: next token +0.006/+0.019, first token -0.008/-0.017, root mean square logit 0.020/0.037, largest logit 0.092/0.174
+    7.8: next token -0.000/+0.026, first token -0.007/-0.013, root mean square logit 0.006/0.048, largest logit 0.030/0.230
+    five summed: next token +0.101/+0.180, first token +0.051/+0.066
+  repeated random tokens, second half: read at position 0 / total
+    5.5: next token -0.000/+0.268, first token -0.000/+0.003, root mean square logit 0.002/0.139, largest logit 0.011/0.640
+    7.10: next token +0.000/+1.009, first token +0.000/+0.010, root mean square logit 0.001/0.191, largest logit 0.003/1.069
+    6.9: next token +0.000/+0.935, first token +0.000/-0.020, root mean square logit 0.002/0.227, largest logit 0.013/1.041
+    5.1: next token -0.000/+0.574, first token -0.001/-0.012, root mean square logit 0.005/0.185, largest logit 0.023/0.831
+    7.2: next token +0.000/+1.260, first token +0.000/-0.030, root mean square logit 0.001/0.242, largest logit 0.003/1.310
+    7.9: next token +0.000/-0.000, first token -0.007/-0.000, root mean square logit 0.019/0.035, largest logit 0.163/0.217
+    5.7: next token +0.002/+0.002, first token +0.003/+0.003, root mean square logit 0.024/0.025, largest logit 0.115/0.116
+    7.8: next token +0.001/+0.002, first token +0.004/+0.004, root mean square logit 0.009/0.016, largest logit 0.043/0.078
+    five summed: next token +0.000/+4.047, first token +0.000/-0.048
+
+4. Attention to position 0 at positions 26 to 49, a match against none, same first half, 256 sequences
+    5.5: no match 0.824, match 0.039, fall 0.785 (#5 of 144), kept 0.047 of it, attention to the match's next token 0.928
+    7.10: no match 0.867, match 0.029, fall 0.838 (#2 of 144), kept 0.033 of it, attention to the match's next token 0.903
+    6.9: no match 0.889, match 0.084, fall 0.805 (#4 of 144), kept 0.095 of it, attention to the match's next token 0.890
+    5.1: no match 0.973, match 0.105, fall 0.868 (#1 of 144), kept 0.108 of it, attention to the match's next token 0.886
+    7.2: no match 0.861, match 0.055, fall 0.806 (#3 of 144), kept 0.064 of it, attention to the match's next token 0.809
+    7.9: no match 0.966, match 0.770, fall 0.196 (#36 of 144), kept 0.797 of it, attention to the match's next token 0.003
+    5.7: no match 0.940, match 0.955, fall -0.015 (#121 of 144), kept 1.016 of it, attention to the match's next token 0.000
+    7.8: no match 0.888, match 0.875, fall 0.012 (#85 of 144), kept 0.986 of it, attention to the match's next token 0.000
+  largest falls: 5.1 0.868, 7.10 0.838, 7.2 0.806, 6.9 0.805, 5.5 0.785, 3.0 0.557, 10.7 0.490, 9.6 0.484, 6.3 0.452, 9.0 0.440, 11.10 0.428, 10.0 0.424
+  largest rises: 8.11 0.373, 7.11 0.359, 9.11 0.338, 10.8 0.252, 10.2 0.230, 4.8 0.218, 8.2 0.215, 8.6 0.212, 5.10 0.196, 11.3 0.179, 2.1 0.145, 6.4 0.136
+  heads above 0.5 with no match: 74; of those, falling by more than 0.25: 28: 5.1, 7.10, 7.2, 6.9, 5.5, 3.0, 10.7, 9.6, 6.3, 9.0, 11.10, 10.0, 9.9, 6.8, 4.9, 6.6, 5.2, 3.4, 7.3, 9.7, 5.9, 8.10, 6.11, 9.2, 3.3, 9.5, 6.7, 10.6
+  of those above 0.5 and not falling sharply: 7.9 0.97 to 0.77, 5.7 0.94 to 0.96, 7.4 0.93 to 0.87, 8.4 0.93 to 0.93, 7.8 0.89 to 0.88, 6.1 0.87 to 0.83, 9.10 0.86 to 0.87, 10.9 0.84 to 0.88, 8.3 0.83 to 0.79, 4.0 0.81 to 0.70, 10.5 0.80 to 0.84, 5.11 0.80 to 0.67, 7.5 0.80 to 0.89, 4.4 0.80 to 0.65, 4.10 0.79 to 0.85, 8.9 0.78 to 0.67, 5.8 0.75 to 0.71, 8.8 0.72 to 0.71, 9.4 0.72 to 0.65, 4.1 0.72 to 0.57, 9.8 0.71 to 0.59, 2.4 0.70 to 0.67, 4.2 0.69 to 0.71, 4.5 0.69 to 0.72, 3.9 0.68 to 0.61, 8.5 0.67 to 0.51, 8.7 0.67 to 0.42, 9.3 0.67 to 0.57, 1.3 0.66 to 0.65, 5.4 0.64 to 0.60, 8.0 0.62 to 0.64, 3.5 0.61 to 0.60, 6.5 0.61 to 0.48, 6.2 0.61 to 0.49, 11.11 0.60 to 0.43, 5.6 0.59 to 0.50, 7.0 0.58 to 0.48, 10.10 0.58 to 0.48, 9.1 0.56 to 0.57, 11.6 0.56 to 0.52, 11.2 0.55 to 0.54, 8.11 0.53 to 0.90, 8.1 0.52 to 0.33, 2.11 0.52 to 0.53, 8.2 0.51 to 0.72, 11.4 0.50 to 0.57
+  over heads above 0.5, median fraction lost 0.177; five's fraction lost 5.5 0.953, 7.10 0.967, 6.9 0.905, 5.1 0.892, 7.2 0.936
+  rank correlation of fall with attention to the match's next token: all heads 0.108, heads above 0.5 0.395
+  heads in layers 4 to 9 whose fall reaches the smallest of the five's (0.785): 5.1, 5.5, 6.9, 7.2, 7.10
+
+5. The card's prediction, part by part
+  heads above 0.5 in layers 4 to 9 on random tokens, at least 20 predicted: 58
+  five's ranks on random tokens, all 144: [13, 7, 4, 1, 8]
+  five, real below random and above 0.3: 5.5 0.761 against 0.867, 7.10 0.930 against 0.897, 6.9 0.942 against 0.919, 5.1 0.976 against 0.979, 7.2 0.981 against 0.894
+  five's direct effect from position 0 on random tokens, under 0.1 predicted: largest size, next token 0.002, first token 0.013, root mean square logit 0.056, largest logit 0.278
+  five's direct effect from position 0 on real text, under 0.1 predicted: largest size, next token 0.039, first token 0.034, root mean square logit 0.051, largest logit 0.252

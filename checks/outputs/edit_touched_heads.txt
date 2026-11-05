@@ -1,0 +1,15 @@
+
+run 1, write-write-1__live__20261104T053859Z
+real 5.5: changed ['key']; key weights move 84%, output weights move 0%, VO moves 0%
+real 5.0: changed ['key']; key weights move 70%, output weights move 0%, VO moves 0%
+real 5.1: changed ['key']; key weights move 96%, output weights move 0%, VO moves 0%
+real 6.9: changed ['key']; key weights move 88%, output weights move 0%, VO moves 0%
+real 7.10: changed ['key']; key weights move 76%, output weights move 0%, VO moves 0%
+
+run 2, write-write-2__live__20261104T061358Z
+real 5.0: changed ['key', 'output']; key weights move 69%, output weights move 31%, VO moves 32%
+real 5.5: changed ['key', 'output']; key weights move 82%, output weights move 33%, VO moves 34%
+real 5.1: changed ['key', 'output']; key weights move 83%, output weights move 21%, VO moves 21%
+real 6.9: changed ['key', 'output']; key weights move 85%, output weights move 27%, VO moves 28%
+real 7.10: changed ['key', 'output']; key weights move 76%, output weights move 21%, VO moves 21%
+real 7.2: changed ['key', 'output']; key weights move 74%, output weights move 16%, VO moves 16%

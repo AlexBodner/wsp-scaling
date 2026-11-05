@@ -1,0 +1,33 @@
+
+[top 5 fixed at their average output, which needs a forward pass]
+scored, 64 windows of 48: unedited 3.3690, rise +0.0036 = +0.11%, standard error over windows 0.08%
+other 64 windows of 48, seed 1: unedited 3.3173, rise +0.0045 = +0.13%, standard error over windows 0.08%
+other 64 windows of 48, seed 2: unedited 3.3138, rise +0.0120 = +0.36%, standard error over windows 0.12%
+other 64 windows of 48, seed 3: unedited 3.3100, rise +0.0107 = +0.32%, standard error over windows 0.15%
+other 400 windows of 48: unedited 3.3479, rise +0.0066 = +0.20%, standard error over windows 0.04%
+100 windows of 256: unedited 2.7151, rise +0.0534 = +1.97%, standard error over windows 0.11%
+  100 windows of 256, predicted positions 1 to 47: unedited 3.377, rise +0.0028 = +0.08%
+  100 windows of 256, predicted positions 48 to 127: unedited 2.620, rise +0.0481 = +1.84%
+  100 windows of 256, predicted positions 128 to 255: unedited 2.532, rise +0.0752 = +2.97%
+
+[Astra, run 1]
+scored, 64 windows of 48: unedited 3.3690, rise +0.0135 = +0.40%, standard error over windows 0.10%
+other 64 windows of 48, seed 1: unedited 3.3173, rise +0.0152 = +0.46%, standard error over windows 0.09%
+other 64 windows of 48, seed 2: unedited 3.3138, rise +0.0250 = +0.76%, standard error over windows 0.13%
+other 64 windows of 48, seed 3: unedited 3.3100, rise +0.0183 = +0.55%, standard error over windows 0.12%
+other 400 windows of 48: unedited 3.3479, rise +0.0195 = +0.58%, standard error over windows 0.04%
+100 windows of 256: unedited 2.7151, rise +0.0538 = +1.98%, standard error over windows 0.09%
+  100 windows of 256, predicted positions 1 to 47: unedited 3.377, rise +0.0141 = +0.42%
+  100 windows of 256, predicted positions 48 to 127: unedited 2.620, rise +0.0488 = +1.86%
+  100 windows of 256, predicted positions 128 to 255: unedited 2.532, rise +0.0715 = +2.82%
+
+[Astra, run 2]
+scored, 64 windows of 48: unedited 3.3690, rise +0.0127 = +0.38%, standard error over windows 0.09%
+other 64 windows of 48, seed 1: unedited 3.3173, rise +0.0141 = +0.42%, standard error over windows 0.11%
+other 64 windows of 48, seed 2: unedited 3.3138, rise +0.0203 = +0.61%, standard error over windows 0.13%
+other 64 windows of 48, seed 3: unedited 3.3100, rise +0.0228 = +0.69%, standard error over windows 0.16%
+other 400 windows of 48: unedited 3.3479, rise +0.0168 = +0.50%, standard error over windows 0.05%
+100 windows of 256: unedited 2.7151, rise +0.0523 = +1.93%, standard error over windows 0.12%
+  100 windows of 256, predicted positions 1 to 47: unedited 3.377, rise +0.0121 = +0.36%
+  100 windows of 256, predicted positions 48 to 127: unedited 2.620, rise +0.0509 = +1.94%
+  100 windows of 256, predicted positions 128 to 255: unedited 2.532, rise +0.0680 = +2.69%

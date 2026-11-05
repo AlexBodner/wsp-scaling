@@ -1,0 +1,41 @@
+run reading-python-1__live__20261104T014623Z
+  prompt matches frozen hash: True
+  event item types over 5 calls: ['agent_message']
+  later prompts only extend earlier ones: True
+  turn 1: imports ['numpy', 'threadpoolctl', 'torch'], forbidden calls [], forward words []
+  turn 2: imports ['numpy', 'threadpoolctl', 'torch'], forbidden calls [], forward words []
+  turn 3: imports ['numpy', 'threadpoolctl', 'torch'], forbidden calls [], forward words []
+  turn 4: imports ['numpy', 'threadpoolctl', 'torch'], forbidden calls [], forward words []
+run reading-python-2__live__20261104T015236Z
+  prompt matches frozen hash: True
+  event item types over 4 calls: ['agent_message']
+  later prompts only extend earlier ones: True
+  turn 1: imports ['numpy', 'threadpoolctl'], forbidden calls [], forward words []
+  turn 2: imports ['numpy', 'threadpoolctl'], forbidden calls [], forward words []
+  turn 3: imports ['numpy', 'threadpoolctl'], forbidden calls [], forward words ['forward_fraction']
+unique sessions: 9 of 9
+top five heads of real GPT-2: [(5, 1), (5, 5), (6, 9), (7, 2), (7, 10)]
+seed 1004
+  answer [(5, 1), (6, 6), (5, 6), (7, 1), (7, 6)] is real [(5, 1), (6, 9), (5, 5), (7, 2), (7, 10)]: 5 of 5
+  statistic on raw weights, no scale or centering, picks real [(5, 1), (6, 9), (5, 5), (7, 2), (7, 10)]: 5 of 5
+  turn 1 replay matches its logged output: True
+  turn 2 replay matches its logged output: True
+  turn 3 replay matches its logged output: True
+  turn 4 replay matches its logged output: True
+seed 1005
+  answer [(5, 1), (6, 9), (5, 11), (7, 4), (7, 5)] is real [(5, 1), (6, 9), (5, 5), (7, 2), (7, 10)]: 5 of 5
+  statistic on raw weights, no scale or centering, picks real [(5, 1), (6, 9), (5, 5), (7, 2), (7, 10)]: 5 of 5
+  turn 1 replay matches its logged output: True
+  turn 2 replay matches its logged output: True
+  turn 3 replay matches its logged output: True
+session files of reading-python-1__live__20261104T014623Z
+  call 1: visible 6574, Codex's instructions 4079, billed 6594, gap 20, items ['message', 'reasoning']
+  call 2: visible 14478, Codex's instructions 4079, billed 14498, gap 20, items ['message', 'reasoning']
+  call 3: visible 19153, Codex's instructions 4079, billed 19173, gap 20, items ['message', 'reasoning']
+  call 4: visible 23977, Codex's instructions 4079, billed 23997, gap 20, items ['message', 'reasoning']
+  call 5: visible 29101, Codex's instructions 4079, billed 29121, gap 20, items ['message', 'reasoning']
+session files of reading-python-2__live__20261104T015236Z
+  call 1: visible 6573, Codex's instructions 4079, billed 6593, gap 20, items ['message', 'reasoning']
+  call 2: visible 15973, Codex's instructions 4079, billed 15993, gap 20, items ['message', 'reasoning']
+  call 3: visible 20207, Codex's instructions 4079, billed 20227, gap 20, items ['message', 'reasoning']
+  call 4: visible 25064, Codex's instructions 4079, billed 25084, gap 20, items ['message', 'reasoning']

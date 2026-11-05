@@ -1,0 +1,16 @@
+top heads: 6.1 0.962, 6.6 0.878, 8.1 0.849, 8.0 0.806, 6.11 0.768, 8.8 0.765, 6.0 0.667, 8.11 0.548, 8.6 0.354, 11.6 0.352, 8.9 0.250, 10.3 0.214
+script's statistic: source 7.1, best pairing ['6.1', '6.6', '6.0', '8.0', '6.11'], hits 4 of 5
+unedited: repeat accuracy 0.960, text loss 3.337
+top 5 zeroed: repeat accuracy 0.000, rise +5.803
+next 5 zeroed: repeat accuracy 0.774, rise +0.013
+simple edit, top 5: repeat accuracy 0.290, rise +0.052
+simple edit, next 5: repeat accuracy 0.836, rise +0.010
+all of layers 6 to 8 zeroed: repeat accuracy 0.000, rise +1.542
+simple edit, random 5, set 0: repeat accuracy 0.963, rise +0.032
+simple edit, random 5, set 1: repeat accuracy 0.908, rise +0.126
+simple edit, random 5, set 2: repeat accuracy 0.777, rise +0.295
+simple edit, random 5, set 3: repeat accuracy 0.959, rise +0.059
+simple edit, random 5, set 4: repeat accuracy 0.956, rise +0.035
+simple edit, random 5, set 5: repeat accuracy 0.753, rise +0.070
+simple edit, random 5, set 6: repeat accuracy 0.891, rise +0.151
+simple edit, random 5, set 7: repeat accuracy 0.955, rise +0.043

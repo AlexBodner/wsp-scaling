@@ -1,0 +1,33 @@
+truth, top 12: 9.9 0.953, 18.5 0.950, 11.1 0.916, 12.1 0.895, 7.2 0.891, 20.12 0.871, 6.1 0.856, 13.14 0.812, 19.15 0.783, 20.7 0.721, 9.3 0.637, 22.14 0.623
+the 5th and 6th by seed: 0.893/0.870 0.887/0.876 0.893/0.868
+ceiling on mean true score: 0.921, all heads' mean 0.073
+heads above 0.5: 17
+float32 scale centered, wall 5 s
+  best_pairing: 2 of 5, mean true score 0.642, picks [(6, 1), (7, 2), (5, 8), (6, 15), (9, 9)]
+  by_source: 0 of 5, mean true score 0.243, picks [(14, 9), (18, 8), (17, 2), (16, 15), (15, 8)]
+  sum_top3_sources: 2 of 5, mean true score 0.642, picks [(7, 2), (6, 1), (9, 9), (6, 15), (10, 1)]
+  sum_top8_sources: 2 of 5, mean true score 0.642, picks [(7, 2), (9, 9), (6, 15), (10, 1), (6, 1)]
+  sum_strong_writers: 4 of 5, mean true score 0.842, picks [(9, 9), (7, 2), (12, 1), (11, 1), (10, 8)]
+  source 13.8 seconds 4.5 peak_GB 5.1
+float32 scale, wall 5 s
+  best_pairing: 2 of 5, mean true score 0.642, picks [(6, 1), (7, 2), (5, 8), (6, 15), (9, 9)]
+  by_source: 0 of 5, mean true score 0.243, picks [(14, 9), (18, 8), (17, 2), (16, 15), (15, 8)]
+  sum_top3_sources: 2 of 5, mean true score 0.642, picks [(7, 2), (6, 1), (9, 9), (6, 15), (10, 1)]
+  sum_top8_sources: 2 of 5, mean true score 0.642, picks [(7, 2), (9, 9), (6, 15), (10, 1), (6, 1)]
+  sum_strong_writers: 4 of 5, mean true score 0.842, picks [(9, 9), (7, 2), (12, 1), (11, 1), (10, 8)]
+  source 13.8 seconds 4.4 peak_GB 5.55
+float32 raw, wall 5 s
+  best_pairing: 2 of 5, mean true score 0.642, picks [(6, 1), (7, 2), (5, 8), (6, 15), (9, 9)]
+  by_source: 0 of 5, mean true score 0.243, picks [(14, 9), (18, 8), (17, 2), (16, 15), (15, 8)]
+  sum_top3_sources: 2 of 5, mean true score 0.642, picks [(7, 2), (6, 1), (9, 9), (6, 15), (10, 1)]
+  sum_top8_sources: 2 of 5, mean true score 0.642, picks [(7, 2), (9, 9), (6, 15), (10, 1), (6, 1)]
+  sum_strong_writers: 4 of 5, mean true score 0.842, picks [(9, 9), (7, 2), (12, 1), (11, 1), (10, 8)]
+  source 13.8 seconds 4.3 peak_GB 6.02
+float64 scale centered, wall 385 s
+  best_pairing: 2 of 5, mean true score 0.642, picks [(6, 1), (7, 2), (5, 8), (6, 15), (9, 9)]
+  by_source: 0 of 5, mean true score 0.243, picks [(14, 9), (18, 8), (17, 2), (16, 15), (15, 8)]
+  sum_top3_sources: 2 of 5, mean true score 0.642, picks [(7, 2), (6, 1), (9, 9), (6, 15), (10, 1)]
+  sum_top8_sources: 2 of 5, mean true score 0.642, picks [(7, 2), (9, 9), (6, 15), (10, 1), (6, 1)]
+  sum_strong_writers: 4 of 5, mean true score 0.842, picks [(9, 9), (7, 2), (12, 1), (11, 1), (10, 8)]
+  source 13.8 seconds 383.5 peak_GB 6.45
+{"seed": 1299}

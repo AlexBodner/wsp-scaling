@@ -1,0 +1,4 @@
+unedited: repeat accuracy 0.987, text loss 3.369
+whole edit: repeat accuracy 0.011, text loss 3.382
+keys only: repeat accuracy 0.006, text loss 3.384
+outputs only: repeat accuracy 0.986, text loss 3.367

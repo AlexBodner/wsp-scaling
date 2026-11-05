@@ -1,0 +1,16 @@
+
+lists from seed 20261104
+unedited                     right word 0.94 | first word again 0.04 | second word again 0.01 | not from the list 0.00
+top 5 zeroed                 right word 0.41 | first word again 0.19 | second word again 0.39 | not from the list 0.01
+Astra, run 1                 right word 0.13 | first word again 0.16 | second word again 0.70 | not from the list 0.01
+head list, run 1's heads     right word 0.05 | first word again 0.24 | second word again 0.65 | not from the list 0.05
+Astra, run 2                 right word 0.05 | first word again 0.21 | second word again 0.65 | not from the list 0.09
+head list, run 2's heads     right word 0.05 | first word again 0.22 | second word again 0.68 | not from the list 0.06
+
+lists from seed 20261105
+unedited                     right word 0.92 | first word again 0.05 | second word again 0.03 | not from the list 0.00
+top 5 zeroed                 right word 0.34 | first word again 0.19 | second word again 0.46 | not from the list 0.01
+Astra, run 1                 right word 0.14 | first word again 0.13 | second word again 0.73 | not from the list 0.00
+head list, run 1's heads     right word 0.04 | first word again 0.18 | second word again 0.74 | not from the list 0.04
+Astra, run 2                 right word 0.04 | first word again 0.16 | second word again 0.73 | not from the list 0.06
+head list, run 2's heads     right word 0.04 | first word again 0.16 | second word again 0.75 | not from the list 0.05

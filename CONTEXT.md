@@ -24,13 +24,13 @@ MinAtar is a set of miniature Atari games on a 10x10 grid (Young & Tian, 2019). 
 Experiment 3 calls its targets copying heads (induction heads) and measures them by running each network on a random string repeated twice, the same kind of truth as our reading test.
 
 ## The objection
-[Adam Karvonen](https://x.com/adam_karvonen/status/2117337487458938949): "It looks like Astra didn't natively read Qwen's weights?" He says it used code for standard interpretability, found a looping direction and removed it from the weights.
+[Adam Karvonen](https://x.com/adam_karvonen/status/2117337487458938949) doubts that Astra read Qwen's weights natively. He says it used code for standard interpretability, found a looping direction and removed it from the weights.
 
 The logs support him (`exp8_math/runs/p50c/`):
 - The first forward pass asked for activations.
 - `final_report.md` takes the direction from matched productive and repetitive contexts at the residual outputs.
 - The edit is `W = W0 - 6*outer(u, mask64*(u@W0))` on 64 columns of two MLP matrices. By our arithmetic, the factor of 6 reverses the direction, leaving -5 times the original component on those neurons.
-- The prompt names "repeats itself and never finishes" as an example failure.
+- The prompt gives looping without finishing as an example failure.
 
 The improvement itself holds up: on 1,152 held-out practice problems, accuracy went from 10.6% to 60.4%, with 579 rescues and 5 regressions.
 

@@ -1,0 +1,6 @@
+text loss 3.270; heads chosen on the first 100 prompts drawn and scored on the last 100, which repeat some of the first
+indirect object: unedited 1.000, margin 2.97; top 5 by margin [(8, 6), (8, 10), (7, 9), (5, 5), (5, 9)] scores 0.710, fall 29.0 points, margin 0.66, text rise +0.042; random sets fall mean 2.1, largest 5.0
+pronoun gender: unedited 1.000, margin 3.89; top 5 by margin [(10, 9), (0, 9), (9, 7), (4, 3), (6, 0)] scores 0.980, fall 2.0 points, margin 0.86, text rise +0.039; random sets fall mean 0.0, largest 0.0
+greater-than years: unedited 1.000, margin 2.19; top 5 by margin [(0, 3), (10, 7), (9, 1), (0, 10), (8, 5)] scores 0.470, fall 53.0 points, margin -0.04, text rise +0.034; random sets fall mean 0.0, largest 0.0
+successor: unedited 1.000, margin 2.70; top 5 by margin [(4, 4), (1, 5), (8, 11), (7, 11), (5, 0)] scores 0.660, fall 34.0 points, margin 0.16, text rise +0.018; random sets fall mean 0.0, largest 0.0
+capitals: unedited 1.000, margin 2.78; top 5 by margin [(10, 0), (3, 11), (9, 8), (5, 7), (2, 10)] scores 0.660, fall 34.0 points, margin 0.42, text rise +0.010; random sets fall mean 0.6, largest 5.0

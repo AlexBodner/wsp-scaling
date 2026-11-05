@@ -1,0 +1,46 @@
+on top/probability of the right surname
+name again in a new sentence (n=224)
+  nothing: 0.66/0.15
+  five zeroed: 0.81/0.43
+  10.7 and 11.10 zeroed: 0.82/0.29
+  9.6 9.9 10.0 10.1 zeroed: 0.45/0.11
+  five zeroed for 10.7 and 11.10's queries only: 0.92/0.38
+  five zeroed for the boosters' queries only: 0.67/0.16
+  five zeroed for queries in layers 8 to 11: 0.90/0.40
+  8 random sets of 5 in layers 4 to 7, same query path: 0.65/0.15, highest probability 0.23
+name again after a longer gap (n=256)
+  nothing: 0.38/0.10
+  five zeroed: 0.57/0.40
+  10.7 and 11.10 zeroed: 0.43/0.14
+  9.6 9.9 10.0 10.1 zeroed: 0.52/0.16
+  five zeroed for 10.7 and 11.10's queries only: 0.68/0.28
+  five zeroed for the boosters' queries only: 0.25/0.07
+  five zeroed for queries in layers 8 to 11: 0.19/0.06
+  8 random sets of 5 in layers 4 to 7, same query path: 0.30/0.08, highest probability 0.11
+name again after 'according to' (n=256)
+  nothing: 0.74/0.55
+  five zeroed: 0.99/0.94
+  10.7 and 11.10 zeroed: 0.96/0.72
+  9.6 9.9 10.0 10.1 zeroed: 0.88/0.68
+  five zeroed for 10.7 and 11.10's queries only: 0.97/0.78
+  five zeroed for the boosters' queries only: 0.79/0.57
+  five zeroed for queries in layers 8 to 11: 1.00/0.83
+  8 random sets of 5 in layers 4 to 7, same query path: 0.68/0.51, highest probability 0.55
+same sentence repeated (n=224)
+  nothing: 0.67/0.20
+  five zeroed: 0.96/0.70
+  10.7 and 11.10 zeroed: 0.84/0.33
+  9.6 9.9 10.0 10.1 zeroed: 0.47/0.17
+  five zeroed for 10.7 and 11.10's queries only: 0.93/0.45
+  five zeroed for the boosters' queries only: 0.64/0.19
+  five zeroed for queries in layers 8 to 11: 0.88/0.40
+  8 random sets of 5 in layers 4 to 7, same query path: 0.62/0.20, highest probability 0.35
+name listed three times (n=224)
+  nothing: 1.00/0.74
+  five zeroed: 1.00/0.84
+  10.7 and 11.10 zeroed: 1.00/0.90
+  9.6 9.9 10.0 10.1 zeroed: 1.00/0.66
+  five zeroed for 10.7 and 11.10's queries only: 1.00/0.85
+  five zeroed for the boosters' queries only: 1.00/0.76
+  five zeroed for queries in layers 8 to 11: 1.00/0.87
+  8 random sets of 5 in layers 4 to 7, same query path: 1.00/0.70, highest probability 0.76

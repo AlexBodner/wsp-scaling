@@ -1,0 +1,43 @@
+
+Context: a b c a b
+  unedited: right word 0.917, last word again 0.003, first word 0.010, the prompt's first token 0.000
+  Astra, run 1: right word 0.267, last word again 0.243, first word 0.240, the prompt's first token 0.000
+  Astra, run 2: right word 0.173, last word again 0.190, first word 0.250, the prompt's first token 0.000
+
+Context: a, b, c, a, b,
+  unedited: right word 0.970, last word again 0.013, first word 0.017, the prompt's first token 0.000
+  Astra, run 1: right word 0.110, last word again 0.597, first word 0.290, the prompt's first token 0.000
+  Astra, run 2: right word 0.073, last word again 0.557, first word 0.360, the prompt's first token 0.000
+
+a b c a b
+  unedited: right word 0.757, last word again 0.047, first word 0.117, the prompt's first token 0.013
+  Astra, run 1: right word 0.207, last word again 0.260, first word 0.257, the prompt's first token 0.017
+  Astra, run 2: right word 0.143, last word again 0.210, first word 0.233, the prompt's first token 0.023
+
+Words: a b c a b
+  unedited: right word 0.983, last word again 0.003, first word 0.007, the prompt's first token 0.000
+  Astra, run 1: right word 0.263, last word again 0.267, first word 0.370, the prompt's first token 0.000
+  Astra, run 2: right word 0.133, last word again 0.223, first word 0.393, the prompt's first token 0.000
+
+lists right before and wrong after in both runs: 194 of 300
+example, in order drawn: 'Context: door chair car door chair'
+  unedited: ' car door chair car door chair car door chair car door chair'
+  Astra, run 1: ' chair chair chair chair chair chair chair chair chair chair chair chair'
+  Astra, run 2: ' chair chair chair chair chair chair chair chair chair chair chair chair'
+example, in order drawn: 'Context: fish car stone fish car'
+  unedited: ' stone\n\nThe fish car stone is a stone that is'
+  Astra, run 1: 'penter fish carpenter fish carpenter fish carpenter fish car'
+  Astra, run 2: 'penter fish carpenter fish carpenter fish carpenter fish car'
+example, in order drawn: 'Context: table cat bird table cat'
+  unedited: ' bird table cat bird table cat bird table cat bird table cat'
+  Astra, run 1: ' table table table table table table table table table table table table'
+  Astra, run 2: ' table table table table table table table table table table table table'
+example, in order drawn: 'Context: road fish dog road fish'
+  unedited: ' dog\n\nThe following is a list of all the fish'
+  Astra, run 1: '\n\nThe road is a narrow, narrow road that runs'
+  Astra, run 2: '\n\nThe road is a narrow, narrow, narrow road'
+
+named prompt: 'Context: apple chair river apple chair'
+  unedited: ' river\n\nThe apple chair river is a river in the'
+  Astra, run 1: '\n\nThe apple chair is a chair that is used to'
+  Astra, run 2: '\n\nDescription:\n\nThis chair is a great chair'

@@ -1,0 +1,28 @@
+all 5, blend .25 next word (today) 0.850 | current word 0.045 | word before 0.030 rise +0.012
+    'Context: door chair car door chair' -> ' car door chair car door chair car door'
+    'The capital of France is' -> ' the capital of France, and the capital'
+    'Mary went to the store and bought' -> ' a few more. She said she was'
+all 5, blend .5 next word (today) 0.095 | current word 0.845 | word before 0.010 rise +1.134
+    'Context: door chair car door chair' -> ' chair chair chair chair chair chair chair chair'
+    'The capital of France is' -> ' also also also also also also also also'
+    'Mary went to the store and bought' -> ' bought bought bought bought bought bought bought bought'
+all 5, blend .75 next word (today) 0.000 | current word 0.975 | word before 0.000 rise +1.933
+    'Context: door chair car door chair' -> ' chair chair chair chair chair chair chair chair'
+    'The capital of France is' -> ' also also also also also also also also'
+    'Mary went to the store and bought' -> ' bought bought bought bought bought bought bought bought'
+all 5, key only next word (today) 0.265 | current word 0.155 | word before 0.270 rise +1.012
+    'Context: door chair car door chair' -> ' door chair door door door door door door'
+    'The capital of France is' -> ' the capital of France, and the French'
+    'Mary went to the store and bought' -> ' the store and bought and bought and bought'
+all 5, query only next word (today) 0.300 | current word 0.230 | word before 0.240 rise +0.653
+    'Context: door chair car door chair' -> ' door door door door door door door door'
+    'The capital of France is' -> ' the capital of the French Republic.\n'
+    'Mary went to the store and bought' -> ' a new one and bought a new one'
+top 3, full next word (today) 0.295 | current word 0.520 | word before 0.070 rise +0.080
+    'Context: door chair car door chair' -> ' car door door door door door door door'
+    'The capital of France is' -> ' the capital of France, and the capital'
+    'Mary went to the store and bought' -> ' a bottle of wine. She said she'
+top 2, full next word (today) 0.700 | current word 0.050 | word before 0.070 rise +0.028
+    'Context: door chair car door chair' -> ' car door chair car door chair car door'
+    'The capital of France is' -> ' the capital of the French Republic. The'
+    'Mary went to the store and bought' -> ' a few things. She said she wanted'
