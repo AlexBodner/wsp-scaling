@@ -8,14 +8,14 @@ from dataclasses import dataclass
 
 import numpy as np
 import torch
-from transformers import GPT2LMHeadModel
+from transformers import GPT2Config, GPT2LMHeadModel, GPTNeoForCausalLM
 
 from wsp.disguise import _random_invertible
 from wsp.network import writable_tensors
 from wsp.reading import _REPEAT_LENGTH, _TRUTH_BATCH, _TRUTH_SEEDS, _TRUTH_TOKEN_RANGE, python_prompt
 
 HEAD_SIZE = 64
-MODELS = {"medium": "gpt2-medium", "distil": "distilbert/distilgpt2", "small": "gpt2"}
+MODELS = {"medium": "gpt2-medium", "distil": "distilbert/distilgpt2", "small": "gpt2", "neo": "EleutherAI/gpt-neo-125M"}
 
 
 @dataclass
@@ -26,7 +26,34 @@ class FamilyDisguise:
     original_head: np.ndarray
 
 
+def _gpt2_from_neo(name: str) -> GPT2LMHeadModel:
+    """Returns GPT-Neo's weights in GPT-2's layout. Neo has no attention scale and no query, key or value bias, and its local windows don't reach past 256 tokens."""
+    neo = GPTNeoForCausalLM.from_pretrained(name, use_safetensors=True).eval()
+    config = GPT2Config(n_layer=neo.config.num_layers, n_head=neo.config.num_heads, n_embd=neo.config.hidden_size, n_positions=neo.config.max_position_embeddings, scale_attn_weights=False, activation_function="gelu_new", resid_pdrop=0.0, embd_pdrop=0.0, attn_pdrop=0.0)
+    model = GPT2LMHeadModel(config).eval()
+    with torch.no_grad():
+        model.transformer.wte.weight.copy_(neo.transformer.wte.weight)
+        model.transformer.wpe.weight.copy_(neo.transformer.wpe.weight)
+        model.transformer.ln_f.load_state_dict(neo.transformer.ln_f.state_dict())
+        for block, source in zip(model.transformer.h, neo.transformer.h):
+            attention = source.attn.attention
+            block.ln_1.load_state_dict(source.ln_1.state_dict())
+            block.ln_2.load_state_dict(source.ln_2.state_dict())
+            block.attn.c_attn.weight.copy_(torch.cat([attention.q_proj.weight.T, attention.k_proj.weight.T, attention.v_proj.weight.T], 1))
+            block.attn.c_attn.bias.zero_()
+            block.attn.c_proj.weight.copy_(attention.out_proj.weight.T)
+            block.attn.c_proj.bias.copy_(attention.out_proj.bias)
+            block.mlp.c_fc.weight.copy_(source.mlp.c_fc.weight.T)
+            block.mlp.c_fc.bias.copy_(source.mlp.c_fc.bias)
+            block.mlp.c_proj.weight.copy_(source.mlp.c_proj.weight.T)
+            block.mlp.c_proj.bias.copy_(source.mlp.c_proj.bias)
+    model.set_attn_implementation("eager")
+    return model
+
+
 def load(short_name: str) -> GPT2LMHeadModel:
+    if short_name == "neo":
+        return _gpt2_from_neo(MODELS[short_name])
     return GPT2LMHeadModel.from_pretrained(MODELS[short_name], attn_implementation="eager", use_safetensors=True).eval()
 
 

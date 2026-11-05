@@ -1,4 +1,4 @@
-"""Asks a reader with Python to edit a scrambled GPT-2 medium so it stops repeating. `--live` makes sealed Astra calls, and `baselines` makes none."""
+"""Asks a reader with Python to edit a scrambled GPT-2 medium so it stops repeating. `live` makes sealed Astra calls, and `baselines` makes none."""
 
 import argparse
 import hashlib

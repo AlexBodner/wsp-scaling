@@ -1,0 +1,15 @@
+GPT-2 small: share of 200 prompts, drawn with repeats, where a right token beats the listed wrong ones, and the mean margin
+unedited: indirect object 0.995 (margin 2.97) | pronoun gender 1.000 (margin 3.89) | greater-than years 1.000 (margin 2.18) | successor 1.000 (margin 2.73) | capitals 1.000 (margin 2.85)
+Astra, run 1: indirect object 0.865 (margin 1.69) | pronoun gender 1.000 (margin 3.49) | greater-than years 0.955 (margin 0.93) | successor 1.000 (margin 2.07) | capitals 1.000 (margin 2.80)
+Astra, run 2: indirect object 0.835 (margin 1.52) | pronoun gender 1.000 (margin 4.07) | greater-than years 0.945 (margin 0.92) | successor 1.000 (margin 1.99) | capitals 1.000 (margin 3.00)
+simple edit, random 5, set 0: indirect object 0.965 (margin 2.45) | pronoun gender 1.000 (margin 3.79) | greater-than years 1.000 (margin 2.04) | successor 1.000 (margin 2.66) | capitals 0.810 (margin 1.55)
+simple edit, random 5, set 1: indirect object 0.990 (margin 2.76) | pronoun gender 1.000 (margin 3.67) | greater-than years 1.000 (margin 1.70) | successor 1.000 (margin 2.87) | capitals 0.940 (margin 2.43)
+simple edit, random 5, set 2: indirect object 0.970 (margin 2.36) | pronoun gender 1.000 (margin 3.05) | greater-than years 0.985 (margin 1.84) | successor 1.000 (margin 2.85) | capitals 1.000 (margin 2.20)
+simple edit, random 5, set 3: indirect object 0.985 (margin 2.41) | pronoun gender 1.000 (margin 3.84) | greater-than years 1.000 (margin 2.25) | successor 1.000 (margin 2.92) | capitals 0.940 (margin 2.10)
+unedited, real weights: indirect object 0.995 (margin 2.97) | pronoun gender 1.000 (margin 3.89) | greater-than years 1.000 (margin 2.18) | successor 1.000 (margin 2.73) | capitals 1.000 (margin 2.85)
+top 5 fixed at their mean, real weights: indirect object 0.835 (margin 1.50) | pronoun gender 1.000 (margin 3.89) | greater-than years 0.930 (margin 0.89) | successor 1.000 (margin 2.34) | capitals 1.000 (margin 2.82)
+
+GPT-Neo 125M
+unedited: indirect object 0.995 (margin 3.42) | pronoun gender 1.000 (margin 4.49) | greater-than years 1.000 (margin 1.61) | successor 0.935 (margin 1.78) | capitals 1.000 (margin 3.21)
+Astra, run 1: indirect object 0.845 (margin 1.28) | pronoun gender 1.000 (margin 4.24) | greater-than years 0.990 (margin 1.17) | successor 0.960 (margin 1.10) | capitals 1.000 (margin 2.21)
+Astra, run 2: indirect object 0.940 (margin 1.84) | pronoun gender 1.000 (margin 4.73) | greater-than years 1.000 (margin 1.29) | successor 0.935 (margin 1.27) | capitals 1.000 (margin 3.22)

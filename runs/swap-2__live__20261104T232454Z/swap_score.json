@@ -1,0 +1,123 @@
+{
+ "seed": 1602,
+ "cost": 9.608012,
+ "named_heads": [
+  [
+   5,
+   10
+  ],
+  [
+   6,
+   7
+  ],
+  [
+   5,
+   9
+  ],
+  [
+   7,
+   10
+  ],
+  [
+   7,
+   6
+  ]
+ ],
+ "edit_forward_pass_flags": [],
+ "edit_output": "changed 6 tensors, 246080 values\n",
+ "before": {
+  "swap_random_tokens": 0.0,
+  "old_behaviour_random_tokens": 0.9869260204081632,
+  "first_copy_echo": 0.0040625,
+  "story_echo": 0.020833333333333332,
+  "text_loss": 3.3690315451225255,
+  "lists_next_word": 0.885,
+  "lists_current_word": 0.015,
+  "abilities": {
+   "indirect object": [
+    0.995,
+    2.973
+   ],
+   "pronoun gender": [
+    1.0,
+    3.889
+   ],
+   "greater-than years": [
+    1.0,
+    2.184
+   ],
+   "successor": [
+    1.0,
+    2.732
+   ],
+   "capitals": [
+    1.0,
+    2.848
+   ]
+  },
+  "facts_right": 15
+ },
+ "after": {
+  "swap_random_tokens": 0.00350765306122449,
+  "old_behaviour_random_tokens": 0.46524234693877553,
+  "first_copy_echo": 0.010625,
+  "story_echo": 0.022135416666666668,
+  "text_loss": 3.612902876275195,
+  "lists_next_word": 0.48,
+  "lists_current_word": 0.06,
+  "abilities": {
+   "indirect object": [
+    0.555,
+    -0.269
+   ],
+   "pronoun gender": [
+    1.0,
+    4.084
+   ],
+   "greater-than years": [
+    0.99,
+    1.744
+   ],
+   "successor": [
+    1.0,
+    2.228
+   ],
+   "capitals": [
+    1.0,
+    3.351
+   ]
+  },
+  "facts_right": 12
+ },
+ "values_changed": 246080,
+ "touched_heads": [
+  [
+   5,
+   9
+  ],
+  [
+   5,
+   10
+  ],
+  [
+   6,
+   7
+  ],
+  [
+   7,
+   6
+  ],
+  [
+   7,
+   10
+  ]
+ ],
+ "tensors_changed": [
+  "L5.qkv.W",
+  "L5.qkv.b",
+  "L6.qkv.W",
+  "L6.qkv.b",
+  "L7.qkv.W",
+  "L7.qkv.b"
+ ]
+}

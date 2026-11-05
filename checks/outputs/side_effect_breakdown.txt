@@ -1,0 +1,106 @@
+distinct prompts: {'indirect object': 199, 'pronoun gender': 96, 'greater-than years': 88, 'successor': 23, 'capitals': 16, 'later years, 8 nouns, 7 centuries': 291, 'indirect object, 3 other templates': 299}
+
+[unedited]
+indirect object: right beats wrong 0.995, top token right 0.925
+pronoun gender: right beats wrong 1.000, top token right 1.000
+greater-than years: right beats wrong 1.000, top token right 1.000
+successor: right beats wrong 1.000, top token right 1.000
+capitals: right beats wrong 1.000, top token right 0.140
+later years, 8 nouns, 7 centuries: right beats wrong 0.970, top token right 0.970
+indirect object, 3 other templates: right beats wrong 1.000, top token right 0.883
+
+[top 5 fixed at their average output]
+indirect object: right beats wrong 0.835, top token right 0.685
+pronoun gender: right beats wrong 1.000, top token right 1.000
+greater-than years: right beats wrong 0.930, top token right 0.930
+successor: right beats wrong 1.000, top token right 0.910
+capitals: right beats wrong 1.000, top token right 0.140
+later years, 8 nouns, 7 centuries: right beats wrong 0.757, top token right 0.757
+indirect object, 3 other templates: right beats wrong 0.943, top token right 0.707
+
+[next 5 fixed at their average output]
+indirect object: right beats wrong 0.965, top token right 0.955
+pronoun gender: right beats wrong 1.000, top token right 1.000
+greater-than years: right beats wrong 1.000, top token right 1.000
+successor: right beats wrong 1.000, top token right 1.000
+capitals: right beats wrong 1.000, top token right 0.410
+later years, 8 nouns, 7 centuries: right beats wrong 0.970, top token right 0.970
+indirect object, 3 other templates: right beats wrong 0.993, top token right 0.947
+
+[random 5 fixed, set 0, [(11, 2), (5, 9), (1, 11), (6, 6), (8, 10)]]
+indirect object: right beats wrong 0.920, top token right 0.575
+pronoun gender: right beats wrong 1.000, top token right 1.000
+greater-than years: right beats wrong 1.000, top token right 1.000
+successor: right beats wrong 1.000, top token right 1.000
+capitals: right beats wrong 0.940, top token right 0.095
+later years, 8 nouns, 7 centuries: right beats wrong 0.953, top token right 0.953
+indirect object, 3 other templates: right beats wrong 0.980, top token right 0.690
+
+[random 5 fixed, set 1, [(7, 7), (6, 11), (3, 5), (6, 6), (3, 2)]]
+indirect object: right beats wrong 0.990, top token right 0.915
+pronoun gender: right beats wrong 1.000, top token right 1.000
+greater-than years: right beats wrong 1.000, top token right 1.000
+successor: right beats wrong 1.000, top token right 1.000
+capitals: right beats wrong 0.940, top token right 0.095
+later years, 8 nouns, 7 centuries: right beats wrong 0.950, top token right 0.940
+indirect object, 3 other templates: right beats wrong 1.000, top token right 0.887
+
+[random 5 fixed, set 2, [(3, 4), (11, 1), (1, 1), (3, 9), (6, 11)]]
+indirect object: right beats wrong 1.000, top token right 0.735
+pronoun gender: right beats wrong 1.000, top token right 1.000
+greater-than years: right beats wrong 1.000, top token right 1.000
+successor: right beats wrong 1.000, top token right 1.000
+capitals: right beats wrong 1.000, top token right 0.200
+later years, 8 nouns, 7 centuries: right beats wrong 0.960, top token right 0.957
+indirect object, 3 other templates: right beats wrong 1.000, top token right 0.733
+
+[random 5 fixed, set 3, [(8, 0), (4, 2), (2, 11), (3, 10), (10, 10)]]
+indirect object: right beats wrong 0.965, top token right 0.750
+pronoun gender: right beats wrong 1.000, top token right 1.000
+greater-than years: right beats wrong 1.000, top token right 1.000
+successor: right beats wrong 1.000, top token right 0.980
+capitals: right beats wrong 1.000, top token right 0.545
+later years, 8 nouns, 7 centuries: right beats wrong 0.973, top token right 0.973
+indirect object, 3 other templates: right beats wrong 0.987, top token right 0.717
+
+top 5 fixed at their average over indirect object's own prompts: right beats wrong 0.835
+top 5 fixed at their average over greater-than years's own prompts: right beats wrong 0.975
+
+[Astra, run 1]
+indirect object: right beats wrong 0.865, top token right 0.735
+pronoun gender: right beats wrong 1.000, top token right 1.000
+greater-than years: right beats wrong 0.955, top token right 0.955
+successor: right beats wrong 1.000, top token right 0.910
+capitals: right beats wrong 1.000, top token right 0.140
+later years, 8 nouns, 7 centuries: right beats wrong 0.773, top token right 0.760
+indirect object, 3 other templates: right beats wrong 0.960, top token right 0.750
+
+[Astra, run 2]
+indirect object: right beats wrong 0.835, top token right 0.695
+pronoun gender: right beats wrong 1.000, top token right 1.000
+greater-than years: right beats wrong 0.945, top token right 0.945
+successor: right beats wrong 1.000, top token right 0.910
+capitals: right beats wrong 1.000, top token right 0.140
+later years, 8 nouns, 7 centuries: right beats wrong 0.743, top token right 0.730
+indirect object, 3 other templates: right beats wrong 0.943, top token right 0.690
+
+prompts by family
+unedited: later years, 8 nouns, 7 centuries, right beats wrong by century {13: 1.0, 14: 1.0, 15: 0.98, 16: 1.0, 17: 1.0, 18: 0.94, 19: 0.88}, by start year {'0 to 24': 1.0, '25 to 49': 1.0, '50 to 74': 1.0, '75 to 99': 0.87}
+unedited: successor prompts with the wrong top token {}
+Astra, run 1: later years, 8 nouns, 7 centuries, right beats wrong by century {13: 0.56, 14: 0.66, 15: 0.67, 16: 0.74, 17: 0.91, 18: 0.94, 19: 0.86}, by start year {'0 to 24': 0.96, '25 to 49': 1.0, '50 to 74': 0.76, '75 to 99': 0.35}
+Astra, run 1: successor prompts with the wrong top token {'Here: Thursday, Friday,': 18}
+Astra, run 2: later years, 8 nouns, 7 centuries, right beats wrong by century {13: 0.49, 14: 0.66, 15: 0.63, 16: 0.72, 17: 0.91, 18: 0.94, 19: 0.79}, by start year {'0 to 24': 0.96, '25 to 49': 0.97, '50 to 74': 0.69, '75 to 99': 0.33}
+Astra, run 2: successor prompts with the wrong top token {'Here: Thursday, Friday,': 18}
+top 5 fixed at their average output: later years, 8 nouns, 7 centuries, right beats wrong by century {13: 0.59, 14: 0.61, 15: 0.65, 16: 0.67, 17: 0.89, 18: 0.94, 19: 0.88}, by start year {'0 to 24': 0.98, '25 to 49': 1.0, '50 to 74': 0.73, '75 to 99': 0.3}
+top 5 fixed at their average output: successor prompts with the wrong top token {'Here: Thursday, Friday,': 18}
+unedited: capitals prompts with the right top token ['The capital of Greece is', 'The capital of Italy is', 'The capital of Spain is']; most common top tokens [(' the', 172), (' Rome', 11), (' Madrid', 9)]
+
+prompt by prompt, against the top 5 fixed at their average output
+Astra, run 1, greater-than years: correlation of margin drops +0.96; prompts flipped by the fix 14, by the edit 9, by both 9
+Astra, run 1, indirect object: correlation of margin drops +0.97; prompts flipped by the fix 32, by the edit 26, by both 24
+Astra, run 1, later years, 8 nouns, 7 centuries: correlation of margin drops +0.99; prompts flipped by the fix 65, by the edit 60, by both 56
+Astra, run 1, indirect object, 3 other templates: correlation of margin drops +0.95; prompts flipped by the fix 17, by the edit 12, by both 11
+Astra, run 2, greater-than years: correlation of margin drops +0.96; prompts flipped by the fix 14, by the edit 11, by both 11
+Astra, run 2, indirect object: correlation of margin drops +0.99; prompts flipped by the fix 32, by the edit 32, by both 31
+Astra, run 2, later years, 8 nouns, 7 centuries: correlation of margin drops +0.98; prompts flipped by the fix 65, by the edit 68, by both 60
+Astra, run 2, indirect object, 3 other templates: correlation of margin drops +0.99; prompts flipped by the fix 17, by the edit 17, by both 16

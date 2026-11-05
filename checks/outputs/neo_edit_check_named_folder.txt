@@ -1,0 +1,111 @@
+top previous-token heads: 5.8 0.989, 4.9 0.894, 5.0 0.887, 7.1 0.710, 5.6 0.483, 3.11 0.357, 3.9 0.356, 3.4 0.354, 3.7 0.327, 4.2 0.327
+script, heads summing the most match with later heads: 5.8, 7.1, 5.6, 5.0, 4.9; in the top 5 by previous token: 5 of 5
+script, heads most often the best match for a later head: 7.1 (30), 2.8 (18), 5.8 (13), 6.9 (10), 8.5 (9); in the top 5 by previous token: 2 of 5
+
+===== run 1: named heads, real numbers: ['4.9', '5.6', '5.0', '5.8', '7.1']; ranks on previous token: [2, 5, 3, 1, 4]
+
+[unedited]
+scored test: repeat accuracy 0.960, rise +0.000 (0.0%)
+copying, name again in a new sentence: 0.030
+copying, name again in a second sentence: 0.060
+copying, word list repeated: 0.913
+copying, short comma list: 0.830
+copying, who lives where: 0.370
+facts: 10 of 30; right: ['The Statue of Liberty is in New', 'Water is made of hydrogen and', 'The opposite of hot is', 'The opposite of up is', 'one, two, three,', 'Barack', 'The Great Wall of', 'United States of', 'Once upon a', 'Thank you very']
+  'Words: dog cat tree house car dog cat tree' -> ' house car car car car car car car car car car car'
+  'Words: apple chair river stone apple chair river' -> ' stone\n\nThe apple chair river stone is a stone that'
+  'apple, chair, river, apple, chair,' -> ' river, apple, chair, river, apple, chair,'
+  'The capital of France is' -> ' the capital of the Kingdom of France. The capital of the'
+  'Once upon a time' -> ', the world was a place of the most beautiful and beautiful'
+
+[Astra, run 1]
+scored test: repeat accuracy 0.003, rise +0.147 (4.4%)
+copying, name again in a new sentence: 0.000
+copying, name again in a second sentence: 0.000
+copying, word list repeated: 0.087
+copying, short comma list: 0.073
+copying, who lives where: 0.180
+facts: 6 of 30; right: ['The Statue of Liberty is in New', 'The opposite of up is', 'Barack', 'The Great Wall of', 'Once upon a', 'Thank you very']
+  'Words: dog cat tree house car dog cat tree' -> '\n\nCategory:Dogwood trees\nCategory:Dogwood'
+  'Words: apple chair river stone apple chair river' -> '\n\nCategory:Apple chairs\nCategory:Apple chairs<|endoftext|>'
+  'apple, chair, river, apple, chair,' -> ' chair, chair, chair, chair, chair, chair,'
+  'The capital of France is' -> ' the capital of the world, and the city of Paris is'
+  'Once upon a time' -> ', the world was a place of the most beautiful and beautiful'
+reader 6.1, attention on the position after the earlier copy: unedited 0.957, edited 0.008
+
+[named heads' outputs zeroed, run 1]
+scored test: repeat accuracy 0.005, rise +0.207 (6.2%)
+copying, name again in a new sentence: 0.010
+copying, name again in a second sentence: 0.000
+copying, word list repeated: 0.183
+copying, short comma list: 0.187
+copying, who lives where: 0.393
+facts: 4 of 30; right: ['The capital of Japan is', 'The Statue of Liberty is in New', 'Barack', 'Thank you very']
+  'Words: dog cat tree house car dog cat tree' -> ' house cat house cat house cat house cat house cat house cat'
+  'Words: apple chair river stone apple chair river' -> ' stone\n\nThe stone is a stone that is a stone'
+  'apple, chair, river, apple, chair,' -> ' chair, chair, chair, chair, chair, chair,'
+  'The capital of France is' -> ' the capital of the Kingdom of France. The capital of the'
+  'Once upon a time' -> ', a man was a man. He was a man.'
+
+[named heads fixed at their mean, needs a forward pass, run 1]
+scored test: repeat accuracy 0.004, rise +0.157 (4.7%)
+copying, name again in a new sentence: 0.000
+copying, name again in a second sentence: 0.000
+copying, word list repeated: 0.200
+copying, short comma list: 0.280
+copying, who lives where: 0.397
+facts: 4 of 30; right: ['The capital of Japan is', 'The Statue of Liberty is in New', 'Once upon a', 'Thank you very']
+  'Words: dog cat tree house car dog cat tree' -> ' house cat house cat house cat house cat house cat house cat'
+  'Words: apple chair river stone apple chair river' -> ' stone\n\nThe stone is a stone that is a stone'
+  'apple, chair, river, apple, chair,' -> ' chair, chair, chair, chair, chair, chair,'
+  'The capital of France is' -> ' the capital of the Kingdom of France. The capital of the'
+  'Once upon a time' -> ', the world was a place of the world.\n\n'
+
+8 random sets of 5 zeroed: repeat accuracy 0.000 to 0.947; rise up to +11.774
+
+===== run 2: named heads, real numbers: ['4.9', '5.0', '5.8', '5.6', '7.1']; ranks on previous token: [2, 3, 1, 5, 4]
+
+[Astra, run 2]
+scored test: repeat accuracy 0.005, rise +0.078 (2.3%)
+copying, name again in a new sentence: 0.000
+copying, name again in a second sentence: 0.000
+copying, word list repeated: 0.147
+copying, short comma list: 0.270
+copying, who lives where: 0.433
+facts: 7 of 30; right: ['The Statue of Liberty is in New', 'The opposite of up is', 'Barack', 'The Great Wall of', 'Once upon a', 'Thank you very', 'Merry']
+  'Words: dog cat tree house car dog cat tree' -> ' house cat house cat house cat house cat house cat house cat'
+  'Words: apple chair river stone apple chair river' -> ' stone apple chair stone apple chair stone river stone apple river stone'
+  'apple, chair, river, apple, chair,' -> ' chair, chair, chair, chair, chair, chair,'
+  'The capital of France is' -> ' the capital of the Kingdom of France. The capital of the'
+  'Once upon a time' -> ', the world was a place of the dead.\n\n'
+reader 6.1, attention on the position after the earlier copy: unedited 0.957, edited 0.028
+
+[named heads' outputs zeroed, run 2]
+scored test: repeat accuracy 0.005, rise +0.207 (6.2%)
+copying, name again in a new sentence: 0.010
+copying, name again in a second sentence: 0.000
+copying, word list repeated: 0.183
+copying, short comma list: 0.187
+copying, who lives where: 0.393
+facts: 4 of 30; right: ['The capital of Japan is', 'The Statue of Liberty is in New', 'Barack', 'Thank you very']
+  'Words: dog cat tree house car dog cat tree' -> ' house cat house cat house cat house cat house cat house cat'
+  'Words: apple chair river stone apple chair river' -> ' stone\n\nThe stone is a stone that is a stone'
+  'apple, chair, river, apple, chair,' -> ' chair, chair, chair, chair, chair, chair,'
+  'The capital of France is' -> ' the capital of the Kingdom of France. The capital of the'
+  'Once upon a time' -> ', a man was a man. He was a man.'
+
+[named heads fixed at their mean, needs a forward pass, run 2]
+scored test: repeat accuracy 0.004, rise +0.157 (4.7%)
+copying, name again in a new sentence: 0.000
+copying, name again in a second sentence: 0.000
+copying, word list repeated: 0.200
+copying, short comma list: 0.280
+copying, who lives where: 0.397
+facts: 4 of 30; right: ['The capital of Japan is', 'The Statue of Liberty is in New', 'Once upon a', 'Thank you very']
+  'Words: dog cat tree house car dog cat tree' -> ' house cat house cat house cat house cat house cat house cat'
+  'Words: apple chair river stone apple chair river' -> ' stone\n\nThe stone is a stone that is a stone'
+  'apple, chair, river, apple, chair,' -> ' chair, chair, chair, chair, chair, chair,'
+  'The capital of France is' -> ' the capital of the Kingdom of France. The capital of the'
+  'Once upon a time' -> ', the world was a place of the world.\n\n'
+
+8 random sets of 5 zeroed: repeat accuracy 0.000 to 0.949; rise up to +14.396
