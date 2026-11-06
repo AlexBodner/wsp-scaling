@@ -4,9 +4,9 @@ By [Alex Bodner](https://twitter.com/AlexBodner_). A small follow-up to [Sparks 
 
 **In short.** We gave Astra GPT-2's weights, scrambled so that published head numbers don't apply, and asked it to make GPT-2 worse at continuing repeats while keeping everything else. It never ran the model or saw a score. With Python, both runs ranked GPT-2's top 5 induction heads highest, and edited all 5 (run 2) or 4 of them (run 1). Repeats fell from 99% to 18% and 1%. Capitals, pronouns and sequences still beat the wrong answers, while picking a later year and the indirect object fell about as much as when those heads are fixed at their average output. Text loss rose about 0.5% on short text and 2% on long text.
 
-**The catch.** This is a published circuit. A simpler edit on the same heads works as well, a script of Astra's own statistic finds them too, and in one call with no weights at all, Astra guessed the right layers. So Astra can apply the method to real, scrambled weights. We can't tell whether it reasoned its way there or remembered it, and the rule we set before the GPT-Neo test points to memory. On GPT-Neo, 3 of 4 runs cut repeats to 1% or less, but by editing previous-token heads rather than the induction heads we predicted, and at several times GPT-2's text cost. The fourth edited induction heads and reached 42%. On 355M GPT-2, one run's edit was weak.
+**The catch.** This is a published circuit. A simpler edit on the same heads works as well, a script of Astra's own statistic finds them too, and in one call with no weights at all, Astra guessed the right layers. So Astra can apply the method to real, scrambled weights. We can't tell whether it reasoned its way there or remembered it, and the rule we set before the GPT-Neo test points to memory. On GPT-Neo, 3 of 4 runs cut repeats to 1% or less, but by editing previous-token heads rather than the induction heads we predicted, and at several times GPT-2's text cost. The fourth edited induction heads and reached 42%. On 355M GPT-2, one run cut repeats from 99% to 74%, at more text cost than zeroing all of layers 5 to 7.
 
-[A video of the edit](figures/edit_story_v25.mp4) walks through one example from run 2. The rest of this page has the numbers and how to check each one, and [FINDINGS.md](FINDINGS.md) has the later experiments: Astra writing edits from weights alone, other kinds of head, and a bigger model.
+[A video of the edit](figures/edit_story_v27.mp4) walks through one example from run 2. The rest of this page has the numbers and how to check each one, and [FINDINGS.md](FINDINGS.md) has the later experiments: Astra writing edits from weights alone, other kinds of head, and a bigger model.
 
 ## Reading, then editing
 Asked to weaken one capability in scrambled GPT-2, continuing a repeat, while keeping the rest, with Python and no recipe, Astra wrote weight edits without ever running the model or seeing a score.
@@ -86,6 +86,7 @@ We reran the Neo calls from an anonymous folder. [The results](FINDINGS.md#anoth
 - [METHOD.md](METHOD.md): the design and limits of the first writing and reading tests, with their results. The edit, Neo and medium results are in [FINDINGS.md](FINDINGS.md).
 - [CONTEXT.md](CONTEXT.md): the post, the objection to it, and what its logs show.
 - [DECISIONS.md](DECISIONS.md): a working log of how the design changed, not needed to check any result.
+- `.research/cards/`: the prediction for each experiment, written before its run, and `.research/ledger.jsonl`, which records each card's sha256 when it was locked. Today's cards match the last hash locked for each; the swap card was revised once before its runs, and the ledger has both versions. They first entered git on 2026-11-05, after the runs, so git can't prove they came first; the ledger is ours too. Some predictions went against us, such as the GPT-Neo rule that points to memory.
 - `checks/`: the scripts behind the reading, writing, architecture and tokenizer numbers, with saved reading and writing results in `checks/outputs/`.
 - `wsp/`, `scripts/`, `tests/`: the pipeline. `prompts/` holds the frozen prompts.
 - `runs/`: every Astra run. The script's 30 seeds keep only `summary.json`.
@@ -102,6 +103,12 @@ Tested on Python 3.12 on macOS. New runs and their tests use macOS's `sandbox-ex
 
 ```bash
 pip install -r requirements.txt
+```
+
+The edit checks need TinyStories' validation file, 22 MB (sha256 `6874bae9…0585d`):
+
+```bash
+mkdir -p data/tinystories && curl -L -o data/tinystories/valid.txt https://huggingface.co/datasets/roneneldan/TinyStories/resolve/main/TinyStoriesV2-GPT4-valid.txt
 ```
 
 ```bash
