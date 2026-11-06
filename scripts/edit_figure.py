@@ -311,9 +311,9 @@ def side_effects() -> None:
         for x, value, is_astra in zip(columns, values, (False, True, True, False)):
             fell = value < values[0] - 0.02
             figure.text(x, y, f"{100 * value:.0f}%", fontsize=LINE_POINTS - 2, color=RED if fell and is_astra else INK, fontweight="bold" if fell and is_astra else "normal", ha="center", va="center")
-    figure.text(0.04, 0.095, "The last two use these heads too, so they drop about as much.", fontsize=NOTE_POINTS - 2, color=INK, va="center")
+    figure.text(0.04, 0.095, "Fixing the top 5 at their average output drops the last two about as much.", fontsize=NOTE_POINTS - 2, color=INK, va="center")
     figure.text(0.04, 0.045, "Other repeats: names are mixed, and repeating a story helps 29 and 8 points, vs 45.", fontsize=NOTE_POINTS - 3, color=INK, va="center")
-    figure.savefig(ROOT / "figures" / "edit_side_effects_v2.png", dpi=DPI)
+    figure.savefig(ROOT / "figures" / "edit_side_effects_v3.png", dpi=DPI)
     plt.close(figure)
 
 

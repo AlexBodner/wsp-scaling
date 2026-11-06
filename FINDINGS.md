@@ -40,7 +40,7 @@ As shares of text loss, `checks/outputs/edit_text_loss.txt`:
 ### What else the edits changed
 To test "keeps the rest", we scored five other capabilities and, separately, fixed the top 5 heads at their average output on stories, which needs a forward pass, to see what depends on them (`checks/edit_side_effects.py`, `checks/outputs/edit_side_effects.txt`, `checks/outputs/side_effect_breakdown.txt`). Zeroing is a different arm. In the picture the two repeat rows are top-token accuracy, the other five are the first table below, and "Top 5 fixed at average" is this fix.
 
-![What the edit changed and what it left alone](figures/edit_side_effects_v2.png)
+![What the edit changed and what it left alone](figures/edit_side_effects_v3.png)
 
 Each cell here is the share of 200 prompts where the best right token beats the best of the listed wrong tokens. Prompts are drawn with repeats, so the distinct prompts are fewer than 200.
 
