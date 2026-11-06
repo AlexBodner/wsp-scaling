@@ -25,7 +25,7 @@ Numbers are run 1, then run 2.
 
 ![GPT-Neo, the same five heads in 3 of 4 runs](figures/edit_neo_v1.png)
 
-[A video of the edit](figures/edit_story_v20.mp4) walks through one example from run 2.
+[A video of the edit](figures/edit_story_v25.mp4) walks through one example from run 2.
 
 To check it: [the prompt](prompts/write.txt), run [1](runs/write-write-1__live__20261104T053859Z) and [2](runs/write-write-2__live__20261104T061358Z) with every call and the edit code, [the English outputs](checks/outputs/edit_demo.txt), [the controls](checks/outputs/edit_controls.txt), [the list check, written after seeing the examples](checks/outputs/edit_order.txt), [where it stops looking clean](checks/outputs/edit_limits.txt), [what else the edits changed](checks/outputs/edit_side_effects.txt) with [its breakdown](checks/outputs/side_effect_breakdown.txt), [text loss](checks/outputs/edit_text_loss.txt), [repeated names](checks/outputs/edit_names.txt), [which heads each edit touched](checks/outputs/edit_touched_heads.txt), [the GPT-Neo check](checks/outputs/neo_edit_check_named_folder.txt) with [its text windows](checks/outputs/neo_text_windows.txt) and [the audit of the write runs](checks/outputs/audit_write_runs.txt). Details are in [FINDINGS.md](FINDINGS.md).
 
